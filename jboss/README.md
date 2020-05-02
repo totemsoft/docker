@@ -18,7 +18,7 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
 
 ## Checkout project locally:
     cd /tmp
-    git clone --depth=1 --single-branch --branch feature/wildfly https://shibaevv@bitbucket.org/shibaevv/xcelerate.git
+    git clone --depth=1 --single-branch --branch master https://github.com/totemsoft/elixir.git
     rm -rf /tmp/xcelerate/.git
     rm -rf /tmp/xcelerate/aws
     rm -f  /tmp/xcelerate/bitbucket-pipelines.yml

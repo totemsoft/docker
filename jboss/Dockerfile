@@ -11,18 +11,9 @@ RUN echo $TZ
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "date="$(date)
 
-# copy source code
-COPY commons-core/pom.xml /tmp/build/commons-core/
-COPY commons-core/src /tmp/build/commons-core/src/
-COPY commons-report/pom.xml /tmp/build/commons-report/
-COPY commons-report/src /tmp/build/commons-report/src/
-COPY commons-web/pom.xml /tmp/build/commons-web/
-COPY commons-web/src /tmp/build/commons-web/src/
-COPY elixir-financials/pom.xml /tmp/build/elixir-financials/
-COPY elixir-financials/src /tmp/build/elixir-financials/src/
-COPY elixir-web/pom.xml /tmp/build/elixir-web/
-COPY elixir-web/src /tmp/build/elixir-web/src/
-COPY pom.xml /tmp/build/
+# get source code
+RUN git clone --depth=1 --single-branch --branch master https://github.com/totemsoft/elixir.git /tmp/build
+RUN rm -rf /tmp/build/.git
 # Maven
 ENV M2_REPO https://repo1.maven.org/maven2
 ADD $M2_REPO/com/lowagie/itext/4.2.1/itext-4.2.1.jar /tmp/build/elixir-web/src/main/webapp/WEB-INF/lib

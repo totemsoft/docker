@@ -7,10 +7,10 @@ MAINTAINER Valeri Chibaev <shibaev.valera@gmail.com>
 USER root
 # fix vulnerabilities on Debian GNU/Linux 10 (buster)
 RUN echo $(cat /etc/os-release)
-RUN apt update -y
-RUN apt upgrade -y
-#RUN apt full-upgrade -y
-#RUN apt --purge autoremove -y
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get remove -y python-pip curl && \
+    apt-get --purge autoremove -y
 #RUN $(yes | rm /usr/bin/python)
 
 # timezone
