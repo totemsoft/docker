@@ -25,5 +25,6 @@ In addition to environment variables inherited from `mysql`, the following envir
     docker run --rm -it -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root --env-file ~/.docker/env.list mysql-elixir
 
 ## Push tag
+    docker tag mysql-elixir totemsoft/mysql-elixir:latest
     docker push totemsoft/mysql-elixir:latest
 

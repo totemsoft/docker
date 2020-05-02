@@ -45,6 +45,7 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
     curl https://localhost:443/elixir/
 
 ## Push tag
+    docker tag wildfly-elixir totemsoft/wildfly-elixir:latest
     docker push totemsoft/wildfly-elixir:latest
 
 ## Application source code
