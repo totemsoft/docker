@@ -6,16 +6,19 @@ This shows how to deploy a `elixir` database using the [mysql](https://hub.docke
 
 In addition to environment variables inherited from `mysql`, the following environment `ENV` variables can be used with this image:
 
-    ENV         Default                 Description
-    TZ          UTC                     timezone, eg `Australia/Brisbane`
-    DB_HOST     host.docker.internal    MySql host
-    DB_PORT     3306                    MySql port
-    DB_NAME     elixir                  MySql database
-    DB_USER     elixir                  MySql username
-    DB_PASS     password                MySql password
+    ENV                        Default                 Description
+    TZ                         UTC                     timezone, eg `Australia/Brisbane`
+    MYSQL_PORT                 3306                    MySql port
+    MYSQL_DATABASE             elixirdb                MySql database
+    MYSQL_USER                 elixir                  MySql username
+    MYSQL_PASSWORD             Passw0rd                MySql password
+    MYSQL_RANDOM_ROOT_PASSWORD yes
 
 ## Build with:
     docker build --build-arg tz=Australia/Brisbane --tag=mysql-elixir .
+    docker images
+    docker image prune
+    docker image rm <image_id>
 
 ## Run container
     docker run --rm -it -p 3306:3306 --name mysql --env-file ~/.docker/env.list mysql-elixir
@@ -23,3 +26,4 @@ In addition to environment variables inherited from `mysql`, the following envir
 
 ## Push tag
     docker push totemsoft/mysql-elixir:latest
+

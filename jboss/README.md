@@ -2,9 +2,7 @@
 
 This shows how to deploy a `elixir.war` file using the [jboss/wildfly](https://registry.hub.docker.com/u/jboss/wildfly/) Docker image.
 
-## Instructions
-
-Environment Variables
+## Environment Variables
 
 In addition to environment variables inherited from `jboss/wildfly`, the following environment `ENV` variables can be used with this image:
 
@@ -18,8 +16,7 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
 
     JAVA_OPTS   -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true
 
-Checkout project locally:
-
+## Checkout project locally:
     cd /tmp
     git clone --depth=1 --single-branch --branch feature/wildfly https://shibaevv@bitbucket.org/shibaevv/xcelerate.git
     rm -rf /tmp/xcelerate/.git
@@ -34,20 +31,17 @@ Checkout project locally:
     cd ~/git/docker/jboss
     cp -a /tmp/xcelerate/ ~/git/docker/jboss
 
-Run the build with:
-
+## Run the build with:
     docker build --build-arg tz=Australia/Brisbane --tag=wildfly-elixir .
     docker images
     docker image prune
     docker image rm <image_id>
 
-Run container
-
+## Run container
     docker run --rm -it -p 443:8443 -p 9993:9993 --name jboss --env-file ~/.docker/env.list wildfly-elixir:latest
     docker run --rm -it -p 443:8443 --name jboss --env-file ~/.docker/env.list wildfly-elixir
 
-See the elixir is working
-
+## See the elixir is working
     curl https://localhost:443/elixir/
 
 ## Push tag
