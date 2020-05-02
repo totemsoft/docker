@@ -1,0 +1,62 @@
+# /opt/jboss/wildfly/standalone/configuration/standalone.xml
+
+# Start batching commands
+batch
+
+# Create module
+#module add --name=com.mysql --resources=${env.JBOSS_HOME}/modules/com/mysql/main/mysql-connector-java-8.0.19.jar --dependencies=javax.api,javax.transaction.api
+
+# Create driver
+/subsystem=datasources/jdbc-driver=mysql:add( \
+  driver-name=mysql, \
+  driver-module-name=com.mysql, \
+  driver-class-name=com.mysql.cj.jdbc.Driver, \
+  driver-datasource-class-name=com.mysql.cj.jdbc.MysqlDataSource, \
+  driver-xa-datasource-class-name=com.mysql.cj.jdbc.MysqlXADataSource \
+)
+
+# List drivers
+#/subsystem=datasources:installed-drivers-list
+
+/system-property=jboss.bind.address:add(value="${env.BIND_ADDRESS:0.0.0.0}")
+/system-property=jboss.bind.address.management:add(value="${env.BIND_ADDRESS:0.0.0.0}")
+
+# Create datasource
+#  --jndi-name=java:jboss/datasources/DataSource_elixir \
+#    "useUnicode" => "yes", \
+xa-data-source add \
+  --name=DataSource_elixir \
+  --jndi-name=java:/jdbc/DataSource_elixir \
+  --driver-name=mysql \
+  --use-java-context=true \
+  --use-ccm=true, \
+  --xa-datasource-properties={ \
+    "serverName" => "${env.DB_HOST:host.docker.internal}", \
+    "portNumber" => "${env.DB_PORT:3306}", \
+    "databaseName" => "${env.DB_NAME:elixirdb}", \
+    "serverTimezone" => "${env.TZ:UTC}", \
+    "autoReconnect" => "true", \
+    "characterEncoding" => "UTF-8", \
+    "useSSL" => "true" \
+  } \
+  --user-name=${env.DB_USER:elixir} \
+  --password=${env.DB_PASS:Passw0rd} \
+  --pool-prefill=false \
+  --min-pool-size=0 \
+  --max-pool-size=50 \
+  --blocking-timeout-wait-millis=5000 \
+  --validate-on-match=true \
+  --background-validation=true \
+  --valid-connection-checker-class-name=com.mysql.cj.jdbc.integration.jboss.MysqlValidConnectionChecker \
+  --exception-sorter-class-name=com.mysql.cj.jdbc.integration.jboss.ExtendedMysqlExceptionSorter \
+  --enabled=true
+
+#/subsystem=datasources/data-source=DataSource_elixir:test-connection-in-pool
+
+#data-source remove --name=ExampleDS
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+reload

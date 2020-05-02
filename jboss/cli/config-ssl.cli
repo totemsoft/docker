@@ -1,0 +1,26 @@
+# /opt/jboss/wildfly/standalone/configuration/standalone.xml
+
+# Batch script to configure server side SSL in the JBoss EAP server
+# https://github.com/wildfly/quickstart/tree/master/helloworld-ssl
+# keytool -genkey -alias wildfly_elixir -keyalg RSA -sigalg MD5withRSA -keystore jboss/cli/server.keystore -dname "CN=localhost,OU=wildfly-elixir,O=Totem Software Pty Ltd,L=Sydney,S=NSW,C=AU" -storepass secret -keypass secret -validity 9999
+
+# Start batching commands
+batch
+
+# Add the keystore, key manager and ssl context configuration in the elytron subsystem
+/subsystem=elytron/key-store=qsKeyStore:add(path=server.keystore,relative-to=jboss.server.config.dir,type=JKS,credential-reference={clear-text=secret})
+/subsystem=elytron/key-manager=qsKeyManager:add(key-store=qsKeyStore,credential-reference={clear-text=secret})
+/subsystem=elytron/server-ssl-context=qsSSLContext:add(key-manager=qsKeyManager,protocols=[TLSv1.2])
+
+# Change the undertow subsystem configuration to use the ssl context defined in the previous step for https
+/subsystem=undertow/server=default-server/https-listener=https:undefine-attribute(name=security-realm)
+/subsystem=undertow/server=default-server/https-listener=https:write-attribute(name=ssl-context,value=qsSSLContext)
+
+# Set character encoding
+/subsystem=undertow/servlet-container=default:write-attribute(name=default-encoding,value=UTF-8)
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+reload
