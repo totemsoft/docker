@@ -56,11 +56,3 @@ See the elixir is working
 ## Application source code
 
 You can find the `elixir-jboss.war` source code in the [shibaevv/elixir-web](https://bitbucket.org/shibaevv/xcelerate/src/master/elixir-web/) repository.
-
-
-## Docker Compose
-Set default values for environment variables using a `.env` file, which Compose automatically looks for. Values set in the shell environment override those set in the `.env` file.
-
-    docker-compose -f docker/docker-compose.yml up
-    docker-compose -f docker/docker-compose.yml up --remove-orphans
-    docker ps -a

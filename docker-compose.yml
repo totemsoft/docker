@@ -1,0 +1,35 @@
+version: "3.3"
+
+services:
+  app:
+    container_name: jboss
+    #image: totemsoft/wildfly-elixir:latest
+    image: wildfly-elixir:latest
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_NAME: xcelerate
+      DB_USER: xcelerate
+      DB_PASS: xcel1339
+    depends_on:
+    - db
+    ports:
+    - "443:8443"  # application
+    - "9993:9993" # admin console
+  db:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: xcelerate
+      MYSQL_USER: xcelerate
+      MYSQL_PASSWORD: xcel1339
+      MYSQL_ROOT_PASSWORD: xcel1339
+    volumes:
+    - type: bind # data storage
+      source: ./mysql/db/data/
+      target: /var/lib/mysql/
+    - type: bind # init database
+      source: ./mysql/db/init/
+      target: /docker-entrypoint-initdb.d/
+    ports:
+    - "3306:3306"
