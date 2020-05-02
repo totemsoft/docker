@@ -12,7 +12,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "date="$(date)
 
 # copy source code
-COPY pom.xml /tmp/build/
 COPY commons-core/pom.xml /tmp/build/commons-core/
 COPY commons-core/src /tmp/build/commons-core/src/
 COPY commons-report/pom.xml /tmp/build/commons-report/
@@ -23,6 +22,7 @@ COPY elixir-financials/pom.xml /tmp/build/elixir-financials/
 COPY elixir-financials/src /tmp/build/elixir-financials/src/
 COPY elixir-web/pom.xml /tmp/build/elixir-web/
 COPY elixir-web/src /tmp/build/elixir-web/src/
+COPY pom.xml /tmp/build/
 # Maven
 ENV M2_REPO https://repo1.maven.org/maven2
 ADD $M2_REPO/com/lowagie/itext/4.2.1/itext-4.2.1.jar /tmp/build/elixir-web/src/main/webapp/WEB-INF/lib
@@ -70,16 +70,16 @@ RUN $(yes | rm /usr/bin/python)
 # Maven
 ENV M2_REPO https://repo1.maven.org/maven2
 # add mysql module
-ADD docker/jboss/modules/com/mysql/main/module.xml $JBOSS_HOME/modules/com/mysql/main/
+ADD modules/com/mysql/main/module.xml $JBOSS_HOME/modules/com/mysql/main/
 ADD $M2_REPO/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar $JBOSS_HOME/modules/com/mysql/main/
 ADD $M2_REPO/org/jboss/jbossas/jboss-as-connector/6.1.0.Final/jboss-as-connector-6.1.0.Final.jar $JBOSS_HOME/modules/com/mysql/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/com/mysql/main/*
 # add org.aspectj module
-ADD docker/jboss/modules/org/aspectj/main/module.xml $JBOSS_HOME/modules/org/aspectj/main/
+ADD modules/org/aspectj/main/module.xml $JBOSS_HOME/modules/org/aspectj/main/
 ADD $M2_REPO/org/aspectj/aspectjweaver/1.8.9/aspectjweaver-1.8.9.jar $JBOSS_HOME/modules/org/aspectj/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/org/aspectj/main/*
 # add spring module
-ADD docker/jboss/modules/org/springframework/spring/main/module.xml $JBOSS_HOME/modules/org/springframework/spring/main/
+ADD modules/org/springframework/spring/main/module.xml $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-aop/4.3.26.RELEASE/spring-aop-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-beans/4.3.26.RELEASE/spring-beans-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-context/4.3.26.RELEASE/spring-context-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
@@ -98,10 +98,10 @@ RUN chown -R jboss $JBOSS_HOME/modules/
 #
 # jboss config via cli
 USER jboss
-ADD docker/jboss/cli/config.sh /tmp/build/
-ADD docker/jboss/cli/config-ssl.cli /tmp/build/
-ADD docker/jboss/cli/config-datasource.cli /tmp/build/
-ADD docker/jboss/cli/server.keystore $JBOSS_HOME/standalone/configuration/
+ADD cli/config.sh /tmp/build/
+ADD cli/config-ssl.cli /tmp/build/
+ADD cli/config-datasource.cli /tmp/build/
+ADD cli/server.keystore $JBOSS_HOME/standalone/configuration/
 RUN /tmp/build/config.sh
 #
 # add elixir deployment

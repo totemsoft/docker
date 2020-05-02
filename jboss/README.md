@@ -20,7 +20,19 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
 
 Checkout project locally:
 
-    git clone --single-branch --branch feature/wildfly https://shibaevv@bitbucket.org/shibaevv/xcelerate.git .
+    cd /tmp
+    git clone --depth=1 --single-branch --branch feature/wildfly https://shibaevv@bitbucket.org/shibaevv/xcelerate.git
+    rm -rf /tmp/xcelerate/.git
+    rm -rf /tmp/xcelerate/aws
+    rm -f  /tmp/xcelerate/bitbucket-pipelines.yml
+    rm -f  /tmp/xcelerate/deploy*.*
+    rm -rf /tmp/xcelerate/docker
+    rm -f  /tmp/xcelerate/Dockerfile
+    rm -rf /tmp/xcelerate/docs
+    rm -f  /tmp/xcelerate/README.md
+    rm -rf /tmp/xcelerate/workflow-web
+    cd ~/git/docker/jboss
+    cp -a /tmp/xcelerate/ ~/git/docker/jboss
 
 Run the build with:
 
