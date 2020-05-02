@@ -1,0 +1,19 @@
+# /opt/jboss/wildfly/standalone/configuration/standalone.xml
+
+# Start batching commands
+batch
+
+/system-property=jboss.bind.address:add(value="${env.BIND_ADDRESS:0.0.0.0}")
+/system-property=jboss.bind.address.management:add(value="${env.BIND_ADDRESS:0.0.0.0}")
+
+/system-property=env:add(value="${env.ENV:wildfly}")
+/system-property=org.apache.tomcat.util.http.Parameters.MAX_COUNT:add(value="5000")
+/system-property=org.apache.coyote.http11.DEFAULT_CONNECTION_TIMEOUT:add(value="300000")
+/system-property=org.jboss.as.logging.per-deployment:add(value="false")
+/system-property=credentials.profilesConfigFilePath:add(value="~/.aws/credentials")
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+reload

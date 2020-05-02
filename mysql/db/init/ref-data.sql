@@ -40,6 +40,14 @@ INSERT INTO actionoutcomes (outId, outName, outFixed) VALUES
 
 -- --------------------------------------------------------
 --
+-- Dumping data for table audit_type
+--
+
+INSERT INTO audit_type (audit_type_id, name) VALUES (1, 'LOGIN');
+INSERT INTO audit_type (audit_type_id, name) VALUES (2, 'LOGOUT');
+
+-- --------------------------------------------------------
+--
 -- Dumping data for table closecodes
 --
 

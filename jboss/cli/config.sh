@@ -20,6 +20,9 @@ $JBOSS_HOME/bin/$JBOSS_MODE.sh -c $JBOSS_CONFIG > /dev/null &
 echo "==> Waiting..."
 wait_for_wildfly
 
+echo "==> Executing config-property.cli..."
+$JBOSS_CLI -c --file=`dirname "$0"`/config-property.cli --connect
+
 echo "==> Executing config-ssl.cli..."
 $JBOSS_CLI -c --file=`dirname "$0"`/config-ssl.cli --connect
 

@@ -99,6 +99,7 @@ RUN chown -R jboss $JBOSS_HOME/modules/
 # jboss config via cli
 USER jboss
 ADD cli/config.sh /tmp/build/
+ADD cli/config-property.cli /tmp/build/
 ADD cli/config-ssl.cli /tmp/build/
 ADD cli/config-datasource.cli /tmp/build/
 ADD cli/server.keystore $JBOSS_HOME/standalone/configuration/

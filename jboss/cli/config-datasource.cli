@@ -18,9 +18,6 @@ batch
 # List drivers
 #/subsystem=datasources:installed-drivers-list
 
-/system-property=jboss.bind.address:add(value="${env.BIND_ADDRESS:0.0.0.0}")
-/system-property=jboss.bind.address.management:add(value="${env.BIND_ADDRESS:0.0.0.0}")
-
 # Create datasource
 #  --jndi-name=java:jboss/datasources/DataSource_elixir \
 #    "useUnicode" => "yes", \
