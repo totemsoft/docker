@@ -8,9 +8,9 @@ services:
     environment:
       DB_HOST: host.docker.internal
       DB_PORT: 3306
-      DB_NAME: xcelerate
-      DB_USER: xcelerate
-      DB_PASS: xcel1339
+      DB_NAME: elixirdb
+      DB_USER: elixir
+      DB_PASS: Passw0rd
     depends_on:
     - db
     ports:
@@ -20,10 +20,11 @@ services:
     container_name: mysql
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: xcelerate
-      MYSQL_USER: xcelerate
-      MYSQL_PASSWORD: xcel1339
-      MYSQL_ROOT_PASSWORD: xcel1339
+      MYSQL_DATABASE: elixirdb
+      MYSQL_USER: elixir
+      MYSQL_PASSWORD: Passw0rd
+      #MYSQL_ROOT_PASSWORD: Passw0rd
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
     volumes:
     - type: bind # data storage
       source: ./mysql/db/data/

@@ -21,8 +21,8 @@ RUN echo $TZ
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "date="$(date)
 
-ADD db/init/schema-ddl.sql /docker-entrypoint-initdb.d/script-01.sql
-ADD db/init/ref-data.sql   /docker-entrypoint-initdb.d/script-02.sql
+ADD db/init/script-01.sql /docker-entrypoint-initdb.d/script-01.sql
+ADD db/init/script-02.sql /docker-entrypoint-initdb.d/script-02.sql
 
 # Expose port
 ARG mysqlPort
