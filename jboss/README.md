@@ -50,4 +50,4 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
 
 ## Application source code
 
-You can find the `elixir-jboss.war` source code in the [shibaevv/elixir-web](https://bitbucket.org/shibaevv/xcelerate/src/master/elixir-web/) repository.
+You can find the `elixir-jboss.war` source code in the [totemsoft/elixir](https://github.com/totemsoft/elixir.git) repository.

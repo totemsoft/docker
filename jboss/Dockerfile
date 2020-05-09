@@ -61,16 +61,16 @@ RUN $(yes | rm /usr/bin/python)
 # Maven
 ENV M2_REPO https://repo1.maven.org/maven2
 # add mysql module
-ADD modules/com/mysql/main/module.xml $JBOSS_HOME/modules/com/mysql/main/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/com/mysql/main/module.xml $JBOSS_HOME/modules/com/mysql/main/
 ADD $M2_REPO/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar $JBOSS_HOME/modules/com/mysql/main/
 ADD $M2_REPO/org/jboss/jbossas/jboss-as-connector/6.1.0.Final/jboss-as-connector-6.1.0.Final.jar $JBOSS_HOME/modules/com/mysql/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/com/mysql/main/*
 # add org.aspectj module
-ADD modules/org/aspectj/main/module.xml $JBOSS_HOME/modules/org/aspectj/main/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/org/aspectj/main/module.xml $JBOSS_HOME/modules/org/aspectj/main/
 ADD $M2_REPO/org/aspectj/aspectjweaver/1.8.9/aspectjweaver-1.8.9.jar $JBOSS_HOME/modules/org/aspectj/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/org/aspectj/main/*
 # add spring module
-ADD modules/org/springframework/spring/main/module.xml $JBOSS_HOME/modules/org/springframework/spring/main/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/org/springframework/spring/main/module.xml $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-aop/4.3.26.RELEASE/spring-aop-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-beans/4.3.26.RELEASE/spring-beans-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-context/4.3.26.RELEASE/spring-context-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
@@ -89,11 +89,11 @@ RUN chown -R jboss $JBOSS_HOME/modules/
 #
 # jboss config via cli
 USER jboss
-ADD cli/config.sh /tmp/build/
-ADD cli/config-property.cli /tmp/build/
-ADD cli/config-ssl.cli /tmp/build/
-ADD cli/config-datasource.cli /tmp/build/
-ADD cli/server.keystore $JBOSS_HOME/standalone/configuration/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/cli/config.sh /tmp/build/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/cli/config-property.cli /tmp/build/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/cli/config-ssl.cli /tmp/build/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/cli/config-datasource.cli /tmp/build/
+COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/cli/server.keystore $JBOSS_HOME/standalone/configuration/
 RUN /tmp/build/config.sh
 #
 # add elixir deployment
