@@ -1,5 +1,9 @@
 -- USE elixirdb;
 
+GRANT XA_RECOVER_ADMIN ON *.* TO 'elixir'@'%';
+
+FLUSH PRIVILEGES;
+
 -- --------------------------------------------------------
 --
 -- Dumping data for table actioncodes

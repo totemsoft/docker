@@ -1,31 +1,22 @@
-version: "3.3"
+version: '3.8'
 
 services:
   app:
     container_name: jboss
-    #image: totemsoft/wildfly-elixir:latest
-    image: wildfly-elixir:latest
-    environment:
-      DB_HOST: host.docker.internal
-      DB_PORT: 3306
-      DB_NAME: elixirdb
-      DB_USER: elixir
-      DB_PASS: Passw0rd
+    image: totemsoft/wildfly-elixir:latest # hub.docker.com
+    #image: wildfly-elixir:latest # local
+    env_file:
+    - jboss/env.list
     depends_on:
     - db
-    ports:
-    - "443:8443"  # application
-    - "9993:9993" # admin console
+    ports: # HOST_PORT:CONTAINER_PORT
+    - 443:8443  # application
+    - 9993:9993 # admin console
   db:
     container_name: mysql
-    #image: totemsoft/mysql-elixir:latest
     image: mysql:latest
-    environment:
-      MYSQL_DATABASE: elixirdb
-      MYSQL_USER: elixir
-      MYSQL_PASSWORD: Passw0rd
-      #MYSQL_ROOT_PASSWORD: Passw0rd
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    env_file:
+    - mysql/env.list
     volumes:
     - type: bind # data storage
       source: ./mysql/db/data/
@@ -34,4 +25,6 @@ services:
       source: ./mysql/db/init/
       target: /docker-entrypoint-initdb.d/
     ports:
-    - "3306:3306"
+    - 3306:3306
+#    - published: ${MYSQL_PORT}
+#      target: ${MYSQL_PORT}
