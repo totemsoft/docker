@@ -4,7 +4,11 @@ Docker projects
 ## Docker Compose
 Set default values for environment variables using a `.env` file, which Compose automatically looks for. Values set in the shell environment override those set in the `.env` file.
 
-    docker-compose up --force-recreate --remove-orphans
+    docker-compose stop
+    docker-compose rm -f
+    docker-compose pull
+    docker-compose up -d
+
     docker-compose config
     docker ps -a
     docker images
