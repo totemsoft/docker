@@ -45,6 +45,11 @@ ARG httpsPort
 ENV HTTPS_PORT ${httpsPort:-8443}
 EXPOSE $HTTPS_PORT
 
+# Expose smtp port
+ARG smptPort
+ENV SMTP_PORT ${smptPort:-25}
+EXPOSE $SMTP_PORT
+
 #ARG bindAddress
 #ENV BIND_ADDRESS ${bindAddress:-0.0.0.0}
 #
