@@ -2,7 +2,7 @@
 
 
 ## Elixir projects
-*Elixir is a debt recovery system that is designed to help automate the debt recovery process. The Elixir system has been designed to assist specifically with insurance related debt recovery.*
+*Elixir is a debt recovery system that helps to automate the debt recovery process. The Elixir system has been designed to assist specifically with insurance related debt recovery.*
 
 *Also Elixir was used by Legal and Accounting professionals and potentially can be used in other areas.*
 
@@ -37,6 +37,10 @@ Also here are some useful docker commands:
     docker image prune
     docker image rm <image_id>
 
+
+## Application `url/credentials`
+* [https://localhost/elixir/](https://localhost/elixir/)
+* `admin/Passw0rd`
 
 ## Application source code
 

@@ -115,9 +115,10 @@ INSERT INTO config (configKey, configValue) VALUES
 -- Dumping data for table debttypes
 --
 
-INSERT INTO debttypes (typeId, typeName, typeInsuredDetails, typeTPP, typeTPO, typeTPI, POLICE_REPORT) VALUES
-(1, 'Insurance', 1, 1, 1, 1, 'N'),
-(2, 'Commercial', 0, 0, 0, 0, 'N')
+INSERT INTO debttypes (typeId, typeName, typeInsuredDetails, typeTPP, typeTPO, typeTPI, POLICE_REPORT, pol) VALUES
+(1, 'Insurance', 1, 1, 1, 1, 'Y', 'Y'),
+(2, 'Commercial', 0, 0, 0, 0, 'N', 'Y'),
+(3, 'Assessing', 1, 0, 0, 0, 'N', 'N')
 ;
 
 -- --------------------------------------------------------
@@ -146,20 +147,24 @@ INSERT INTO legal_type (LEGAL_TYPE_ID, NAME) VALUES
 -- Dumping data for table securitygroups
 --
 
-INSERT INTO securitygroups (groupId, groupName) VALUES
-(1, 'Administrator'),
-(2, 'External User (One-off)'),
-(3, 'Director'),
-(4, 'Operations Manager'),
-(5, 'Operations Team Leader'),
-(6, 'Operations Team'),
-(7, 'Admin Manager'),
-(8, 'Admin Team'),
-(9, 'Client Authorised'),
-(10, 'Client'),
-(11, 'Agent'),
-(12, 'Supplier'),
-(13, 'system')
+INSERT INTO securitygroups (groupId, groupName, file_type_id) VALUES
+(1, 'Administrator', null),
+(2, 'External User (One-off)', null),
+(3, 'Director', null),
+(4, 'Operations Manager', null),
+(5, 'Operations Team Leader', null),
+(6, 'Operations Team', null),
+(7, 'Admin Manager', null),
+(8, 'Admin Team', null),
+(9, 'Client Authorised', null),
+(10, 'Client', null),
+(11, 'Agent', null),
+(12, 'Supplier', null),
+(13, 'system', null),
+(14, 'Legal', 1),
+(15, 'Business Interruption', 2),
+(16, 'Accounting', 3)
+(17, 'Insurance Broker Group', 4)
 ;
 
 -- --------------------------------------------------------
@@ -182,8 +187,8 @@ INSERT INTO user_type (USER_TYPE_ID, USER_TYPE_NAME) VALUES
 INSERT INTO users
   (userLogin, userPassword, userName, userEmail, userPhone, userSecurityGroupId, userType, userPasswordExpireDate)
 VALUES
-  ('admin', 'Passw0rd', 'admin',      'admin@xir.com.au', NULL,  1, 1, NULL),
-  ('system', NULL,      'System User', NULL,              NULL, 13, 5, NULL)
+  ('admin', 'Passw0rd', 'admin',      'admin@totemsoft.com.au', NULL,  1, 1, NULL),
+  ('system', NULL,      'System User', NULL,                    NULL, 13, 5, NULL)
 ;
 
 -- --------------------------------------------------------
@@ -192,7 +197,35 @@ VALUES
 --
 INSERT INTO loss_type (LOSS_TYPE_ID, DESCRIPTION, CREATED_BY) VALUES
   (1, 'Motor Vehicle', 1),
-  (2, 'Property', 1);
+  (2, 'Property', 1),
+  (3, Major Loss, 1),
+  (4, Heavy Machinery, 1),
+  (5, Liability, 1),
+  (6, Legal Insurserv, 1),
+  (7, Marine, 1),
+  (8, Commercial, 1),
+  (9, Business Interruption, 1)
+;
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table file_type
+--
+INSERT INTO file_type (file_type_id, name, background_color) VALUES
+  (1, 'Legal', 'rgba(44, 143, 52, 0.89)'),
+  (2, 'Business Interruption', 'rgba(143, 52, 44, 0.89)'),
+  (3, 'Accounting', 'rgba(59, 143, 44, 0.89)'),
+  (4, 'Insurance Broker Group', 'rgba(44, 143, 52, 0.89)')
+;
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table file_type_mapping
+--
+INSERT INTO file_type_mapping (file_type_id, debt_type_id, loss_type_id, loss_desc_id) VALUES
+  (2, 3, 9, null),
+  (4, 1, 1, null),
+  (4, 1, 2, null);
 
 -- --------------------------------------------------------
 --
