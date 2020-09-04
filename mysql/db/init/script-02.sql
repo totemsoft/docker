@@ -99,7 +99,9 @@ INSERT INTO config (configKey, configValue) VALUES
 ('company.address.street2', 'TBD'),
 ('company.address.suburb', 'TBD'),
 ('company.address.state', 'TBD'),
-('company.address.postcode', 'TBD');
+('company.address.postcode', 'TBD'),
+('links.host', 'https://host.com'),
+('links.publicHolidays', 'https://data.gov.au/data/api/3/action/datastore_search?resource_id=31eec35e-1de6-4f04-9703-9be1d43d405b&limit=200');
 
 -- update config set configValue = 'localhost' where configKey = 'mail.host';
 
@@ -140,6 +142,17 @@ INSERT INTO legal_type (LEGAL_TYPE_ID, NAME) VALUES
 (1, 'Company'),
 (2, 'Partnership'),
 (3, 'Individual')
+;
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table file_type
+--
+INSERT INTO file_type (file_type_id, name, background_color) VALUES
+  (1, 'Legal', 'rgba(44, 143, 52, 0.89)'),
+  (2, 'Business Interruption', 'rgba(143, 52, 44, 0.89)'),
+  (3, 'Accounting', 'rgba(59, 143, 44, 0.89)'),
+  (4, 'Insurance Broker Group', 'rgba(44, 143, 52, 0.89)')
 ;
 
 -- --------------------------------------------------------
@@ -205,17 +218,6 @@ INSERT INTO loss_type (LOSS_TYPE_ID, DESCRIPTION, CREATED_BY) VALUES
   (7, Marine, 1),
   (8, Commercial, 1),
   (9, Business Interruption, 1)
-;
-
--- --------------------------------------------------------
---
--- Dumping data for table file_type
---
-INSERT INTO file_type (file_type_id, name, background_color) VALUES
-  (1, 'Legal', 'rgba(44, 143, 52, 0.89)'),
-  (2, 'Business Interruption', 'rgba(143, 52, 44, 0.89)'),
-  (3, 'Accounting', 'rgba(59, 143, 44, 0.89)'),
-  (4, 'Insurance Broker Group', 'rgba(44, 143, 52, 0.89)')
 ;
 
 -- --------------------------------------------------------
@@ -1304,4 +1306,4 @@ INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (12, 10
 -- Dumping data for table DBVERSION
 --
 
-INSERT INTO dbversion (DBVERSION, PREV_DBVERSION) VALUES ('ELIXIR.01.105', NULL);
+INSERT INTO dbversion (DBVERSION, PREV_DBVERSION) VALUES ('ELIXIR.02.002', NULL);

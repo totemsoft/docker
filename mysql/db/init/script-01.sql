@@ -1732,11 +1732,8 @@ CREATE TABLE IF NOT EXISTS `public_holiday` (
   `END_DATE` DATE NOT NULL,
   `STATE` VARCHAR(3) NULL DEFAULT NULL,
   `DESCRIPTION` VARCHAR(250) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
   `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`PUBLIC_HOLIDAY_ID`),
-  INDEX `PUBLIC_HOLIDAY_FK1` (`CREATED_BY` ASC),
   CONSTRAINT `PUBLIC_HOLIDAY_FK1`
     FOREIGN KEY (`CREATED_BY`)
     REFERENCES `users` (`userId`))
@@ -2453,6 +2450,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `alt_user_id` VARCHAR(50) NULL DEFAULT NULL,
   `user_initials` CHAR(3) NULL DEFAULT NULL,
   `email_alt` VARCHAR(100) NULL DEFAULT NULL,
+  `idp` CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`userId`),
   INDEX `USERS_FK1` (`userSecurityGroupId` ASC),
   INDEX `USERS_FK4` (`PARENT_USER_ID` ASC),
@@ -2469,6 +2467,25 @@ CREATE TABLE IF NOT EXISTS `users` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8;
+
+
+-- ----------------------------------------------------------------------------
+-- Table user_device
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `user_device` (
+  user_device_id int(11)      NOT NULL AUTO_INCREMENT,
+  user_id        int(11)      NOT NULL,
+  device         varchar(128) NOT NULL,
+  created_date   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT user_device_pk PRIMARY KEY (user_device_id),
+  UNIQUE INDEX `user_device_uk1` (`user_id` ASC, `device` ASC),
+  CONSTRAINT `user_device_fk1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `users` (`userId`))
+ENGINE=InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARSET=utf8;
+
 
 -- ----------------------------------------------------------------------------
 -- Table witnesses
