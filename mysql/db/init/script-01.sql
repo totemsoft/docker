@@ -1733,10 +1733,7 @@ CREATE TABLE IF NOT EXISTS `public_holiday` (
   `STATE` VARCHAR(3) NULL DEFAULT NULL,
   `DESCRIPTION` VARCHAR(250) NULL DEFAULT NULL,
   `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`),
-  CONSTRAINT `PUBLIC_HOLIDAY_FK1`
-    FOREIGN KEY (`CREATED_BY`)
-    REFERENCES `users` (`userId`))
+  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8;
@@ -2606,7 +2603,6 @@ DEFAULT CHARACTER SET = utf8;
 -- Routine getActionPriority
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getActionPriority`(action_id INT) RETURNS int(11)
     DETERMINISTIC
 BEGIN
@@ -2625,86 +2621,75 @@ BEGIN
             RETURN p_0;
     END CASE;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getBillingAmount
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getBillingAmount`(
     action_id INT,
-	action_code_id INT,
-	action_file_id INT) RETURNS decimal(19,2)
+    action_code_id INT,
+    action_file_id INT) RETURNS decimal(19,2)
     DETERMINISTIC
 BEGIN
     DECLARE result DECIMAL(19,2);
     DECLARE c INT;
-
     DECLARE client_id INT;
-		SELECT f.fileClientId INTO client_id FROM files f WHERE f.fileId = action_file_id;
-
-		SELECT COUNT(*) INTO c FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id;
+        SELECT f.fileClientId INTO client_id FROM files f WHERE f.fileId = action_file_id;
+        SELECT COUNT(*) INTO c FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id;
     IF c > 0 THEN
         SELECT BILLING_AMOUNT INTO result FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id LIMIT 1;
-		ELSE
-		    SET result = NULL;
-		END IF;
-
+        ELSE
+            SET result = NULL;
+        END IF;
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getBillingGstAmount
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getBillingGstAmount`(
     action_id INT,
-	action_code_id INT,
-	action_file_id INT) RETURNS decimal(19,2)
+    action_code_id INT,
+    action_file_id INT) RETURNS decimal(19,2)
     DETERMINISTIC
 BEGIN
     DECLARE result DECIMAL(19,2);
     DECLARE c INT;
 
-		SELECT COUNT(*) INTO c FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id;
+        SELECT COUNT(*) INTO c FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id;
     IF c > 0 THEN
         SELECT IF(GST_FREE, 0, BILLING_AMOUNT) INTO result FROM billing_action WHERE ACTION_CODE_ID = action_code_id AND CLIENT_ID = client_id LIMIT 1;
-		ELSE
-		    SET result = NULL;
-		END IF;
+        ELSE
+            SET result = NULL;
+        END IF;
 
     RETURN result / 10;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getChequeId
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getChequeId`(cheque_type INT, cheque_date DATE, bank_id INT, cheque_payee varchar(50), cheque_number INT) RETURNS int(11)
     DETERMINISTIC
 BEGIN
     DECLARE cheque_id INT;
     SELECT chequeId INTO cheque_id
-		FROM cheques
-		WHERE chequeType = cheque_type AND chequeDate = cheque_date AND chequeBankId = bank_id AND chequePayee = cheque_payee AND chequeNumber = cheque_number;
+        FROM cheques
+        WHERE chequeType = cheque_type AND chequeDate = cheque_date AND chequeBankId = bank_id AND chequePayee = cheque_payee AND chequeNumber = cheque_number;
     RETURN cheque_id;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getCompletedActions
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getCompletedActions`(file_id INT) RETURNS int(11)
     DETERMINISTIC
 BEGIN
@@ -2712,44 +2697,39 @@ BEGIN
     SELECT COUNT(actionId) INTO result FROM actions WHERE actionDateCompleted IS NOT NULL AND actionFileId = file_id;
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getCompletedActions4Client
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getCompletedActions4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE) RETURNS int(11)
     DETERMINISTIC
 BEGIN
     DECLARE result INT;
-
     IF (file_status IS NULL) THEN
-	    SELECT COUNT(actionId) INTO result
-	    FROM actions INNER JOIN files ON (fileId = actionFileId)
-	    WHERE fileClientId = client_id AND actionDateCompleted IS NOT NULL
+        SELECT COUNT(actionId) INTO result
+        FROM actions INNER JOIN files ON (fileId = actionFileId)
+        WHERE fileClientId = client_id AND actionDateCompleted IS NOT NULL
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end);
     END IF;
     IF (file_status = 1) THEN
-	    SELECT COUNT(actionId) INTO result
-	    FROM actions INNER JOIN files ON (fileId = actionFileId)
-	    WHERE fileStatus = 1 AND fileClientId = client_id AND actionDateCompleted IS NOT NULL
+        SELECT COUNT(actionId) INTO result
+        FROM actions INNER JOIN files ON (fileId = actionFileId)
+        WHERE fileStatus = 1 AND fileClientId = client_id AND actionDateCompleted IS NOT NULL
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end);
     END IF;
     IF (file_status = 2) THEN
-	    SELECT COUNT(actionId) INTO result
-	    FROM actions INNER JOIN files ON (fileId = actionFileId)
-	    WHERE fileStatus = 2 AND fileClientId = client_id AND actionDateCompleted IS NOT NULL
+        SELECT COUNT(actionId) INTO result
+        FROM actions INNER JOIN files ON (fileId = actionFileId)
+        WHERE fileStatus = 2 AND fileClientId = client_id AND actionDateCompleted IS NOT NULL
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end);
     END IF;
-    
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
@@ -2761,7 +2741,6 @@ CREATE FUNCTION `getFileAverageDaysOpen4Client`(client_id INT, file_status INT, 
     DETERMINISTIC
 BEGIN
     DECLARE result INT;
-
     IF (file_status IS NULL) THEN
         SELECT SUM(DATEDIFF(IF(fileStatus = 1, CURDATE(), WO_DATE), fileDateReceived)) div COUNT(fileId) INTO result
         FROM files LEFT OUTER JOIN wodata ON (fileId = FILE_ID)
@@ -2783,17 +2762,14 @@ BEGIN
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end);
     END IF;
-
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getNextAction
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getNextAction`(file_id INT, column_name VARCHAR(64)) RETURNS varchar(512) CHARSET latin1
     DETERMINISTIC
 BEGIN
@@ -2807,14 +2783,12 @@ BEGIN
     END CASE;
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getOpeningBalance
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getOpeningBalance`(
     fileId INT,
     transTo DATE) RETURNS float
@@ -2832,14 +2806,12 @@ BEGIN
     LIMIT 1;
     RETURN openingBalance;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getOwnerBank
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getOwnerBank`(ownerId INT, ownerType VARCHAR(50)) RETURNS int(11)
     DETERMINISTIC
 BEGIN
@@ -2864,14 +2836,12 @@ BEGIN
     END IF;
     RETURN bankId;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getRecoveredAmount
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getRecoveredAmount`(
     transFrom DATE,
     transTo DATE,
@@ -2882,11 +2852,9 @@ CREATE FUNCTION `getRecoveredAmount`(
     DETERMINISTIC
 BEGIN
     DECLARE recovered DECIMAL(19,2);
-
     IF ((transFrom IS NULL) OR (transTo IS NULL)) THEN
       RETURN 0;
     END IF;
-
     SELECT
         IFNULL(SUM(transAmount * FACTOR), 0) INTO recovered
     FROM
@@ -2904,54 +2872,48 @@ BEGIN
     LIMIT 1;
     RETURN recovered;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getSupplierCosts4Client
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getSupplierCosts4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE, workgroup_id INT) RETURNS decimal(19,2)
     DETERMINISTIC
 BEGIN
     DECLARE result DECIMAL(19,2);
-
     IF (file_status IS NULL) THEN
-	    SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
-	    FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
-	    WHERE fileClientId = client_id
+        SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
+        FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
+        WHERE fileClientId = client_id
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end)
             AND (workgroup_id IS NULL OR fileWorkGroupId = workgroup_id);
     END IF;
     IF (file_status = 1) THEN
-	    SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
-	    FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
-	    WHERE fileStatus = 1 AND fileClientId = client_id
+        SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
+        FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
+        WHERE fileStatus = 1 AND fileClientId = client_id
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end)
             AND (workgroup_id IS NULL OR fileWorkGroupId = workgroup_id);
     END IF;
     IF (file_status = 2) THEN
-	    SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
-	    FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
-	    WHERE fileStatus = 2 AND fileClientId = client_id
+        SELECT IFNULL(SUM(invoiceSubtotal), 0) INTO result
+        FROM supplierinvoices INNER JOIN files ON (fileId = invoiceFileId)
+        WHERE fileStatus = 2 AND fileClientId = client_id
             AND (date_start IS NULL OR fileDateReceived >= date_start)
             AND (date_end IS NULL OR fileDateReceived <= date_end)
             AND (workgroup_id IS NULL OR fileWorkGroupId = workgroup_id);
     END IF;
-    
     RETURN result;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getTrustBalance
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getTrustBalance`(file_id INT, bank_id INT, to_date DATE, to_date_rch DATE) RETURNS decimal(19,2)
     DETERMINISTIC
 BEGIN
@@ -2973,14 +2935,12 @@ BEGIN
     END IF;
     RETURN trust_balance;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine getWorkingDays
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `getWorkingDays`(date_end DATE, date_start DATE) RETURNS int(11)
     DETERMINISTIC
 BEGIN
@@ -2988,20 +2948,17 @@ BEGIN
     SELECT DATEDIFF(date_end, date_start) * 5 / 7 INTO days;
     RETURN days;
 END$$
-
 DELIMITER ;
 
 -- ----------------------------------------------------------------------------
 -- Routine updateBillingFile
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-
 CREATE FUNCTION `updateBillingFile`(file_id INT, fee_flat INT, fee_value INT) RETURNS int(11)
     DETERMINISTIC
 BEGIN
     DECLARE fee_id INT;
     DECLARE file_id_2 INT;
-
     SELECT fileId INTO file_id_2 FROM files WHERE fileId = file_id;
     IF (file_id_2 > 0) THEN
         SELECT fileBillingFeeId INTO fee_id FROM files WHERE fileId = file_id;
@@ -3013,10 +2970,29 @@ BEGIN
             UPDATE billing_file SET feeFlat = fee_flat, feeValue = fee_value WHERE feeId = fee_id;
         END IF;
     END IF;
-    
     RETURN fee_id;
 END$$
+DELIMITER ;
 
+-- ----------------------------------------------------------------------------
+-- Routine getLastReceiptDate
+-- ----------------------------------------------------------------------------
+DELIMITER $$
+CREATE FUNCTION `getLastReceiptDate`(
+    fileId INT) RETURNS DATE
+    DETERMINISTIC
+BEGIN
+    DECLARE result DATE;
+    SELECT
+        transDate INTO result
+    FROM
+        transactions
+    WHERE
+        transFileId = fileId AND transOwnerType = 'receipt'
+    ORDER BY transDate DESC
+    LIMIT 1;
+    RETURN result;
+END$$
 DELIMITER ;
 
 SET FOREIGN_KEY_CHECKS = 1;
