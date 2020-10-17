@@ -2930,7 +2930,7 @@ BEGIN
             AND (t.transFileId = file_id)
             AND (to_date IS NULL OR t.transDate <= to_date)
             AND (bank_id IS NULL OR getOwnerBank(t.transOwnerId, t.transOwnerType) = bank_id)
-            AND ((t.transType IN (1,3,4,5,6,7,8,9,10,14,15,16,17,21,22,30,31,32,33,36,37))
+            AND ((t.transType IN (1,3,4,5,6,7,8,9,10,14,15,16,17,21,22,30,31,32,33,36,37,38,39))
               OR (t.transType IN (2) AND (to_date_rch IS NULL OR t.transDate <= to_date_rch)));
     END IF;
     RETURN trust_balance;
