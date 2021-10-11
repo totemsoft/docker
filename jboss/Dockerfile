@@ -22,8 +22,10 @@ WORKDIR /tmp/build/
 RUN mvn clean package -Dtest -DfailIfNoTests=false
 
 # https://hub.docker.com/r/jboss/wildfly/
-FROM jboss/wildfly
+#FROM jboss/wildfly:latest
+FROM jboss/wildfly:24.0.0.Final
 #RUN echo $(whoami)
+RUN echo $JBOSS_HOME
 
 # Database
 #ENV DB_HOST host.docker.internal
