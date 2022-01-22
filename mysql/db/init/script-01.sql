@@ -2995,4 +2995,55 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+DROP FUNCTION IF EXISTS getLastCompletedAction$$
+CREATE FUNCTION getLastCompletedAction(file_id INT, column_name VARCHAR(64))
+ RETURNS varchar(512)
+ DETERMINISTIC
+BEGIN
+    DECLARE result VARCHAR(512);
+    CASE column_name
+      WHEN "actionDateCompleted" THEN
+            SELECT actionDateCompleted INTO result FROM actions WHERE actionFileId = file_id AND actionDateCompleted IS NOT NULL AND LOGICALLY_DELETED IS NULL ORDER BY actionId DESC LIMIT 1;
+      WHEN "actionDueDate" THEN
+            SELECT actionDueDate INTO result FROM actions WHERE actionFileId = file_id AND actionDateCompleted IS NOT NULL AND LOGICALLY_DELETED IS NULL ORDER BY actionId DESC LIMIT 1;
+      WHEN "actionNotation" THEN
+            SELECT SUBSTRING(actionNotation, 1, 512) INTO result FROM actions WHERE actionFileId = file_id AND actionDateCompleted IS NOT NULL AND LOGICALLY_DELETED IS NULL ORDER BY actionId DESC LIMIT 1;
+    END CASE;
+    RETURN result;
+END$$
+DROP FUNCTION IF EXISTS getLastChequeDate$$
+CREATE FUNCTION getLastChequeDate(fileId INT)
+ RETURNS date
+ DETERMINISTIC
+BEGIN
+    DECLARE result DATE;
+    SELECT
+        transDate INTO result
+    FROM
+        transactions
+    WHERE
+        transFileId = fileId AND transOwnerType = 'cheque'
+    ORDER BY transDate DESC
+    LIMIT 1;
+    RETURN result;
+END$$
+DROP FUNCTION IF EXISTS getLastInvoiceDate$$
+CREATE FUNCTION getLastInvoiceDate(fileId INT)
+ RETURNS date
+ DETERMINISTIC
+BEGIN
+    DECLARE result DATE;
+    SELECT
+        transDate INTO result
+    FROM
+        transactions
+    WHERE
+        transFileId = fileId AND transInvoiceId IS NOT NULL
+    ORDER BY transInvoiceId DESC
+    LIMIT 1;
+    RETURN result;
+END$$
+DELIMITER ;
+
 SET FOREIGN_KEY_CHECKS = 1;
