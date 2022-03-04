@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `action_feedback` (
     FOREIGN KEY (`quality_rating_id`)
     REFERENCES `quality_rating` (`quality_rating_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table action_questionary_answer
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `action_questionary_answer` (
     REFERENCES `questionary_answer` (`questionary_answer_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actioncode_file
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `actioncode_file` (
     FOREIGN KEY (`action_id`)
     REFERENCES `actions` (`actionId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actioncode_priority
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `actioncode_priority` (
   `p_21` INT(11) NOT NULL,
   PRIMARY KEY (`actioncode_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actioncode_service
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `actioncode_service` (
   PRIMARY KEY (`service_id`),
   UNIQUE INDEX `actioncode_service_uk1` (`code` ASC))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actioncodes
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `actioncodes` (
     REFERENCES `actioncode_service` (`service_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actionoutcomes
@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `actionoutcomes` (
   UNIQUE INDEX `actionoutcomes_uk1` (`outName` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actions
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `actions` (
     REFERENCES `document` (`document_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table actiontransitions
@@ -300,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `actiontransitions` (
   UNIQUE INDEX `actiontransitions_uk1` (`acttCodeId` ASC, `acttOutcomeId` ASC, `acttNextCodeId` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table addresses
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
     REFERENCES `addresses` (`addressId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table audit_type
@@ -337,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `audit_type` (
   `description` VARCHAR(128) NULL DEFAULT NULL,
   PRIMARY KEY (`audit_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bank_client
@@ -354,7 +354,7 @@ CREATE TABLE IF NOT EXISTS `bank_client` (
     FOREIGN KEY (`client_id`)
     REFERENCES `clients` (`clientId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bank_errors
@@ -379,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `bank_errors` (
     REFERENCES `banks` (`bankId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bankdeposits
@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `bankdeposits` (
   PRIMARY KEY (`depositId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bankreconciliations
@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `bankreconciliations` (
   PRIMARY KEY (`bankRecId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bankrecpresented
@@ -420,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `bankrecpresented` (
   PRIMARY KEY (`stateId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table bankrecunpresented
@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `bankrecunpresented` (
   PRIMARY KEY (`stateId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table banks
@@ -456,7 +456,7 @@ CREATE TABLE IF NOT EXISTS `banks` (
   PRIMARY KEY (`bankId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table billing_action
@@ -475,7 +475,7 @@ CREATE TABLE IF NOT EXISTS `billing_action` (
     FOREIGN KEY (`CLIENT_ID`)
     REFERENCES `clients` (`clientId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table billing_client
@@ -494,7 +494,7 @@ CREATE TABLE IF NOT EXISTS `billing_client` (
     REFERENCES `billing_info_client` (`billingId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table billing_file
@@ -507,7 +507,7 @@ CREATE TABLE IF NOT EXISTS `billing_file` (
   PRIMARY KEY (`feeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table billing_info_client
@@ -539,7 +539,7 @@ CREATE TABLE IF NOT EXISTS `billing_info_client` (
     REFERENCES `eft_banks` (`bankId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table billing_user
@@ -558,7 +558,7 @@ CREATE TABLE IF NOT EXISTS `billing_user` (
     FOREIGN KEY (`CLIENT_ID`)
     REFERENCES `clients` (`clientId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table business_review
@@ -580,7 +580,7 @@ CREATE TABLE IF NOT EXISTS `business_review` (
     REFERENCES `files` (`fileId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table causeofloss
@@ -603,7 +603,7 @@ CREATE TABLE IF NOT EXISTS `causeofloss` (
     REFERENCES `loss_desc` (`LOSS_DESC_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table cheques
@@ -637,7 +637,7 @@ CREATE TABLE IF NOT EXISTS `cheques` (
     REFERENCES `cheques` (`chequeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table client_notification
@@ -654,7 +654,7 @@ CREATE TABLE IF NOT EXISTS `client_notification` (
     FOREIGN KEY (`client_id`)
     REFERENCES `clients` (`clientId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table clientcontacts
@@ -668,7 +668,7 @@ CREATE TABLE IF NOT EXISTS `clientcontacts` (
   `contactType` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`contactId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table clientinvoices
@@ -680,7 +680,7 @@ CREATE TABLE IF NOT EXISTS `clientinvoices` (
   `invoiceAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`invoiceId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table clients
@@ -744,7 +744,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
     REFERENCES `file_type` (`file_type_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table clientusers
@@ -761,7 +761,7 @@ CREATE TABLE IF NOT EXISTS `clientusers` (
     FOREIGN KEY (`userId`)
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table closecodes
@@ -773,7 +773,7 @@ CREATE TABLE IF NOT EXISTS `closecodes` (
   PRIMARY KEY (`closeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table config
@@ -787,7 +787,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   UNIQUE INDEX `config_uk1` (`configKey` ASC, `env` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table contacts
@@ -815,7 +815,7 @@ CREATE TABLE IF NOT EXISTS `contacts` (
     REFERENCES `contacts` (`contactId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table contacttypes
@@ -826,7 +826,7 @@ CREATE TABLE IF NOT EXISTS `contacttypes` (
   `ctypeAmount` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`ctypeId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table country
@@ -836,7 +836,7 @@ CREATE TABLE IF NOT EXISTS `country` (
   `country_name` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`country_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table dashboard
@@ -855,7 +855,7 @@ CREATE TABLE IF NOT EXISTS `dashboard` (
   UNIQUE INDEX `dashboard_uk1` (`dashboard_date` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table dbversion
@@ -870,7 +870,7 @@ CREATE TABLE IF NOT EXISTS `dbversion` (
     FOREIGN KEY (`PREV_DBVERSION`)
     REFERENCES `dbversion` (`DBVERSION`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table debtor
@@ -913,7 +913,7 @@ CREATE TABLE IF NOT EXISTS `debtor` (
     REFERENCES `debttypes` (`typeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table debttypes
@@ -931,7 +931,7 @@ CREATE TABLE IF NOT EXISTS `debttypes` (
   PRIMARY KEY (`typeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table disbursement
@@ -962,7 +962,7 @@ CREATE TABLE IF NOT EXISTS `disbursement` (
     REFERENCES `document` (`document_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table document
@@ -981,7 +981,7 @@ CREATE TABLE IF NOT EXISTS `document` (
   PRIMARY KEY (`document_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table eft_banks
@@ -1002,7 +1002,7 @@ CREATE TABLE IF NOT EXISTS `eft_banks` (
   PRIMARY KEY (`bankId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table expect_rec
@@ -1021,7 +1021,7 @@ CREATE TABLE IF NOT EXISTS `expect_rec` (
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table file_contact
@@ -1038,7 +1038,7 @@ CREATE TABLE IF NOT EXISTS `file_contact` (
     FOREIGN KEY (`fileId`)
     REFERENCES `files` (`fileId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table file_property
@@ -1061,7 +1061,7 @@ CREATE TABLE IF NOT EXISTS `file_property` (
     FOREIGN KEY (`file_id`)
     REFERENCES `files` (`fileId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table file_type
@@ -1072,7 +1072,7 @@ CREATE TABLE IF NOT EXISTS `file_type` (
   `background_color` VARCHAR(32) NULL DEFAULT NULL,
   PRIMARY KEY (`file_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table file_type_mapping
@@ -1102,7 +1102,7 @@ CREATE TABLE IF NOT EXISTS `file_type_mapping` (
     REFERENCES `loss_desc` (`LOSS_DESC_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table files
@@ -1228,7 +1228,7 @@ CREATE TABLE IF NOT EXISTS `files` (
     REFERENCES `state` (`STATE_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table files_aud
@@ -1294,7 +1294,7 @@ CREATE TABLE IF NOT EXISTS `files_aud` (
   `team_leader_id` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`fileId`, `rev_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table filesuppliers
@@ -1313,7 +1313,7 @@ CREATE TABLE IF NOT EXISTS `filesuppliers` (
     FOREIGN KEY (`supplierId`)
     REFERENCES `suppliers` (`supplierId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table frequency_type
@@ -1324,7 +1324,7 @@ CREATE TABLE IF NOT EXISTS `frequency_type` (
   `cron` VARCHAR(32) NULL DEFAULT NULL,
   PRIMARY KEY (`frequency_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table gst_type
@@ -1336,7 +1336,7 @@ CREATE TABLE IF NOT EXISTS `gst_type` (
   `gst` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`gst_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table hibernate_sequences
@@ -1346,7 +1346,7 @@ CREATE TABLE IF NOT EXISTS `hibernate_sequences` (
   `next_val` INT(11) NOT NULL,
   PRIMARY KEY (`sequence_name`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table import_file
@@ -1365,7 +1365,7 @@ CREATE TABLE IF NOT EXISTS `import_file` (
   PRIMARY KEY (`import_file_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table incident_details
@@ -1379,7 +1379,7 @@ CREATE TABLE IF NOT EXISTS `incident_details` (
   PRIMARY KEY (`INCIDENT_DETAILS_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table info_request
@@ -1405,7 +1405,7 @@ CREATE TABLE IF NOT EXISTS `info_request` (
     REFERENCES `files` (`fileId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table insureddetails
@@ -1421,7 +1421,7 @@ CREATE TABLE IF NOT EXISTS `insureddetails` (
   PRIMARY KEY (`insdetId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table invoices
@@ -1464,7 +1464,7 @@ CREATE TABLE IF NOT EXISTS `invoices` (
     REFERENCES `cheques` (`chequeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table journals
@@ -1494,7 +1494,7 @@ CREATE TABLE IF NOT EXISTS `journals` (
     REFERENCES `banks` (`bankId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table legal_type
@@ -1504,7 +1504,7 @@ CREATE TABLE IF NOT EXISTS `legal_type` (
   `NAME` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`LEGAL_TYPE_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table letters
@@ -1515,7 +1515,7 @@ CREATE TABLE IF NOT EXISTS `letters` (
   `letterBody` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`letterId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table links
@@ -1534,7 +1534,7 @@ CREATE TABLE IF NOT EXISTS `links` (
   PRIMARY KEY (`links_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table loss_desc
@@ -1552,7 +1552,7 @@ CREATE TABLE IF NOT EXISTS `loss_desc` (
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table loss_type
@@ -1570,7 +1570,7 @@ CREATE TABLE IF NOT EXISTS `loss_type` (
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table news
@@ -1589,7 +1589,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   PRIMARY KEY (`news_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table notes
@@ -1603,7 +1603,7 @@ CREATE TABLE IF NOT EXISTS `notes` (
   PRIMARY KEY (`noteId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table pol_documents
@@ -1615,7 +1615,7 @@ CREATE TABLE IF NOT EXISTS `pol_documents` (
   PRIMARY KEY (`poldocId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table pol_type_docs
@@ -1632,7 +1632,7 @@ CREATE TABLE IF NOT EXISTS `pol_type_docs` (
     FOREIGN KEY (`poldocId`)
     REFERENCES `pol_documents` (`poldocId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table pol_types
@@ -1644,7 +1644,7 @@ CREATE TABLE IF NOT EXISTS `pol_types` (
   PRIMARY KEY (`poltId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table policereports
@@ -1660,7 +1660,7 @@ CREATE TABLE IF NOT EXISTS `policereports` (
   PRIMARY KEY (`policeRepId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table proof_of_loss
@@ -1697,7 +1697,7 @@ CREATE TABLE IF NOT EXISTS `proof_of_loss` (
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table proof_of_loss_docs
@@ -1721,7 +1721,7 @@ CREATE TABLE IF NOT EXISTS `proof_of_loss_docs` (
     REFERENCES `pol_documents` (`poldocId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table public_holiday
@@ -1733,10 +1733,10 @@ CREATE TABLE IF NOT EXISTS `public_holiday` (
   `STATE` VARCHAR(3) NULL DEFAULT NULL,
   `DESCRIPTION` VARCHAR(250) NULL DEFAULT NULL,
   `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`)
+  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table quality_rating
@@ -1756,7 +1756,7 @@ CREATE TABLE IF NOT EXISTS `quality_rating` (
   UNIQUE INDEX `quality_rating_uk1` (`name` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table question_type
@@ -1766,7 +1766,7 @@ CREATE TABLE IF NOT EXISTS `question_type` (
   `question_type_name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`question_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table questionary
@@ -1783,7 +1783,7 @@ CREATE TABLE IF NOT EXISTS `questionary` (
   `questionary_optional` CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`questionary_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table questionary_answer
@@ -1812,7 +1812,7 @@ CREATE TABLE IF NOT EXISTS `questionary_answer` (
     REFERENCES `actionoutcomes` (`outId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table questionary_question
@@ -1835,7 +1835,7 @@ CREATE TABLE IF NOT EXISTS `questionary_question` (
     REFERENCES `questionary` (`questionary_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table rec_status
@@ -1847,7 +1847,7 @@ CREATE TABLE IF NOT EXISTS `rec_status` (
   PRIMARY KEY (`REC_STATUS_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table receipts
@@ -1874,7 +1874,7 @@ CREATE TABLE IF NOT EXISTS `receipts` (
     FOREIGN KEY (`receiptBankId`)
     REFERENCES `banks` (`bankId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table repayment
@@ -1915,7 +1915,7 @@ CREATE TABLE IF NOT EXISTS `repayment` (
     REFERENCES `repayment` (`REPAYMENT_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table repayment_schedule
@@ -1941,7 +1941,7 @@ CREATE TABLE IF NOT EXISTS `repayment_schedule` (
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table revinfo
@@ -1952,7 +1952,7 @@ CREATE TABLE IF NOT EXISTS `revinfo` (
   PRIMARY KEY (`rev_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table securitygroups
@@ -1968,7 +1968,7 @@ CREATE TABLE IF NOT EXISTS `securitygroups` (
     REFERENCES `file_type` (`file_type_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table state
@@ -1984,7 +1984,7 @@ CREATE TABLE IF NOT EXISTS `state` (
     FOREIGN KEY (`COUNTRY`)
     REFERENCES `country` (`country_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table supplier_service
@@ -2002,7 +2002,7 @@ CREATE TABLE IF NOT EXISTS `supplier_service` (
     FOREIGN KEY (`gst_type_id`)
     REFERENCES `gst_type` (`gst_type_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+CHARACTER SET = latin1;
 
 -- ----------------------------------------------------------------------------
 -- Table supplierinvoices
@@ -2046,7 +2046,7 @@ CREATE TABLE IF NOT EXISTS `supplierinvoices` (
     REFERENCES `document` (`document_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table suppliers
@@ -2074,7 +2074,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
     REFERENCES `supplier_service` (`supplier_service_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table suppliertypes
@@ -2085,7 +2085,7 @@ CREATE TABLE IF NOT EXISTS `suppliertypes` (
   PRIMARY KEY (`suptId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table supplierusers
@@ -2102,7 +2102,7 @@ CREATE TABLE IF NOT EXISTS `supplierusers` (
     FOREIGN KEY (`supplierId`)
     REFERENCES `suppliers` (`supplierId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table system_access
@@ -2119,7 +2119,7 @@ CREATE TABLE IF NOT EXISTS `system_access` (
     FOREIGN KEY (`SYSTEM_FUNCTION_ID`)
     REFERENCES `system_function` (`SYSTEM_FUNCTION_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table system_function
@@ -2132,7 +2132,7 @@ CREATE TABLE IF NOT EXISTS `system_function` (
   `QUERY` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`SYSTEM_FUNCTION_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table templates
@@ -2149,7 +2149,7 @@ CREATE TABLE IF NOT EXISTS `templates` (
   PRIMARY KEY (`tempId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpdebtors
@@ -2175,7 +2175,7 @@ CREATE TABLE IF NOT EXISTS `tpdebtors` (
     REFERENCES `contacts` (`contactId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpi
@@ -2189,7 +2189,7 @@ CREATE TABLE IF NOT EXISTS `tpi` (
   UNIQUE INDEX `tpi_uk1` (`tpiName` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpinsurers
@@ -2211,7 +2211,7 @@ CREATE TABLE IF NOT EXISTS `tpinsurers` (
     REFERENCES `contacts` (`contactId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpowners
@@ -2224,7 +2224,7 @@ CREATE TABLE IF NOT EXISTS `tpowners` (
   PRIMARY KEY (`tpoId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpproperties
@@ -2238,7 +2238,7 @@ CREATE TABLE IF NOT EXISTS `tpproperties` (
   PRIMARY KEY (`tppId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tprepresentatives
@@ -2250,7 +2250,7 @@ CREATE TABLE IF NOT EXISTS `tprepresentatives` (
   PRIMARY KEY (`tprId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table tpstatus
@@ -2261,7 +2261,7 @@ CREATE TABLE IF NOT EXISTS `tpstatus` (
   PRIMARY KEY (`statusId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table transaction_type
@@ -2273,7 +2273,7 @@ CREATE TABLE IF NOT EXISTS `transaction_type` (
   `DESCRIPTION` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`TRANSACTION_TYPE_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table transactions
@@ -2334,7 +2334,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
     REFERENCES `supplier_service` (`supplier_service_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table user_audit
@@ -2356,7 +2356,7 @@ CREATE TABLE IF NOT EXISTS `user_audit` (
     REFERENCES `audit_type` (`audit_type_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table user_notification
@@ -2372,7 +2372,7 @@ CREATE TABLE IF NOT EXISTS `user_notification` (
     FOREIGN KEY (`userId`)
     REFERENCES `users` (`userId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table user_type
@@ -2382,7 +2382,7 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   `USER_TYPE_NAME` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`USER_TYPE_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table user_workgroup
@@ -2400,7 +2400,7 @@ CREATE TABLE IF NOT EXISTS `user_workgroup` (
     FOREIGN KEY (`WORKGROUP_ID`)
     REFERENCES `workgroups` (`wgroupId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table useractivities
@@ -2412,7 +2412,7 @@ CREATE TABLE IF NOT EXISTS `useractivities` (
   `activityUserId` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`activityId`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table users
@@ -2463,7 +2463,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     REFERENCES `country` (`country_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 
 -- ----------------------------------------------------------------------------
@@ -2494,7 +2494,7 @@ CREATE TABLE IF NOT EXISTS `witnesses` (
   PRIMARY KEY (`witnessId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table woauth_limit
@@ -2512,7 +2512,7 @@ CREATE TABLE IF NOT EXISTS `woauth_limit` (
     REFERENCES `securitygroups` (`groupId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table wodata
@@ -2551,7 +2551,7 @@ CREATE TABLE IF NOT EXISTS `wodata` (
     REFERENCES `closecodes` (`closeId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table wodata_action
@@ -2565,7 +2565,7 @@ CREATE TABLE IF NOT EXISTS `wodata_action` (
   PRIMARY KEY (`WODATA_ACTION_ID`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table wodata_action_taken
@@ -2582,7 +2582,7 @@ CREATE TABLE IF NOT EXISTS `wodata_action_taken` (
     FOREIGN KEY (`WODATA_ACTION_ID`)
     REFERENCES `wodata_action` (`WODATA_ACTION_ID`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Table workgroups
@@ -2597,7 +2597,7 @@ CREATE TABLE IF NOT EXISTS `workgroups` (
   PRIMARY KEY (`wgroupId`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+CHARACTER SET = utf8;
 
 -- ----------------------------------------------------------------------------
 -- Routine getActionPriority

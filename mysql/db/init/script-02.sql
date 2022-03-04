@@ -162,7 +162,7 @@ INSERT INTO file_type (file_type_id, name, background_color) VALUES
 
 INSERT INTO securitygroups (groupId, groupName, file_type_id) VALUES
 (1, 'Administrator', null),
-(2, 'External User (One-off)', null),
+(2, 'External User', null),
 (3, 'Director', null),
 (4, 'Operations Manager', null),
 (5, 'Operations Team Leader', null),
@@ -176,7 +176,7 @@ INSERT INTO securitygroups (groupId, groupName, file_type_id) VALUES
 (13, 'system', null),
 (14, 'Legal', 1),
 (15, 'Business Interruption', 2),
-(16, 'Accounting', 3)
+(16, 'Accounting', 3),
 (17, 'Insurance Broker Group', 4)
 ;
 
@@ -211,13 +211,13 @@ VALUES
 INSERT INTO loss_type (LOSS_TYPE_ID, DESCRIPTION, CREATED_BY) VALUES
   (1, 'Motor Vehicle', 1),
   (2, 'Property', 1),
-  (3, Major Loss, 1),
-  (4, Heavy Machinery, 1),
-  (5, Liability, 1),
-  (6, Legal Insurserv, 1),
-  (7, Marine, 1),
-  (8, Commercial, 1),
-  (9, Business Interruption, 1)
+  (3, 'Major Loss', 1),
+  (4, 'Heavy Machinery', 1),
+  (5, 'Liability', 1),
+  (6, 'Legal Insurserv', 1),
+  (7, 'Marine', 1),
+  (8, 'Commercial', 1),
+  (9, 'Business Interruption', 1)
 ;
 
 -- --------------------------------------------------------
@@ -227,7 +227,8 @@ INSERT INTO loss_type (LOSS_TYPE_ID, DESCRIPTION, CREATED_BY) VALUES
 INSERT INTO file_type_mapping (file_type_id, debt_type_id, loss_type_id, loss_desc_id) VALUES
   (2, 3, 9, null),
   (4, 1, 1, null),
-  (4, 1, 2, null);
+  (4, 1, 2, null)
+;
 
 -- --------------------------------------------------------
 --
