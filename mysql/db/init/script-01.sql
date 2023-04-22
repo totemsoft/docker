@@ -1,2609 +1,2802 @@
--- ----------------------------------------------------------------------------
--- Migrated Schema: elixirdb
--- ----------------------------------------------------------------------------
+-- MySQL dump 10.13  Distrib 8.0.31, for macos12.6 (x86_64)
+--
+-- Host: elixir-xir-57.cfdvijddkwak.ap-southeast-2.rds.amazonaws.com    Database: xcelerate
+-- ------------------------------------------------------
+-- Server version	5.7.38-log
 
-SET FOREIGN_KEY_CHECKS = 0;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 */
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
 
--- ----------------------------------------------------------------------------
--- Schema elixirdb
--- ----------------------------------------------------------------------------
--- DROP SCHEMA IF EXISTS `elixirdb` ;
--- CREATE SCHEMA IF NOT EXISTS `elixirdb` ;
--- USE `elixirdb`;
+--
+-- GTID state at the beginning of the backup 
+--
 
--- ----------------------------------------------------------------------------
--- Table action_feedback
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `action_feedback` (
-  `action_id` INT(11) NOT NULL,
-  `quality_rating_id` INT(11) NOT NULL,
-  `reason` VARCHAR(1024) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '';
+
+--
+-- Table structure for table `action_feedback`
+--
+
+-- DROP TABLE IF EXISTS `action_feedback`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `action_feedback` (
+  `action_id` int(11) NOT NULL,
+  `quality_rating_id` int(11) NOT NULL,
+  `reason` varchar(1024) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`action_id`),
-  INDEX `action_feedback_fk2` (`quality_rating_id` ASC),
-  CONSTRAINT `action_feedback_fk1`
-    FOREIGN KEY (`action_id`)
-    REFERENCES `actions` (`actionId`),
-  CONSTRAINT `action_feedback_fk2`
-    FOREIGN KEY (`quality_rating_id`)
-    REFERENCES `quality_rating` (`quality_rating_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  KEY `action_feedback_fk2` (`quality_rating_id`),
+  CONSTRAINT `action_feedback_fk1` FOREIGN KEY (`action_id`) REFERENCES `actions` (`actionId`),
+  CONSTRAINT `action_feedback_fk2` FOREIGN KEY (`quality_rating_id`) REFERENCES `quality_rating` (`quality_rating_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table action_questionary_answer
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `action_questionary_answer` (
-  `action_questionary_answer_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `action_id` INT(11) NOT NULL,
-  `answer_id` INT(11) NOT NULL,
-  `answer_text` VARCHAR(512) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `action_questionary_answer`
+--
+
+-- DROP TABLE IF EXISTS `action_questionary_answer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `action_questionary_answer` (
+  `action_questionary_answer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `action_id` int(11) NOT NULL,
+  `answer_id` int(11) NOT NULL,
+  `answer_text` varchar(512) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`action_questionary_answer_id`),
-  INDEX `action_questionary_answer_fk1` (`action_id` ASC),
-  INDEX `action_questionary_answer_fk2` (`answer_id` ASC),
-  CONSTRAINT `action_questionary_answer_fk1`
-    FOREIGN KEY (`action_id`)
-    REFERENCES `actions` (`actionId`),
-  CONSTRAINT `action_questionary_answer_fk2`
-    FOREIGN KEY (`answer_id`)
-    REFERENCES `questionary_answer` (`questionary_answer_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `action_questionary_answer_uk1` (`action_id`,`answer_id`),
+  KEY `action_questionary_answer_fk1` (`action_id`),
+  KEY `action_questionary_answer_fk2` (`answer_id`),
+  CONSTRAINT `action_questionary_answer_fk1` FOREIGN KEY (`action_id`) REFERENCES `actions` (`actionId`),
+  CONSTRAINT `action_questionary_answer_fk2` FOREIGN KEY (`answer_id`) REFERENCES `questionary_answer` (`questionary_answer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actioncode_file
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actioncode_file` (
-  `actioncode_file_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_id` INT(11) NOT NULL,
-  `actioncode_id` INT(11) NOT NULL,
-  `frequency_type_id` INT(11) NULL DEFAULT NULL,
-  `start_date` DATE NULL DEFAULT NULL,
-  `action_id` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `actioncode_file`
+--
+
+-- DROP TABLE IF EXISTS `actioncode_file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actioncode_file` (
+  `actioncode_file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_id` int(11) NOT NULL,
+  `actioncode_id` int(11) NOT NULL,
+  `frequency_type_id` int(11) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `action_id` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`actioncode_file_id`),
-  UNIQUE INDEX `actioncode_file_uk1` (`file_id` ASC, `actioncode_id` ASC),
-  INDEX `actioncode_file_fk2` (`actioncode_id` ASC),
-  INDEX `actioncode_file_fk3` (`frequency_type_id` ASC),
-  INDEX `actioncode_file_fk4` (`action_id` ASC),
-  CONSTRAINT `actioncode_file_fk1`
-    FOREIGN KEY (`file_id`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `actioncode_file_fk2`
-    FOREIGN KEY (`actioncode_id`)
-    REFERENCES `actioncodes` (`actcId`),
-  CONSTRAINT `actioncode_file_fk3`
-    FOREIGN KEY (`frequency_type_id`)
-    REFERENCES `frequency_type` (`frequency_type_id`),
-  CONSTRAINT `actioncode_file_fk4`
-    FOREIGN KEY (`action_id`)
-    REFERENCES `actions` (`actionId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  UNIQUE KEY `actioncode_file_uk1` (`file_id`,`actioncode_id`),
+  KEY `actioncode_file_fk2` (`actioncode_id`),
+  KEY `actioncode_file_fk3` (`frequency_type_id`),
+  KEY `actioncode_file_fk4` (`action_id`),
+  CONSTRAINT `actioncode_file_fk1` FOREIGN KEY (`file_id`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `actioncode_file_fk2` FOREIGN KEY (`actioncode_id`) REFERENCES `actioncodes` (`actcId`),
+  CONSTRAINT `actioncode_file_fk3` FOREIGN KEY (`frequency_type_id`) REFERENCES `frequency_type` (`frequency_type_id`),
+  CONSTRAINT `actioncode_file_fk4` FOREIGN KEY (`action_id`) REFERENCES `actions` (`actionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actioncode_priority
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actioncode_priority` (
-  `actioncode_id` INT(11) NOT NULL,
-  `p_0` INT(11) NOT NULL,
-  `p_7` INT(11) NOT NULL,
-  `p_14` INT(11) NOT NULL,
-  `p_21` INT(11) NOT NULL,
-  PRIMARY KEY (`actioncode_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `actioncode_priority`
+--
 
--- ----------------------------------------------------------------------------
--- Table actioncode_service
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actioncode_service` (
-  `service_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `code` VARCHAR(32) NOT NULL,
-  `description` VARCHAR(255) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `actioncode_priority`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actioncode_priority` (
+  `actioncode_id` int(11) NOT NULL,
+  `p_0` int(11) NOT NULL,
+  `p_7` int(11) NOT NULL,
+  `p_14` int(11) NOT NULL,
+  `p_21` int(11) NOT NULL,
+  PRIMARY KEY (`actioncode_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `actioncode_service`
+--
+
+-- DROP TABLE IF EXISTS `actioncode_service`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actioncode_service` (
+  `service_id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(32) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`service_id`),
-  UNIQUE INDEX `actioncode_service_uk1` (`code` ASC))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  UNIQUE KEY `actioncode_service_uk1` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actioncodes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actioncodes` (
-  `actcId` INT(11) NOT NULL AUTO_INCREMENT,
-  `actcCode` VARCHAR(30) NOT NULL,
-  `actcDefaultNotation` VARCHAR(255) NULL DEFAULT NULL,
-  `actcType` INT(11) NOT NULL,
-  `actcActive` BIT(1) NULL DEFAULT NULL,
-  `actcDirect` INT(11) NULL DEFAULT NULL,
-  `actcTemplateId` INT(11) NULL DEFAULT NULL,
-  `actcWorkGroupId` INT(11) NULL DEFAULT NULL,
-  `TP_STATUS_ID` INT(11) NULL DEFAULT NULL,
-  `REC_STATUS_ID` INT(11) NULL DEFAULT NULL,
-  `BILLABLE` CHAR(1) NOT NULL DEFAULT 'N',
-  `fixed_rate` DECIMAL(19,2) NULL DEFAULT NULL,
-  `allow_feedback` CHAR(1) NOT NULL DEFAULT 'N',
-  `send_feedback` CHAR(1) NOT NULL DEFAULT 'N',
-  `rejectable` CHAR(1) NOT NULL DEFAULT 'N',
-  `actcRestricted` BIT(1) NOT NULL DEFAULT b'0',
-  `date_closed_delay` CHAR(1) NOT NULL DEFAULT 'N',
-  `date_closed_delay_advice` INT(11) NOT NULL DEFAULT '0',
-  `auto_complete` CHAR(1) NOT NULL DEFAULT 'N',
-  `questionary_id` INT(11) NULL DEFAULT NULL,
-  `file_type_id` INT(11) NULL DEFAULT NULL,
-  `client_id` INT(11) NULL DEFAULT NULL,
-  `attach_documents` CHAR(1) NOT NULL DEFAULT 'N',
-  `outcome_id` INT(11) NULL DEFAULT NULL,
-  `service_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `actioncodes`
+--
+
+-- DROP TABLE IF EXISTS `actioncodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actioncodes` (
+  `actcId` int(11) NOT NULL AUTO_INCREMENT,
+  `actcCode` varchar(30) NOT NULL,
+  `actcDefaultNotation` varchar(255) DEFAULT NULL,
+  `actcType` int(11) NOT NULL,
+  `actcActive` bit(1) DEFAULT NULL,
+  `actcDirect` int(11) DEFAULT NULL,
+  `actcTemplateId` int(11) DEFAULT NULL,
+  `actcWorkGroupId` int(11) DEFAULT NULL,
+  `TP_STATUS_ID` int(11) DEFAULT NULL,
+  `REC_STATUS_ID` int(11) DEFAULT NULL,
+  `BILLABLE` char(1) NOT NULL DEFAULT 'N',
+  `fixed_rate` decimal(19,2) DEFAULT NULL,
+  `allow_feedback` char(1) NOT NULL DEFAULT 'N',
+  `send_feedback` char(1) NOT NULL DEFAULT 'N',
+  `rejectable` char(1) NOT NULL DEFAULT 'N',
+  `actcRestricted` bit(1) NOT NULL DEFAULT b'0',
+  `date_closed_delay` char(1) NOT NULL DEFAULT 'N',
+  `date_closed_delay_advice` int(11) NOT NULL DEFAULT '0',
+  `auto_complete` char(1) NOT NULL DEFAULT 'N',
+  `questionary_id` int(11) DEFAULT NULL,
+  `file_type_id` int(11) DEFAULT NULL,
+  `client_id` int(11) DEFAULT NULL,
+  `attach_documents` char(1) NOT NULL DEFAULT 'N',
+  `outcome_id` int(11) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`actcId`),
-  UNIQUE INDEX `ACTIONCODES_UK1` (`actcCode` ASC),
-  INDEX `ACTIONCODES_FK1` (`TP_STATUS_ID` ASC),
-  INDEX `ACTIONCODES_FK2` (`REC_STATUS_ID` ASC),
-  INDEX `actioncodes_fk3` (`questionary_id` ASC),
-  INDEX `actioncodes_idx1` (`BILLABLE` ASC),
-  INDEX `actioncodes_fk4` (`file_type_id` ASC),
-  INDEX `actioncodes_fk5` (`client_id` ASC),
-  INDEX `actioncodes_fk6` (`outcome_id` ASC),
-  INDEX `actioncodes_fk7` (`service_id` ASC),
-  CONSTRAINT `ACTIONCODES_FK1`
-    FOREIGN KEY (`TP_STATUS_ID`)
-    REFERENCES `tpstatus` (`statusId`),
-  CONSTRAINT `ACTIONCODES_FK2`
-    FOREIGN KEY (`REC_STATUS_ID`)
-    REFERENCES `rec_status` (`REC_STATUS_ID`),
-  CONSTRAINT `actioncodes_fk3`
-    FOREIGN KEY (`questionary_id`)
-    REFERENCES `questionary` (`questionary_id`),
-  CONSTRAINT `actioncodes_fk4`
-    FOREIGN KEY (`file_type_id`)
-    REFERENCES `file_type` (`file_type_id`),
-  CONSTRAINT `actioncodes_fk5`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `actioncodes_fk6`
-    FOREIGN KEY (`outcome_id`)
-    REFERENCES `actionoutcomes` (`outId`),
-  CONSTRAINT `actioncodes_fk7`
-    FOREIGN KEY (`service_id`)
-    REFERENCES `actioncode_service` (`service_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `ACTIONCODES_UK1` (`actcCode`),
+  KEY `ACTIONCODES_FK1` (`TP_STATUS_ID`),
+  KEY `ACTIONCODES_FK2` (`REC_STATUS_ID`),
+  KEY `actioncodes_fk3` (`questionary_id`),
+  KEY `actioncodes_idx1` (`BILLABLE`),
+  KEY `actioncodes_fk4` (`file_type_id`),
+  KEY `actioncodes_fk5` (`client_id`),
+  KEY `actioncodes_fk6` (`outcome_id`),
+  KEY `actioncodes_fk7` (`service_id`),
+  CONSTRAINT `ACTIONCODES_FK1` FOREIGN KEY (`TP_STATUS_ID`) REFERENCES `tpstatus` (`statusId`),
+  CONSTRAINT `ACTIONCODES_FK2` FOREIGN KEY (`REC_STATUS_ID`) REFERENCES `rec_status` (`REC_STATUS_ID`),
+  CONSTRAINT `actioncodes_fk3` FOREIGN KEY (`questionary_id`) REFERENCES `questionary` (`questionary_id`),
+  CONSTRAINT `actioncodes_fk4` FOREIGN KEY (`file_type_id`) REFERENCES `file_type` (`file_type_id`),
+  CONSTRAINT `actioncodes_fk5` FOREIGN KEY (`client_id`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `actioncodes_fk6` FOREIGN KEY (`outcome_id`) REFERENCES `actionoutcomes` (`outId`),
+  CONSTRAINT `actioncodes_fk7` FOREIGN KEY (`service_id`) REFERENCES `actioncode_service` (`service_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actionoutcomes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actionoutcomes` (
-  `outId` INT(11) NOT NULL AUTO_INCREMENT,
-  `outName` VARCHAR(100) NULL DEFAULT NULL,
-  `outFixed` BIT(1) NOT NULL,
+--
+-- Table structure for table `actionoutcomes`
+--
+
+-- DROP TABLE IF EXISTS `actionoutcomes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actionoutcomes` (
+  `outId` int(11) NOT NULL AUTO_INCREMENT,
+  `outName` varchar(100) DEFAULT NULL,
+  `outFixed` bit(1) NOT NULL,
   PRIMARY KEY (`outId`),
-  UNIQUE INDEX `actionoutcomes_uk1` (`outName` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `actionoutcomes_uk1` (`outName`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actions
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actions` (
-  `actionId` INT(11) NOT NULL AUTO_INCREMENT,
-  `actionCreatedBy` INT(11) NULL DEFAULT NULL,
-  `actionDueDate` DATETIME NOT NULL,
-  `actionCodeId` INT(11) NULL DEFAULT NULL,
-  `actionNotation` TEXT NULL DEFAULT NULL,
-  `actionOutcomeId` INT(11) NULL DEFAULT NULL,
-  `actionDateCompleted` DATETIME NULL DEFAULT NULL,
-  `actionCompletedBy` INT(11) NULL DEFAULT NULL,
-  `actionLetterId` INT(11) NULL DEFAULT NULL,
-  `actionFileId` INT(11) NULL DEFAULT NULL,
-  `actionWorkGroupId` INT(11) NULL DEFAULT NULL,
-  `actionDestination` VARCHAR(255) NULL DEFAULT NULL,
-  `actionSubject` VARCHAR(255) NULL DEFAULT NULL,
-  `LOGICALLY_DELETED` CHAR(1) NULL DEFAULT NULL,
-  `BILLABLE_UNIT` INT(11) NULL DEFAULT NULL,
-  `INVOICE_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `BILLING_NOTE` TEXT NULL DEFAULT NULL,
-  `BILLABLE_AMOUNT` DECIMAL(19,2) NULL DEFAULT NULL,
-  `BILLABLE_GST_AMOUNT` DECIMAL(19,2) NULL DEFAULT NULL,
-  `BILLING_USER_AMOUNT` DECIMAL(19,2) NULL DEFAULT NULL,
-  `EXCLUDE_FROM_INVOICE` CHAR(1) NULL DEFAULT NULL,
-  `DEFER_FROM_INVOICE` CHAR(1) NULL DEFAULT NULL,
-  `document_id` INT(11) NULL DEFAULT NULL,
-  `assigned_to` INT(11) NULL DEFAULT NULL,
-  `parent_id` INT(11) NULL DEFAULT NULL,
-  `claimed_by` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `actions`
+--
+
+-- DROP TABLE IF EXISTS `actions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actions` (
+  `actionId` int(11) NOT NULL AUTO_INCREMENT,
+  `actionCreatedBy` int(11) DEFAULT NULL,
+  `actionDueDate` datetime NOT NULL,
+  `actionCodeId` int(11) DEFAULT NULL,
+  `actionNotation` text,
+  `actionOutcomeId` int(11) DEFAULT NULL,
+  `actionDateCompleted` datetime DEFAULT NULL,
+  `actionCompletedBy` int(11) DEFAULT NULL,
+  `actionLetterId` int(11) DEFAULT NULL,
+  `actionFileId` int(11) DEFAULT NULL,
+  `actionWorkGroupId` int(11) DEFAULT NULL,
+  `actionDestination` varchar(255) DEFAULT NULL,
+  `actionSubject` varchar(255) DEFAULT NULL,
+  `LOGICALLY_DELETED` char(1) DEFAULT NULL,
+  `BILLABLE_UNIT` int(11) DEFAULT NULL,
+  `INVOICE_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `BILLING_NOTE` text,
+  `BILLABLE_AMOUNT` decimal(19,2) DEFAULT NULL,
+  `BILLABLE_GST_AMOUNT` decimal(19,2) DEFAULT NULL,
+  `BILLING_USER_AMOUNT` decimal(19,2) DEFAULT NULL,
+  `EXCLUDE_FROM_INVOICE` char(1) DEFAULT NULL,
+  `DEFER_FROM_INVOICE` char(1) DEFAULT NULL,
+  `document_id` int(11) DEFAULT NULL,
+  `assigned_to` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `claimed_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`actionId`),
-  INDEX `ACTIONS_FK3` (`actionWorkGroupId` ASC),
-  INDEX `ACTIONS_FK4` (`actionCreatedBy` ASC),
-  INDEX `ACTIONS_FK5` (`actionCompletedBy` ASC),
-  INDEX `ACTIONS_FK6` (`actionLetterId` ASC),
-  INDEX `ACTIONS_FK7` (`actionOutcomeId` ASC),
-  INDEX `ACTIONS_FK8` (`INVOICE_ID` ASC),
-  INDEX `actions_fk9` (`document_id` ASC),
-  INDEX `ACTIONS_IDX3` (`actionDateCompleted` ASC, `actionCompletedBy` ASC),
-  INDEX `ACTIONS_IDX4` (`CREATED_DATE` ASC, `CREATED_BY` ASC),
-  INDEX `actions_fk2` (`actionCodeId` ASC),
-  INDEX `actions_idx1` (`EXCLUDE_FROM_INVOICE` ASC),
-  INDEX `ACTIONS_IDX5` (`actionFileId` ASC),
-  INDEX `ACTIONS_IDX6` (`actionDateCompleted` ASC),
-  INDEX `actions_fk10` (`parent_id` ASC),
-  CONSTRAINT `ACTIONS_FK3`
-    FOREIGN KEY (`actionWorkGroupId`)
-    REFERENCES `workgroups` (`wgroupId`),
-  CONSTRAINT `ACTIONS_FK4`
-    FOREIGN KEY (`actionCreatedBy`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `ACTIONS_FK5`
-    FOREIGN KEY (`actionCompletedBy`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `ACTIONS_FK6`
-    FOREIGN KEY (`actionLetterId`)
-    REFERENCES `letters` (`letterId`),
-  CONSTRAINT `ACTIONS_FK7`
-    FOREIGN KEY (`actionOutcomeId`)
-    REFERENCES `actionoutcomes` (`outId`),
-  CONSTRAINT `ACTIONS_FK8`
-    FOREIGN KEY (`INVOICE_ID`)
-    REFERENCES `invoices` (`invoiceId`),
-  CONSTRAINT `actions_fk1`
-    FOREIGN KEY (`actionFileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `actions_fk10`
-    FOREIGN KEY (`parent_id`)
-    REFERENCES `actions` (`actionId`),
-  CONSTRAINT `actions_fk2`
-    FOREIGN KEY (`actionCodeId`)
-    REFERENCES `actioncodes` (`actcId`),
-  CONSTRAINT `actions_fk9`
-    FOREIGN KEY (`document_id`)
-    REFERENCES `document` (`document_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `ACTIONS_FK3` (`actionWorkGroupId`),
+  KEY `ACTIONS_FK4` (`actionCreatedBy`),
+  KEY `ACTIONS_FK5` (`actionCompletedBy`),
+  KEY `ACTIONS_FK6` (`actionLetterId`),
+  KEY `ACTIONS_FK7` (`actionOutcomeId`),
+  KEY `ACTIONS_FK8` (`INVOICE_ID`),
+  KEY `actions_fk9` (`document_id`),
+  KEY `ACTIONS_IDX3` (`actionDateCompleted`,`actionCompletedBy`),
+  KEY `ACTIONS_IDX4` (`CREATED_DATE`,`CREATED_BY`),
+  KEY `actions_fk2` (`actionCodeId`),
+  KEY `actions_idx1` (`EXCLUDE_FROM_INVOICE`),
+  KEY `ACTIONS_IDX5` (`actionFileId`),
+  KEY `ACTIONS_IDX6` (`actionDateCompleted`),
+  KEY `actions_fk10` (`parent_id`),
+  CONSTRAINT `ACTIONS_FK3` FOREIGN KEY (`actionWorkGroupId`) REFERENCES `workgroups` (`wgroupId`),
+  CONSTRAINT `ACTIONS_FK4` FOREIGN KEY (`actionCreatedBy`) REFERENCES `users` (`userId`),
+  CONSTRAINT `ACTIONS_FK5` FOREIGN KEY (`actionCompletedBy`) REFERENCES `users` (`userId`),
+  CONSTRAINT `ACTIONS_FK6` FOREIGN KEY (`actionLetterId`) REFERENCES `letters` (`letterId`),
+  CONSTRAINT `ACTIONS_FK7` FOREIGN KEY (`actionOutcomeId`) REFERENCES `actionoutcomes` (`outId`),
+  CONSTRAINT `ACTIONS_FK8` FOREIGN KEY (`INVOICE_ID`) REFERENCES `invoices` (`invoiceId`),
+  CONSTRAINT `actions_fk1` FOREIGN KEY (`actionFileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `actions_fk10` FOREIGN KEY (`parent_id`) REFERENCES `actions` (`actionId`),
+  CONSTRAINT `actions_fk2` FOREIGN KEY (`actionCodeId`) REFERENCES `actioncodes` (`actcId`),
+  CONSTRAINT `actions_fk9` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table actiontransitions
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `actiontransitions` (
-  `acttId` INT(11) NOT NULL AUTO_INCREMENT,
-  `acttCodeId` INT(11) NULL DEFAULT NULL,
-  `acttOutcomeId` INT(11) NULL DEFAULT NULL,
-  `acttNextCodeId` INT(11) NOT NULL,
-  `acttNextDueDays` INT(11) NULL DEFAULT NULL,
-  `next_due_days_cron` VARCHAR(255) NULL DEFAULT NULL,
+--
+-- Table structure for table `actiontransitions`
+--
+
+-- DROP TABLE IF EXISTS `actiontransitions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actiontransitions` (
+  `acttId` int(11) NOT NULL AUTO_INCREMENT,
+  `acttCodeId` int(11) DEFAULT NULL,
+  `acttOutcomeId` int(11) DEFAULT NULL,
+  `acttNextCodeId` int(11) NOT NULL,
+  `acttNextDueDays` int(11) DEFAULT NULL,
+  `next_due_days_cron` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`acttId`),
-  UNIQUE INDEX `actiontransitions_uk1` (`acttCodeId` ASC, `acttOutcomeId` ASC, `acttNextCodeId` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `actiontransitions_uk1` (`acttCodeId`,`acttOutcomeId`,`acttNextCodeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table addresses
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `addresses` (
-  `addressId` INT(11) NOT NULL AUTO_INCREMENT,
-  `addressStreet1` VARCHAR(255) NULL DEFAULT NULL,
-  `addressStreet2` VARCHAR(255) NULL DEFAULT NULL,
-  `addressSuburb` VARCHAR(200) NULL DEFAULT NULL,
-  `addressState` VARCHAR(50) NULL DEFAULT NULL,
-  `addressPostcode` VARCHAR(20) NULL DEFAULT NULL,
-  `STATE_ID` INT(11) NOT NULL DEFAULT '1',
-  `datawash` CHAR(1) NULL DEFAULT NULL,
-  `link_address_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `addresses`
+--
+
+-- DROP TABLE IF EXISTS `addresses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `addresses` (
+  `addressId` int(11) NOT NULL AUTO_INCREMENT,
+  `addressStreet1` varchar(255) DEFAULT NULL,
+  `addressStreet2` varchar(255) DEFAULT NULL,
+  `addressSuburb` varchar(200) DEFAULT NULL,
+  `addressState` varchar(50) DEFAULT NULL,
+  `addressPostcode` varchar(20) DEFAULT NULL,
+  `STATE_ID` int(11) NOT NULL DEFAULT '1',
+  `datawash` char(1) DEFAULT NULL,
+  `link_address_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`addressId`),
-  INDEX `ADDRESSES_FK1` (`STATE_ID` ASC),
-  INDEX `addresses_fk2` (`link_address_id` ASC),
-  CONSTRAINT `ADDRESSES_FK1`
-    FOREIGN KEY (`STATE_ID`)
-    REFERENCES `state` (`STATE_ID`),
-  CONSTRAINT `addresses_fk2`
-    FOREIGN KEY (`link_address_id`)
-    REFERENCES `addresses` (`addressId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `ADDRESSES_FK1` (`STATE_ID`),
+  KEY `addresses_fk2` (`link_address_id`),
+  CONSTRAINT `ADDRESSES_FK1` FOREIGN KEY (`STATE_ID`) REFERENCES `state` (`STATE_ID`),
+  CONSTRAINT `addresses_fk2` FOREIGN KEY (`link_address_id`) REFERENCES `addresses` (`addressId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table audit_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `audit_type` (
-  `audit_type_id` INT(11) NOT NULL,
-  `name` VARCHAR(32) NOT NULL,
-  `description` VARCHAR(128) NULL DEFAULT NULL,
-  PRIMARY KEY (`audit_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `audit_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table bank_client
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bank_client` (
-  `bank_id` INT(11) NOT NULL,
-  `client_id` INT(11) NOT NULL,
-  PRIMARY KEY (`bank_id`, `client_id`),
-  INDEX `bank_client_fk2` (`client_id` ASC),
-  CONSTRAINT `bank_client_fk1`
-    FOREIGN KEY (`bank_id`)
-    REFERENCES `banks` (`bankId`),
-  CONSTRAINT `bank_client_fk2`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `clients` (`clientId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `audit_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `audit_type` (
+  `audit_type_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `description` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`audit_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table bank_errors
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bank_errors` (
-  `errorId` INT(11) NOT NULL AUTO_INCREMENT,
-  `errorDate` DATE NULL DEFAULT NULL,
-  `errorBankId` INT(11) NULL DEFAULT NULL,
-  `errorAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `errorType` INT(11) NULL DEFAULT NULL,
-  `errorDatePresented` DATE NULL DEFAULT NULL,
-  `EXPLANATION` TEXT NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `bank_client`
+--
+
+-- DROP TABLE IF EXISTS `bank_client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bank_client` (
+  `bank_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  PRIMARY KEY (`bank_id`,`client_id`),
+  KEY `bank_client_fk2` (`client_id`),
+  CONSTRAINT `bank_client_fk1` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`bankId`),
+  CONSTRAINT `bank_client_fk2` FOREIGN KEY (`client_id`) REFERENCES `clients` (`clientId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bank_errors`
+--
+
+-- DROP TABLE IF EXISTS `bank_errors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bank_errors` (
+  `errorId` int(11) NOT NULL AUTO_INCREMENT,
+  `errorDate` date DEFAULT NULL,
+  `errorBankId` int(11) DEFAULT NULL,
+  `errorAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `errorType` int(11) DEFAULT NULL,
+  `errorDatePresented` date DEFAULT NULL,
+  `EXPLANATION` text,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`errorId`),
-  INDEX `BANK_ERRORS_FK1` (`errorBankId` ASC),
-  CONSTRAINT `BANK_ERRORS_FK1`
-    FOREIGN KEY (`errorBankId`)
-    REFERENCES `banks` (`bankId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `BANK_ERRORS_FK1` (`errorBankId`),
+  CONSTRAINT `BANK_ERRORS_FK1` FOREIGN KEY (`errorBankId`) REFERENCES `banks` (`bankId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table bankdeposits
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bankdeposits` (
-  `depositId` INT(11) NOT NULL AUTO_INCREMENT,
-  `depositDate` DATE NULL DEFAULT NULL,
-  `depositNumber` VARCHAR(50) NULL DEFAULT NULL,
-  `depositBankId` INT(11) NULL DEFAULT NULL,
-  `depositAmount` FLOAT(10,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`depositId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `bankdeposits`
+--
 
--- ----------------------------------------------------------------------------
--- Table bankreconciliations
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bankreconciliations` (
-  `bankRecId` INT(11) NOT NULL AUTO_INCREMENT,
-  `bankRecBankId` INT(11) NULL DEFAULT NULL,
-  `bankRecDate` DATE NULL DEFAULT NULL,
-  `bankRecSysBalance` DECIMAL(19,2) NULL DEFAULT NULL,
-  `bankRecBankBalance` DECIMAL(19,2) NULL DEFAULT NULL,
-  PRIMARY KEY (`bankRecId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `bankdeposits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bankdeposits` (
+  `depositId` int(11) NOT NULL AUTO_INCREMENT,
+  `depositDate` date DEFAULT NULL,
+  `depositNumber` varchar(50) DEFAULT NULL,
+  `depositBankId` int(11) DEFAULT NULL,
+  `depositAmount` float(10,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`depositId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table bankrecpresented
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bankrecpresented` (
-  `stateId` INT(11) NOT NULL AUTO_INCREMENT,
-  `bankRecId` INT(11) NOT NULL,
-  `paymentId` INT(11) NOT NULL,
-  `paymentType` VARCHAR(20) NOT NULL DEFAULT '',
-  PRIMARY KEY (`stateId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `bankreconciliations`
+--
 
--- ----------------------------------------------------------------------------
--- Table bankrecunpresented
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bankrecunpresented` (
-  `stateId` INT(11) NOT NULL AUTO_INCREMENT,
-  `bankRecId` INT(11) NOT NULL,
-  `paymentId` INT(11) NOT NULL,
-  `paymentType` VARCHAR(20) NOT NULL DEFAULT '',
-  PRIMARY KEY (`stateId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `bankreconciliations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bankreconciliations` (
+  `bankRecId` int(11) NOT NULL AUTO_INCREMENT,
+  `bankRecBankId` int(11) DEFAULT NULL,
+  `bankRecDate` date DEFAULT NULL,
+  `bankRecSysBalance` decimal(19,2) DEFAULT NULL,
+  `bankRecBankBalance` decimal(19,2) DEFAULT NULL,
+  PRIMARY KEY (`bankRecId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table banks
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `banks` (
-  `bankId` INT(11) NOT NULL AUTO_INCREMENT,
-  `bankName` VARCHAR(255) NULL DEFAULT NULL,
-  `bankBalance` DECIMAL(19,2) NOT NULL,
-  `DESCRIPTION` VARCHAR(255) NULL DEFAULT NULL,
-  `BSB` VARCHAR(10) NULL DEFAULT NULL,
-  `ACCOUNT_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `ACCOUNT_NUMBER` VARCHAR(50) NULL DEFAULT NULL,
-  `NEXT_CHEQUE_NO` INT(11) NOT NULL DEFAULT '100000',
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `next_eft_no` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`bankId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `bankrecpresented`
+--
 
--- ----------------------------------------------------------------------------
--- Table billing_action
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `billing_action` (
-  `ACTION_CODE_ID` INT(11) NOT NULL,
-  `CLIENT_ID` INT(11) NOT NULL,
-  `BILLING_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `GST_FREE` BIT(1) NULL DEFAULT b'0',
-  PRIMARY KEY (`ACTION_CODE_ID`, `CLIENT_ID`),
-  INDEX `BILLING_INFO_ACTION_FK2` (`CLIENT_ID` ASC),
-  CONSTRAINT `BILLING_ACTION_FK1`
-    FOREIGN KEY (`ACTION_CODE_ID`)
-    REFERENCES `actioncodes` (`actcId`),
-  CONSTRAINT `BILLING_ACTION_FK2`
-    FOREIGN KEY (`CLIENT_ID`)
-    REFERENCES `clients` (`clientId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `bankrecpresented`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bankrecpresented` (
+  `stateId` int(11) NOT NULL AUTO_INCREMENT,
+  `bankRecId` int(11) NOT NULL,
+  `paymentId` int(11) NOT NULL,
+  `paymentType` varchar(20) NOT NULL DEFAULT '',
+  PRIMARY KEY (`stateId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table billing_client
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `billing_client` (
-  `feeId` INT(11) NOT NULL AUTO_INCREMENT,
-  `feeBillingInfoId` INT(11) NULL DEFAULT NULL,
-  `feeFlat` BIT(1) NOT NULL,
-  `feeValue` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `feeTPStatus` INT(11) NULL DEFAULT NULL,
-  `FILE_STATUS` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `bankrecunpresented`
+--
+
+-- DROP TABLE IF EXISTS `bankrecunpresented`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bankrecunpresented` (
+  `stateId` int(11) NOT NULL AUTO_INCREMENT,
+  `bankRecId` int(11) NOT NULL,
+  `paymentId` int(11) NOT NULL,
+  `paymentType` varchar(20) NOT NULL DEFAULT '',
+  PRIMARY KEY (`stateId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `banks`
+--
+
+-- DROP TABLE IF EXISTS `banks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `banks` (
+  `bankId` int(11) NOT NULL AUTO_INCREMENT,
+  `bankName` varchar(255) DEFAULT NULL,
+  `bankBalance` decimal(19,2) NOT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  `BSB` varchar(10) DEFAULT NULL,
+  `ACCOUNT_NAME` varchar(255) DEFAULT NULL,
+  `ACCOUNT_NUMBER` varchar(50) DEFAULT NULL,
+  `NEXT_CHEQUE_NO` int(11) NOT NULL DEFAULT '100000',
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `next_eft_no` int(11) DEFAULT NULL,
+  `account_id` char(36) DEFAULT NULL,
+  PRIMARY KEY (`bankId`),
+  UNIQUE KEY `banks_uk1` (`account_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `billing_action`
+--
+
+-- DROP TABLE IF EXISTS `billing_action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `billing_action` (
+  `ACTION_CODE_ID` int(11) NOT NULL,
+  `CLIENT_ID` int(11) NOT NULL,
+  `BILLING_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `GST_FREE` bit(1) DEFAULT b'0',
+  PRIMARY KEY (`ACTION_CODE_ID`,`CLIENT_ID`),
+  KEY `BILLING_INFO_ACTION_FK2` (`CLIENT_ID`),
+  CONSTRAINT `BILLING_ACTION_FK1` FOREIGN KEY (`ACTION_CODE_ID`) REFERENCES `actioncodes` (`actcId`),
+  CONSTRAINT `BILLING_ACTION_FK2` FOREIGN KEY (`CLIENT_ID`) REFERENCES `clients` (`clientId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `billing_client`
+--
+
+-- DROP TABLE IF EXISTS `billing_client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `billing_client` (
+  `feeId` int(11) NOT NULL AUTO_INCREMENT,
+  `feeBillingInfoId` int(11) DEFAULT NULL,
+  `feeFlat` bit(1) NOT NULL,
+  `feeValue` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `feeTPStatus` int(11) DEFAULT NULL,
+  `FILE_STATUS` int(11) DEFAULT NULL,
   PRIMARY KEY (`feeId`),
-  INDEX `BILLINGINFOFEES_FK1` (`feeBillingInfoId` ASC),
-  CONSTRAINT `BILLING_CLIENT_FK1`
-    FOREIGN KEY (`feeBillingInfoId`)
-    REFERENCES `billing_info_client` (`billingId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `BILLINGINFOFEES_FK1` (`feeBillingInfoId`),
+  CONSTRAINT `BILLING_CLIENT_FK1` FOREIGN KEY (`feeBillingInfoId`) REFERENCES `billing_info_client` (`billingId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table billing_file
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `billing_file` (
-  `feeId` INT(11) NOT NULL AUTO_INCREMENT,
-  `feeFlat` BIT(1) NOT NULL,
-  `feeValue` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `hold_funds` CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`feeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `billing_file`
+--
 
--- ----------------------------------------------------------------------------
--- Table billing_info_client
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `billing_info_client` (
-  `billingId` INT(11) NOT NULL AUTO_INCREMENT,
-  `billingMethod` VARCHAR(50) NULL DEFAULT NULL,
-  `billingRecoveredLimit` DECIMAL(19,2) NULL DEFAULT NULL,
-  `billingClientPaysSearches` BIT(1) NULL DEFAULT NULL,
-  `billingClientPaysLegal` BIT(1) NULL DEFAULT NULL,
-  `billingLegalLimit` DECIMAL(19,2) NULL DEFAULT NULL,
-  `billingLegalNotes` TEXT NULL DEFAULT NULL,
-  `billingIncludeCheque` BIT(1) NOT NULL,
-  `DSCNT_INTNL` DECIMAL(19,2) NULL DEFAULT NULL,
-  `DSCNT_CLNT` DECIMAL(19,2) NULL DEFAULT NULL,
-  `DEDUCT_FEES` CHAR(1) NOT NULL DEFAULT 'N',
-  `BILLING_PHOTOCOPY` DECIMAL(19,2) NULL DEFAULT NULL,
-  `BILLING_FAX` DECIMAL(19,2) NULL DEFAULT NULL,
-  `BILLING_PHONE_CALL` DECIMAL(19,2) NULL DEFAULT NULL,
-  `billing_parent_action` CHAR(1) NOT NULL DEFAULT 'N',
-  `billing_parent_commission` CHAR(1) NOT NULL DEFAULT 'N',
-  `eft` CHAR(1) NOT NULL DEFAULT 'N',
-  `eft_bank_id` INT(11) NULL DEFAULT NULL,
-  `event_no_required` CHAR(1) NOT NULL DEFAULT 'N',
+-- DROP TABLE IF EXISTS `billing_file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `billing_file` (
+  `feeId` int(11) NOT NULL AUTO_INCREMENT,
+  `feeFlat` bit(1) NOT NULL,
+  `feeValue` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `hold_funds` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`feeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `billing_info_client`
+--
+
+-- DROP TABLE IF EXISTS `billing_info_client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `billing_info_client` (
+  `billingId` int(11) NOT NULL AUTO_INCREMENT,
+  `billingMethod` varchar(50) DEFAULT NULL,
+  `billingRecoveredLimit` decimal(19,2) DEFAULT NULL,
+  `billingClientPaysSearches` bit(1) DEFAULT NULL,
+  `billingClientPaysLegal` bit(1) DEFAULT NULL,
+  `billingLegalLimit` decimal(19,2) DEFAULT NULL,
+  `billingLegalNotes` text,
+  `billingIncludeCheque` bit(1) NOT NULL,
+  `DSCNT_INTNL` decimal(19,2) DEFAULT NULL,
+  `DSCNT_CLNT` decimal(19,2) DEFAULT NULL,
+  `DEDUCT_FEES` char(1) NOT NULL DEFAULT 'N',
+  `BILLING_PHOTOCOPY` decimal(19,2) DEFAULT NULL,
+  `BILLING_FAX` decimal(19,2) DEFAULT NULL,
+  `BILLING_PHONE_CALL` decimal(19,2) DEFAULT NULL,
+  `billing_parent_action` char(1) NOT NULL DEFAULT 'N',
+  `billing_parent_commission` char(1) NOT NULL DEFAULT 'N',
+  `eft` char(1) NOT NULL DEFAULT 'N',
+  `eft_bank_id` int(11) DEFAULT NULL,
+  `event_no_required` char(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`billingId`),
-  INDEX `billing_info_client_fk1` (`eft_bank_id` ASC),
-  CONSTRAINT `billing_info_client_fk1`
-    FOREIGN KEY (`eft_bank_id`)
-    REFERENCES `eft_banks` (`bankId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `billing_info_client_fk1` (`eft_bank_id`),
+  CONSTRAINT `billing_info_client_fk1` FOREIGN KEY (`eft_bank_id`) REFERENCES `eft_banks` (`bankId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table billing_user
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `billing_user` (
-  `USER_ID` INT(11) NOT NULL,
-  `CLIENT_ID` INT(11) NOT NULL,
-  `BILLING_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `GST_FREE` CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`USER_ID`, `CLIENT_ID`),
-  INDEX `BILLING_USER_FK2` (`CLIENT_ID` ASC),
-  CONSTRAINT `BILLING_USER_FK1`
-    FOREIGN KEY (`USER_ID`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `BILLING_USER_FK2`
-    FOREIGN KEY (`CLIENT_ID`)
-    REFERENCES `clients` (`clientId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `billing_user`
+--
 
--- ----------------------------------------------------------------------------
--- Table business_review
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `business_review` (
-  `business_review_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_id` INT(11) NOT NULL,
-  `weekday` INT(1) NOT NULL,
-  `part_day` DECIMAL(4,2) NOT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `billing_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `billing_user` (
+  `USER_ID` int(11) NOT NULL,
+  `CLIENT_ID` int(11) NOT NULL,
+  `BILLING_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `GST_FREE` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`USER_ID`,`CLIENT_ID`),
+  KEY `BILLING_USER_FK2` (`CLIENT_ID`),
+  CONSTRAINT `BILLING_USER_FK1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`userId`),
+  CONSTRAINT `BILLING_USER_FK2` FOREIGN KEY (`CLIENT_ID`) REFERENCES `clients` (`clientId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `business_review`
+--
+
+-- DROP TABLE IF EXISTS `business_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `business_review` (
+  `business_review_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_id` int(11) NOT NULL,
+  `weekday` int(1) NOT NULL,
+  `part_day` decimal(4,2) NOT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`business_review_id`),
-  UNIQUE INDEX `business_review_uk1` (`file_id` ASC, `weekday` ASC),
-  CONSTRAINT `business_review_fk1`
-    FOREIGN KEY (`file_id`)
-    REFERENCES `files` (`fileId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = latin1;
+  UNIQUE KEY `business_review_uk1` (`file_id`,`weekday`),
+  CONSTRAINT `business_review_fk1` FOREIGN KEY (`file_id`) REFERENCES `files` (`fileId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table causeofloss
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `causeofloss` (
-  `lossId` INT(11) NOT NULL AUTO_INCREMENT,
-  `lossDebtTypeId` INT(11) NULL DEFAULT NULL,
-  `lossAddressId` INT(11) NULL DEFAULT NULL,
-  `lossDate` DATE NULL DEFAULT NULL,
-  `LOSS_TYPE_ID` INT(11) NULL DEFAULT NULL,
-  `LOSS_DESC_ID` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `causeofloss`
+--
+
+-- DROP TABLE IF EXISTS `causeofloss`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `causeofloss` (
+  `lossId` int(11) NOT NULL AUTO_INCREMENT,
+  `lossDebtTypeId` int(11) DEFAULT NULL,
+  `lossAddressId` int(11) DEFAULT NULL,
+  `lossDate` date DEFAULT NULL,
+  `LOSS_TYPE_ID` int(11) DEFAULT NULL,
+  `LOSS_DESC_ID` int(11) DEFAULT NULL,
   PRIMARY KEY (`lossId`),
-  INDEX `CAUSE_OF_LOSS_FK1` (`LOSS_TYPE_ID` ASC),
-  INDEX `CAUSE_OF_LOSS_FK2` (`LOSS_DESC_ID` ASC),
-  CONSTRAINT `CAUSE_OF_LOSS_FK1`
-    FOREIGN KEY (`LOSS_TYPE_ID`)
-    REFERENCES `loss_type` (`LOSS_TYPE_ID`),
-  CONSTRAINT `CAUSE_OF_LOSS_FK2`
-    FOREIGN KEY (`LOSS_DESC_ID`)
-    REFERENCES `loss_desc` (`LOSS_DESC_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `CAUSE_OF_LOSS_FK1` (`LOSS_TYPE_ID`),
+  KEY `CAUSE_OF_LOSS_FK2` (`LOSS_DESC_ID`),
+  CONSTRAINT `CAUSE_OF_LOSS_FK1` FOREIGN KEY (`LOSS_TYPE_ID`) REFERENCES `loss_type` (`LOSS_TYPE_ID`),
+  CONSTRAINT `CAUSE_OF_LOSS_FK2` FOREIGN KEY (`LOSS_DESC_ID`) REFERENCES `loss_desc` (`LOSS_DESC_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table cheques
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cheques` (
-  `chequeId` INT(11) NOT NULL AUTO_INCREMENT,
-  `chequeBankId` INT(11) NULL DEFAULT NULL,
-  `chequeDate` DATE NULL DEFAULT NULL,
-  `chequeType` INT(11) NOT NULL,
-  `chequeAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `chequeDatePrinted` DATETIME NULL DEFAULT NULL,
-  `chequePayee` VARCHAR(255) NULL DEFAULT NULL,
-  `chequeNumber` INT(11) NULL DEFAULT NULL,
-  `chequeCancelReason` TEXT NULL DEFAULT NULL,
-  `chequeDateCanceled` DATETIME NULL DEFAULT NULL,
-  `chequeDatePresented` DATE NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `CHEQUE_FEE_ID` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `cheques`
+--
+
+-- DROP TABLE IF EXISTS `cheques`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cheques` (
+  `chequeId` int(11) NOT NULL AUTO_INCREMENT,
+  `chequeBankId` int(11) DEFAULT NULL,
+  `chequeDate` date DEFAULT NULL,
+  `chequeType` int(11) NOT NULL,
+  `chequeAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `chequeDatePrinted` datetime DEFAULT NULL,
+  `chequePayee` varchar(255) DEFAULT NULL,
+  `chequeNumber` int(11) DEFAULT NULL,
+  `chequeCancelReason` text,
+  `chequeDateCanceled` datetime DEFAULT NULL,
+  `chequeDatePresented` date DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `CHEQUE_FEE_ID` int(11) DEFAULT NULL,
   PRIMARY KEY (`chequeId`),
-  INDEX `CHEQUES_FK1` (`chequeBankId` ASC),
-  INDEX `CHEQUES_FK2` (`CHEQUE_FEE_ID` ASC),
-  CONSTRAINT `CHEQUES_FK1`
-    FOREIGN KEY (`chequeBankId`)
-    REFERENCES `banks` (`bankId`),
-  CONSTRAINT `CHEQUES_FK2`
-    FOREIGN KEY (`CHEQUE_FEE_ID`)
-    REFERENCES `cheques` (`chequeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `CHEQUES_FK1` (`chequeBankId`),
+  KEY `CHEQUES_FK2` (`CHEQUE_FEE_ID`),
+  CONSTRAINT `CHEQUES_FK1` FOREIGN KEY (`chequeBankId`) REFERENCES `banks` (`bankId`),
+  CONSTRAINT `CHEQUES_FK2` FOREIGN KEY (`CHEQUE_FEE_ID`) REFERENCES `cheques` (`chequeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table client_notification
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `client_notification` (
-  `client_id` INT(11) NOT NULL,
-  `close_file_advice` CHAR(1) NOT NULL DEFAULT 'Y',
-  `write_off_advice` CHAR(1) NOT NULL DEFAULT 'Y',
-  `new_file_notification` CHAR(1) NOT NULL DEFAULT 'N',
-  `close_file_advice_rule` VARCHAR(512) NULL DEFAULT NULL,
-  `write_off_advice_rule` VARCHAR(512) NULL DEFAULT NULL,
+--
+-- Table structure for table `client_notification`
+--
+
+-- DROP TABLE IF EXISTS `client_notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `client_notification` (
+  `client_id` int(11) NOT NULL,
+  `close_file_advice` char(1) NOT NULL DEFAULT 'Y',
+  `write_off_advice` char(1) NOT NULL DEFAULT 'Y',
+  `new_file_notification` char(1) NOT NULL DEFAULT 'N',
+  `close_file_advice_rule` varchar(512) DEFAULT NULL,
+  `write_off_advice_rule` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`client_id`),
-  CONSTRAINT `client_notification_fk1`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `clients` (`clientId`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+  CONSTRAINT `client_notification_fk1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`clientId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table clientcontacts
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `clientcontacts` (
-  `contactId` INT(11) NOT NULL,
-  `contactOrder` INT(9) NOT NULL DEFAULT '0',
-  `contactClientId` INT(11) NULL DEFAULT NULL,
-  `contactPosition` VARCHAR(255) NULL DEFAULT NULL,
-  `contactPostalAddressId` INT(11) NULL DEFAULT NULL,
-  `contactType` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`contactId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `clientcontacts`
+--
 
--- ----------------------------------------------------------------------------
--- Table clientinvoices
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `clientinvoices` (
-  `invoiceId` INT(11) NOT NULL AUTO_INCREMENT,
-  `invoiceClientId` INT(11) NULL DEFAULT NULL,
-  `invoiceDateCreated` DATE NULL DEFAULT NULL,
-  `invoiceAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`invoiceId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `clientcontacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clientcontacts` (
+  `contactId` int(11) NOT NULL,
+  `contactOrder` int(9) NOT NULL DEFAULT '0',
+  `contactClientId` int(11) DEFAULT NULL,
+  `contactPosition` varchar(255) DEFAULT NULL,
+  `contactPostalAddressId` int(11) DEFAULT NULL,
+  `contactType` int(11) DEFAULT NULL,
+  PRIMARY KEY (`contactId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table clients
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `clients` (
-  `clientId` INT(11) NOT NULL AUTO_INCREMENT,
-  `clientName` VARCHAR(255) NULL DEFAULT NULL,
-  `clientTradingName` VARCHAR(255) NULL DEFAULT NULL,
-  `clientHowTrading` VARCHAR(255) NULL DEFAULT NULL,
-  `clientABN` VARCHAR(255) NULL DEFAULT NULL,
-  `clientACN` VARCHAR(255) NULL DEFAULT NULL,
-  `clientCreatedBy` INT(11) NULL DEFAULT NULL,
-  `clientCreatedDate` DATETIME NULL DEFAULT NULL,
-  `clientState` VARCHAR(255) NULL DEFAULT NULL,
-  `clientOfficeName` VARCHAR(255) NULL DEFAULT NULL,
-  `clientOfficeAddressId` INT(11) NULL DEFAULT NULL,
-  `clientDefaultPOL` VARCHAR(255) NULL DEFAULT NULL,
-  `clientDefaultLetterId` INT(11) NULL DEFAULT NULL,
-  `clientPrimaryContactId` INT(11) NULL DEFAULT NULL,
-  `clientBillingId` INT(11) NULL DEFAULT NULL,
-  `initial_action_code_id` INT(11) NULL DEFAULT NULL,
-  `email_disabled` CHAR(1) NOT NULL DEFAULT 'N',
-  `parent_client_id` INT(11) NULL DEFAULT NULL,
-  `email_from` VARCHAR(50) NULL DEFAULT NULL,
-  `repayment_updates` CHAR(1) NOT NULL DEFAULT 'N',
-  `exportable` CHAR(1) NOT NULL DEFAULT 'N',
-  `system_code` VARCHAR(10) NULL DEFAULT NULL,
-  `supplier_code` VARCHAR(10) NULL DEFAULT NULL,
-  `tier2_client_id` INT(11) NULL DEFAULT NULL,
-  `alt_client_id` VARCHAR(50) NULL DEFAULT NULL,
-  `file_reference_pattern` VARCHAR(50) NULL DEFAULT NULL,
-  `file_overdue_kpi` INT(11) NOT NULL DEFAULT '0',
-  `file_qa_kpi` INT(11) NOT NULL DEFAULT '20',
-  `directory_template_id` INT(11) NULL DEFAULT NULL,
-  `file_type_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `clientinvoices`
+--
+
+-- DROP TABLE IF EXISTS `clientinvoices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clientinvoices` (
+  `invoiceId` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceClientId` int(11) DEFAULT NULL,
+  `invoiceDateCreated` date DEFAULT NULL,
+  `invoiceAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`invoiceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `clients`
+--
+
+-- DROP TABLE IF EXISTS `clients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clients` (
+  `clientId` int(11) NOT NULL AUTO_INCREMENT,
+  `clientName` varchar(255) DEFAULT NULL,
+  `clientTradingName` varchar(255) DEFAULT NULL,
+  `clientHowTrading` varchar(255) DEFAULT NULL,
+  `clientABN` varchar(255) DEFAULT NULL,
+  `clientACN` varchar(255) DEFAULT NULL,
+  `clientCreatedBy` int(11) DEFAULT NULL,
+  `clientCreatedDate` datetime DEFAULT NULL,
+  `clientState` varchar(255) DEFAULT NULL,
+  `clientOfficeName` varchar(255) DEFAULT NULL,
+  `clientOfficeAddressId` int(11) DEFAULT NULL,
+  `clientDefaultPOL` varchar(255) DEFAULT NULL,
+  `clientDefaultLetterId` int(11) DEFAULT NULL,
+  `clientPrimaryContactId` int(11) DEFAULT NULL,
+  `clientBillingId` int(11) DEFAULT NULL,
+  `initial_action_code_id` int(11) DEFAULT NULL,
+  `email_disabled` char(1) NOT NULL DEFAULT 'N',
+  `parent_client_id` int(11) DEFAULT NULL,
+  `email_from` varchar(50) DEFAULT NULL,
+  `repayment_updates` char(1) NOT NULL DEFAULT 'N',
+  `exportable` char(1) NOT NULL DEFAULT 'N',
+  `system_code` varchar(10) DEFAULT NULL,
+  `supplier_code` varchar(10) DEFAULT NULL,
+  `tier2_client_id` int(11) DEFAULT NULL,
+  `alt_client_id` varchar(50) DEFAULT NULL,
+  `file_reference_pattern` varchar(50) DEFAULT NULL,
+  `file_overdue_kpi` int(11) NOT NULL DEFAULT '0',
+  `file_qa_kpi` int(11) NOT NULL DEFAULT '20',
+  `directory_template_id` int(11) DEFAULT NULL,
+  `file_type_id` int(11) DEFAULT NULL,
+  `organisation_id` char(36) DEFAULT NULL,
   PRIMARY KEY (`clientId`),
-  INDEX `CLIENTS_FK1` (`clientBillingId` ASC),
-  INDEX `clients_fk3` (`initial_action_code_id` ASC),
-  INDEX `clients_fk2` (`parent_client_id` ASC),
-  INDEX `clients_fk4` (`tier2_client_id` ASC),
-  INDEX `clients_idx1` (`clientBillingId` ASC),
-  INDEX `clients_fk5` (`directory_template_id` ASC),
-  INDEX `clients_fk6` (`file_type_id` ASC),
-  CONSTRAINT `CLIENTS_FK1`
-    FOREIGN KEY (`clientBillingId`)
-    REFERENCES `billing_info_client` (`billingId`),
-  CONSTRAINT `clients_fk2`
-    FOREIGN KEY (`parent_client_id`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `clients_fk3`
-    FOREIGN KEY (`initial_action_code_id`)
-    REFERENCES `actioncodes` (`actcId`),
-  CONSTRAINT `clients_fk4`
-    FOREIGN KEY (`tier2_client_id`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `clients_fk5`
-    FOREIGN KEY (`directory_template_id`)
-    REFERENCES `templates` (`tempId`),
-  CONSTRAINT `clients_fk6`
-    FOREIGN KEY (`file_type_id`)
-    REFERENCES `file_type` (`file_type_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `clients_uk1` (`organisation_id`),
+  KEY `CLIENTS_FK1` (`clientBillingId`),
+  KEY `clients_fk3` (`initial_action_code_id`),
+  KEY `clients_fk2` (`parent_client_id`),
+  KEY `clients_fk4` (`tier2_client_id`),
+  KEY `clients_idx1` (`clientBillingId`),
+  KEY `clients_fk5` (`directory_template_id`),
+  KEY `clients_fk6` (`file_type_id`),
+  CONSTRAINT `CLIENTS_FK1` FOREIGN KEY (`clientBillingId`) REFERENCES `billing_info_client` (`billingId`),
+  CONSTRAINT `clients_fk2` FOREIGN KEY (`parent_client_id`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `clients_fk3` FOREIGN KEY (`initial_action_code_id`) REFERENCES `actioncodes` (`actcId`),
+  CONSTRAINT `clients_fk4` FOREIGN KEY (`tier2_client_id`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `clients_fk5` FOREIGN KEY (`directory_template_id`) REFERENCES `templates` (`tempId`),
+  CONSTRAINT `clients_fk6` FOREIGN KEY (`file_type_id`) REFERENCES `file_type` (`file_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table clientusers
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `clientusers` (
-  `userId` INT(11) NOT NULL,
-  `clientId` INT(11) NOT NULL,
-  PRIMARY KEY (`userId`, `clientId`),
-  INDEX `CLIENTUSERS_FK1` (`clientId` ASC),
-  CONSTRAINT `CLIENTUSERS_FK1`
-    FOREIGN KEY (`clientId`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `CLIENTUSERS_FK2`
-    FOREIGN KEY (`userId`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `clientusers`
+--
 
--- ----------------------------------------------------------------------------
--- Table closecodes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `closecodes` (
-  `closeId` INT(11) NOT NULL AUTO_INCREMENT,
-  `CODE` VARCHAR(20) NULL DEFAULT NULL,
-  `DESCRIPTION` VARCHAR(500) NULL DEFAULT NULL,
-  PRIMARY KEY (`closeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `clientusers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clientusers` (
+  `userId` int(11) NOT NULL,
+  `clientId` int(11) NOT NULL,
+  `paid` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`userId`,`clientId`),
+  KEY `CLIENTUSERS_FK1` (`clientId`),
+  CONSTRAINT `CLIENTUSERS_FK1` FOREIGN KEY (`clientId`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `CLIENTUSERS_FK2` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table config
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `config` (
-  `configKey` VARCHAR(50) NOT NULL DEFAULT '',
-  `configValue` VARCHAR(255) NOT NULL,
-  `env` VARCHAR(32) NULL DEFAULT NULL,
-  `config_id` INT(11) NOT NULL AUTO_INCREMENT,
+--
+-- Table structure for table `closecodes`
+--
+
+-- DROP TABLE IF EXISTS `closecodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `closecodes` (
+  `closeId` int(11) NOT NULL AUTO_INCREMENT,
+  `CODE` varchar(20) DEFAULT NULL,
+  `DESCRIPTION` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`closeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `config`
+--
+
+-- DROP TABLE IF EXISTS `config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `config` (
+  `configKey` varchar(50) NOT NULL DEFAULT '',
+  `configValue` varchar(255) NOT NULL,
+  `env` varchar(32) DEFAULT NULL,
+  `config_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`config_id`),
-  UNIQUE INDEX `config_uk1` (`configKey` ASC, `env` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `config_uk1` (`configKey`,`env`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table contacts
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `contacts` (
-  `contactId` INT(11) NOT NULL AUTO_INCREMENT,
-  `contactSalutation` VARCHAR(255) NULL DEFAULT NULL,
-  `contactInitials` VARCHAR(255) NULL DEFAULT NULL,
-  `contactFirstName` VARCHAR(255) NULL DEFAULT NULL,
-  `contactLastName` VARCHAR(255) NULL DEFAULT NULL,
-  `contactEmail` VARCHAR(255) NULL DEFAULT NULL,
-  `contactPhone` VARCHAR(255) NULL DEFAULT NULL,
-  `contactFax` VARCHAR(255) NULL DEFAULT NULL,
-  `contactMobile` VARCHAR(255) NULL DEFAULT NULL,
-  `contactWorkPhone` VARCHAR(255) NULL DEFAULT NULL,
-  `contactAddressId` INT(11) NULL DEFAULT NULL,
-  `POSTAL_ADDRESS_ID` INT(11) NULL DEFAULT NULL,
-  `comment` VARCHAR(512) NULL DEFAULT NULL,
-  `datawash` CHAR(1) NULL DEFAULT NULL,
-  `link_contact_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `contacts`
+--
+
+-- DROP TABLE IF EXISTS `contacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contacts` (
+  `contactId` int(11) NOT NULL AUTO_INCREMENT,
+  `contactSalutation` varchar(255) DEFAULT NULL,
+  `contactInitials` varchar(255) DEFAULT NULL,
+  `contactFirstName` varchar(255) DEFAULT NULL,
+  `contactLastName` varchar(255) DEFAULT NULL,
+  `contactEmail` varchar(255) DEFAULT NULL,
+  `contactPhone` varchar(255) DEFAULT NULL,
+  `contactFax` varchar(255) DEFAULT NULL,
+  `contactMobile` varchar(255) DEFAULT NULL,
+  `contactWorkPhone` varchar(255) DEFAULT NULL,
+  `contactAddressId` int(11) DEFAULT NULL,
+  `POSTAL_ADDRESS_ID` int(11) DEFAULT NULL,
+  `comment` varchar(512) DEFAULT NULL,
+  `datawash` char(1) DEFAULT NULL,
+  `link_contact_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`contactId`),
-  INDEX `contacts_fk1` (`link_contact_id` ASC),
-  CONSTRAINT `contacts_fk1`
-    FOREIGN KEY (`link_contact_id`)
-    REFERENCES `contacts` (`contactId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `contacts_fk1` (`link_contact_id`),
+  CONSTRAINT `contacts_fk1` FOREIGN KEY (`link_contact_id`) REFERENCES `contacts` (`contactId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table contacttypes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `contacttypes` (
-  `ctypeId` INT(11) NOT NULL,
-  `ctypeName` VARCHAR(100) NULL DEFAULT NULL,
-  `ctypeAmount` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`ctypeId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `contacttypes`
+--
 
--- ----------------------------------------------------------------------------
--- Table country
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `country` (
-  `country_id` CHAR(2) NOT NULL,
-  `country_name` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`country_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `contacttypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contacttypes` (
+  `ctypeId` int(11) NOT NULL,
+  `ctypeName` varchar(100) DEFAULT NULL,
+  `ctypeAmount` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ctypeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table dashboard
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `dashboard` (
-  `dashboard_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `dashboard_date` DATE NOT NULL,
-  `dashboard_data` TEXT NULL DEFAULT NULL,
-  `dashboard_valid` CHAR(1) NOT NULL DEFAULT 'N',
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `country`
+--
+
+-- DROP TABLE IF EXISTS `country`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `country` (
+  `country_id` char(2) NOT NULL,
+  `country_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`country_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `dashboard`
+--
+
+-- DROP TABLE IF EXISTS `dashboard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dashboard` (
+  `dashboard_id` int(11) NOT NULL AUTO_INCREMENT,
+  `dashboard_date` date NOT NULL,
+  `dashboard_data` text,
+  `dashboard_valid` char(1) NOT NULL DEFAULT 'N',
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`dashboard_id`),
-  UNIQUE INDEX `dashboard_uk1` (`dashboard_date` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `dashboard_uk1` (`dashboard_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table dbversion
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `dbversion` (
-  `DBVERSION` VARCHAR(32) NOT NULL,
-  `PREV_DBVERSION` VARCHAR(32) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--
+-- Table structure for table `dbversion`
+--
+
+-- DROP TABLE IF EXISTS `dbversion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dbversion` (
+  `DBVERSION` varchar(32) NOT NULL,
+  `PREV_DBVERSION` varchar(32) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`DBVERSION`),
-  INDEX `DBVERSION_FK1` (`PREV_DBVERSION` ASC),
-  CONSTRAINT `DBVERSION_FK1`
-    FOREIGN KEY (`PREV_DBVERSION`)
-    REFERENCES `dbversion` (`DBVERSION`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  KEY `DBVERSION_FK1` (`PREV_DBVERSION`),
+  CONSTRAINT `DBVERSION_FK1` FOREIGN KEY (`PREV_DBVERSION`) REFERENCES `dbversion` (`DBVERSION`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table debtor
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `debtor` (
-  `DEBTOR_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `REFERENCE` VARCHAR(50) NOT NULL,
-  `NAME` VARCHAR(255) NOT NULL,
-  `CLIENT_ID` INT(11) NOT NULL,
-  `CONTACT_ID` INT(11) NOT NULL,
-  `CREATED_BY` INT(11) NOT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `LEGAL_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `TRADING_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `ABN` VARCHAR(20) NULL DEFAULT NULL,
-  `ACN` VARCHAR(20) NULL DEFAULT NULL,
-  `NOTES` TEXT NULL DEFAULT NULL,
-  `LEGAL_TYPE_ID` INT(11) NULL DEFAULT NULL,
-  `DEBT_TYPE_ID` INT(11) NULL DEFAULT NULL,
-  `LOGICALLY_DELETED` CHAR(1) NULL DEFAULT NULL,
+--
+-- Table structure for table `debtor`
+--
+
+-- DROP TABLE IF EXISTS `debtor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `debtor` (
+  `DEBTOR_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `REFERENCE` varchar(50) NOT NULL,
+  `NAME` varchar(255) NOT NULL,
+  `CLIENT_ID` int(11) NOT NULL,
+  `CONTACT_ID` int(11) NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `LEGAL_NAME` varchar(255) DEFAULT NULL,
+  `TRADING_NAME` varchar(255) DEFAULT NULL,
+  `ABN` varchar(20) DEFAULT NULL,
+  `ACN` varchar(20) DEFAULT NULL,
+  `NOTES` text,
+  `LEGAL_TYPE_ID` int(11) DEFAULT NULL,
+  `DEBT_TYPE_ID` int(11) DEFAULT NULL,
+  `LOGICALLY_DELETED` char(1) DEFAULT NULL,
   PRIMARY KEY (`DEBTOR_ID`),
-  INDEX `DEBTOR_FK2` (`CONTACT_ID` ASC),
-  INDEX `DEBTOR_FK3` (`LEGAL_TYPE_ID` ASC),
-  INDEX `DEBTOR_FK4` (`DEBT_TYPE_ID` ASC),
-  INDEX `DEBTOR_FK1` (`CLIENT_ID` ASC),
-  CONSTRAINT `DEBTOR_FK1`
-    FOREIGN KEY (`CLIENT_ID`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `DEBTOR_FK2`
-    FOREIGN KEY (`CONTACT_ID`)
-    REFERENCES `contacts` (`contactId`),
-  CONSTRAINT `DEBTOR_FK3`
-    FOREIGN KEY (`LEGAL_TYPE_ID`)
-    REFERENCES `legal_type` (`LEGAL_TYPE_ID`),
-  CONSTRAINT `DEBTOR_FK4`
-    FOREIGN KEY (`DEBT_TYPE_ID`)
-    REFERENCES `debttypes` (`typeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `DEBTOR_FK2` (`CONTACT_ID`),
+  KEY `DEBTOR_FK3` (`LEGAL_TYPE_ID`),
+  KEY `DEBTOR_FK4` (`DEBT_TYPE_ID`),
+  KEY `DEBTOR_FK1` (`CLIENT_ID`),
+  CONSTRAINT `DEBTOR_FK1` FOREIGN KEY (`CLIENT_ID`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `DEBTOR_FK2` FOREIGN KEY (`CONTACT_ID`) REFERENCES `contacts` (`contactId`),
+  CONSTRAINT `DEBTOR_FK3` FOREIGN KEY (`LEGAL_TYPE_ID`) REFERENCES `legal_type` (`LEGAL_TYPE_ID`),
+  CONSTRAINT `DEBTOR_FK4` FOREIGN KEY (`DEBT_TYPE_ID`) REFERENCES `debttypes` (`typeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table debttypes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `debttypes` (
-  `typeId` INT(11) NOT NULL AUTO_INCREMENT,
-  `typeName` VARCHAR(50) NULL DEFAULT NULL,
-  `typeInsuredDetails` BIT(1) NULL DEFAULT NULL,
-  `typeTPP` BIT(1) NULL DEFAULT NULL,
-  `typeTPO` BIT(1) NULL DEFAULT NULL,
-  `typeTPI` BIT(1) NULL DEFAULT NULL,
-  `POLICE_REPORT` CHAR(1) NOT NULL DEFAULT 'Y',
-  `pol` CHAR(1) NOT NULL DEFAULT 'Y',
-  `workgroup_id` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`typeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `debttypes`
+--
 
--- ----------------------------------------------------------------------------
--- Table disbursement
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `disbursement` (
-  `DISBURSEMENT_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `DISBURSEMENT_TYPE` INT(11) NOT NULL,
-  `DISBURSEMENT_DATE` DATE NULL DEFAULT NULL,
-  `DISBURSEMENT_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `DISBURSEMENT_GST` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `DISBURSEMENT_NUMBER` VARCHAR(50) NULL DEFAULT NULL,
-  `DISBURSEMENT_EXPLANATION` TEXT NULL DEFAULT NULL,
-  `SUPPLIER_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `document_id` INT(11) NULL DEFAULT NULL,
+-- DROP TABLE IF EXISTS `debttypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `debttypes` (
+  `typeId` int(11) NOT NULL AUTO_INCREMENT,
+  `typeName` varchar(50) DEFAULT NULL,
+  `typeInsuredDetails` bit(1) DEFAULT NULL,
+  `typeTPP` bit(1) DEFAULT NULL,
+  `typeTPO` bit(1) DEFAULT NULL,
+  `typeTPI` bit(1) DEFAULT NULL,
+  `POLICE_REPORT` char(1) NOT NULL DEFAULT 'Y',
+  `pol` char(1) NOT NULL DEFAULT 'Y',
+  `workgroup_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`typeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `disbursement`
+--
+
+-- DROP TABLE IF EXISTS `disbursement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `disbursement` (
+  `DISBURSEMENT_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DISBURSEMENT_TYPE` int(11) NOT NULL,
+  `DISBURSEMENT_DATE` date DEFAULT NULL,
+  `DISBURSEMENT_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `DISBURSEMENT_GST` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `DISBURSEMENT_NUMBER` varchar(50) DEFAULT NULL,
+  `DISBURSEMENT_EXPLANATION` text,
+  `SUPPLIER_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `document_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`DISBURSEMENT_ID`),
-  INDEX `disbursement_fk1` (`SUPPLIER_ID` ASC),
-  INDEX `disbursement_fk2` (`document_id` ASC),
-  CONSTRAINT `disbursement_fk1`
-    FOREIGN KEY (`SUPPLIER_ID`)
-    REFERENCES `suppliers` (`supplierId`),
-  CONSTRAINT `disbursement_fk2`
-    FOREIGN KEY (`document_id`)
-    REFERENCES `document` (`document_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = latin1;
+  KEY `disbursement_fk1` (`SUPPLIER_ID`),
+  KEY `disbursement_fk2` (`document_id`),
+  CONSTRAINT `disbursement_fk1` FOREIGN KEY (`SUPPLIER_ID`) REFERENCES `suppliers` (`supplierId`),
+  CONSTRAINT `disbursement_fk2` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table document
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `document` (
-  `document_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `description` VARCHAR(255) NULL DEFAULT NULL,
-  `content` MEDIUMBLOB NOT NULL,
-  `content_type` VARCHAR(128) NULL DEFAULT NULL,
-  `created_by` INT(11) NULL DEFAULT NULL,
-  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_by` INT(11) NULL DEFAULT NULL,
-  `updated_date` TIMESTAMP NULL DEFAULT NULL,
-  `lock_version` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`document_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = latin1;
+--
+-- Table structure for table `document`
+--
 
--- ----------------------------------------------------------------------------
--- Table eft_banks
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `eft_banks` (
-  `bankId` INT(11) NOT NULL AUTO_INCREMENT,
-  `bankName` VARCHAR(255) NULL DEFAULT NULL,
-  `bankBalance` DECIMAL(19,2) NOT NULL,
-  `DESCRIPTION` VARCHAR(255) NULL DEFAULT NULL,
-  `BSB` VARCHAR(10) NULL DEFAULT NULL,
-  `ACCOUNT_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `ACCOUNT_NUMBER` VARCHAR(50) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`bankId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `document`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `document` (
+  `document_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `content` mediumblob NOT NULL,
+  `content_type` varchar(128) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` int(11) DEFAULT NULL,
+  `updated_date` timestamp NULL DEFAULT NULL,
+  `lock_version` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`document_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table expect_rec
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `expect_rec` (
-  `EXPECT_REC_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `EXPECT_DATE` DATE NULL DEFAULT NULL,
-  `EXPECT_AMOUNT` FLOAT(10,2) NULL DEFAULT NULL,
-  `RECEIVED_BY` INT(11) NULL DEFAULT NULL,
-  `RECEIVED_DATE` DATE NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `eft_banks`
+--
+
+-- DROP TABLE IF EXISTS `eft_banks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `eft_banks` (
+  `bankId` int(11) NOT NULL AUTO_INCREMENT,
+  `bankName` varchar(255) DEFAULT NULL,
+  `bankBalance` decimal(19,2) NOT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  `BSB` varchar(10) DEFAULT NULL,
+  `ACCOUNT_NAME` varchar(255) DEFAULT NULL,
+  `ACCOUNT_NUMBER` varchar(50) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `account_id` char(36) DEFAULT NULL,
+  PRIMARY KEY (`bankId`),
+  UNIQUE KEY `eft_banks_uk1` (`account_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `expect_rec`
+--
+
+-- DROP TABLE IF EXISTS `expect_rec`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `expect_rec` (
+  `EXPECT_REC_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `EXPECT_DATE` date DEFAULT NULL,
+  `EXPECT_AMOUNT` float(10,2) DEFAULT NULL,
+  `RECEIVED_BY` int(11) DEFAULT NULL,
+  `RECEIVED_DATE` date DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`EXPECT_REC_ID`),
-  INDEX `EXPECT_REC_FK1` (`RECEIVED_BY` ASC),
-  CONSTRAINT `EXPECT_REC_FK1`
-    FOREIGN KEY (`RECEIVED_BY`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `EXPECT_REC_FK1` (`RECEIVED_BY`),
+  CONSTRAINT `EXPECT_REC_FK1` FOREIGN KEY (`RECEIVED_BY`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table file_contact
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `file_contact` (
-  `contactId` INT(11) NOT NULL,
-  `fileId` INT(11) NOT NULL,
-  `contactPosition` VARCHAR(255) NULL DEFAULT NULL,
-  `contactType` INT(11) NULL DEFAULT NULL,
-  `companyName` VARCHAR(255) NULL DEFAULT NULL,
+--
+-- Table structure for table `file_contact`
+--
+
+-- DROP TABLE IF EXISTS `file_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_contact` (
+  `contactId` int(11) NOT NULL,
+  `fileId` int(11) NOT NULL,
+  `contactPosition` varchar(255) DEFAULT NULL,
+  `contactType` int(11) DEFAULT NULL,
+  `companyName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`contactId`),
-  INDEX `file_contact_fk1` (`fileId` ASC),
-  CONSTRAINT `file_contact_fk1`
-    FOREIGN KEY (`fileId`)
-    REFERENCES `files` (`fileId`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+  KEY `file_contact_fk1` (`fileId`),
+  CONSTRAINT `file_contact_fk1` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table file_property
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `file_property` (
-  `file_property_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_id` INT(11) NOT NULL,
-  `prop_key` VARCHAR(64) NOT NULL,
-  `prop_desc` VARCHAR(128) NULL DEFAULT NULL,
-  `prop_value` VARCHAR(256) NULL DEFAULT NULL,
-  `prop_fixed` CHAR(1) NOT NULL DEFAULT 'Y',
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `file_property`
+--
+
+-- DROP TABLE IF EXISTS `file_property`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_property` (
+  `file_property_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_id` int(11) NOT NULL,
+  `prop_key` varchar(64) NOT NULL,
+  `prop_desc` varchar(128) DEFAULT NULL,
+  `prop_value` varchar(256) DEFAULT NULL,
+  `prop_fixed` char(1) NOT NULL DEFAULT 'Y',
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`file_property_id`),
-  UNIQUE INDEX `file_property_uk1` (`file_id` ASC, `prop_key` ASC),
-  CONSTRAINT `file_property_fk1`
-    FOREIGN KEY (`file_id`)
-    REFERENCES `files` (`fileId`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+  UNIQUE KEY `file_property_uk1` (`file_id`,`prop_key`),
+  CONSTRAINT `file_property_fk1` FOREIGN KEY (`file_id`) REFERENCES `files` (`fileId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table file_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `file_type` (
-  `file_type_id` INT(11) NOT NULL,
-  `name` VARCHAR(50) NOT NULL,
-  `background_color` VARCHAR(32) NULL DEFAULT NULL,
-  PRIMARY KEY (`file_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+--
+-- Table structure for table `file_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table file_type_mapping
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `file_type_mapping` (
-  `file_type_mapping_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_type_id` INT(11) NOT NULL,
-  `debt_type_id` INT(11) NOT NULL,
-  `loss_type_id` INT(11) NOT NULL,
-  `loss_desc_id` INT(11) NULL DEFAULT NULL,
+-- DROP TABLE IF EXISTS `file_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_type` (
+  `file_type_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `background_color` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`file_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `file_type_mapping`
+--
+
+-- DROP TABLE IF EXISTS `file_type_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_type_mapping` (
+  `file_type_mapping_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_type_id` int(11) NOT NULL,
+  `debt_type_id` int(11) NOT NULL,
+  `loss_type_id` int(11) NOT NULL,
+  `loss_desc_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`file_type_mapping_id`),
-  UNIQUE INDEX `file_type_mapping_uk1` (`debt_type_id` ASC, `loss_type_id` ASC, `loss_desc_id` ASC),
-  INDEX `file_type_mapping_fk1` (`file_type_id` ASC),
-  INDEX `file_type_mapping_fk3` (`loss_type_id` ASC),
-  INDEX `file_type_mapping_fk4` (`loss_desc_id` ASC),
-  CONSTRAINT `file_type_mapping_fk1`
-    FOREIGN KEY (`file_type_id`)
-    REFERENCES `file_type` (`file_type_id`),
-  CONSTRAINT `file_type_mapping_fk2`
-    FOREIGN KEY (`debt_type_id`)
-    REFERENCES `debttypes` (`typeId`),
-  CONSTRAINT `file_type_mapping_fk3`
-    FOREIGN KEY (`loss_type_id`)
-    REFERENCES `loss_type` (`LOSS_TYPE_ID`),
-  CONSTRAINT `file_type_mapping_fk4`
-    FOREIGN KEY (`loss_desc_id`)
-    REFERENCES `loss_desc` (`LOSS_DESC_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = latin1;
+  UNIQUE KEY `file_type_mapping_uk1` (`debt_type_id`,`loss_type_id`,`loss_desc_id`),
+  KEY `file_type_mapping_fk1` (`file_type_id`),
+  KEY `file_type_mapping_fk3` (`loss_type_id`),
+  KEY `file_type_mapping_fk4` (`loss_desc_id`),
+  CONSTRAINT `file_type_mapping_fk1` FOREIGN KEY (`file_type_id`) REFERENCES `file_type` (`file_type_id`),
+  CONSTRAINT `file_type_mapping_fk2` FOREIGN KEY (`debt_type_id`) REFERENCES `debttypes` (`typeId`),
+  CONSTRAINT `file_type_mapping_fk3` FOREIGN KEY (`loss_type_id`) REFERENCES `loss_type` (`LOSS_TYPE_ID`),
+  CONSTRAINT `file_type_mapping_fk4` FOREIGN KEY (`loss_desc_id`) REFERENCES `loss_desc` (`LOSS_DESC_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table files
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `files` (
-  `fileId` INT(11) NOT NULL AUTO_INCREMENT,
-  `fileClientId` INT(11) NULL DEFAULT NULL,
-  `fileClientContactId` INT(11) NULL DEFAULT NULL,
-  `fileContactId` INT(11) NULL DEFAULT NULL,
-  `fileAgentId` INT(11) NULL DEFAULT NULL,
-  `fileReference` VARCHAR(50) NULL DEFAULT NULL,
-  `fileCauseLossId` INT(11) NULL DEFAULT NULL,
-  `fileInsuredDetailsId` INT(11) NULL DEFAULT NULL,
-  `fileTPD` INT(11) NULL DEFAULT NULL,
-  `fileTPP` INT(11) NULL DEFAULT NULL,
-  `fileTPO` INT(11) NULL DEFAULT NULL,
-  `fileTPI` INT(11) NULL DEFAULT NULL,
-  `fileTPR` INT(11) NULL DEFAULT NULL,
-  `filePoliceReportId` INT(11) NULL DEFAULT NULL,
-  `fileDateReceived` DATE NULL DEFAULT NULL,
-  `fileAmountClaimed` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `fileAmountEstimated` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `fileAmountRecovered` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `fileTrustBalance` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `fileMotorcare` BIT(1) NOT NULL DEFAULT b'0',
-  `fileStatus` INT(11) NOT NULL,
-  `fileWorkGroupId` INT(11) NOT NULL,
-  `fileTPStatusId` INT(11) NULL DEFAULT NULL,
-  `fileBillingFeeId` INT(11) NULL DEFAULT NULL,
-  `INCIDENT_DETAILS_ID` INT(11) NULL DEFAULT NULL,
-  `REC_STATUS_ID` INT(11) NULL DEFAULT NULL,
-  `EXPECT_REC_ID` INT(11) NULL DEFAULT NULL,
-  `LEGALS_COMMENCED` CHAR(1) NOT NULL DEFAULT 'N',
-  `DEBTOR_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `BILLING_USER_ID` INT(11) NULL DEFAULT NULL,
-  `jurisdiction_id` INT(11) NULL DEFAULT NULL,
-  `max_hourly_rate` DECIMAL(19,2) NULL DEFAULT NULL,
-  `parent_file_id` INT(11) NULL DEFAULT NULL,
-  `amount_insured_loss` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_uninsured_loss` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_insured_excess` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_gst_recover` DECIMAL(19,2) NULL DEFAULT NULL,
-  `trade_practices_action` CHAR(1) NOT NULL DEFAULT 'N',
-  `date_closed` DATETIME NULL DEFAULT NULL,
-  `date_opened` DATETIME NULL DEFAULT NULL,
-  `rec_status_updated_date` TIMESTAMP NULL DEFAULT NULL,
-  `rec_status_updated_by` INT(11) NULL DEFAULT NULL,
-  `event_no` VARCHAR(50) NULL DEFAULT NULL,
-  `amount_target` DECIMAL(19,2) NULL DEFAULT NULL,
-  `date_closed_final` DATETIME NULL DEFAULT NULL,
-  `date_archived` DATETIME NULL DEFAULT NULL,
-  `amount_owing` DECIMAL(19,2) NULL DEFAULT NULL,
-  `date_stage2` DATETIME NULL DEFAULT NULL,
-  `manager_id` INT(11) NULL DEFAULT NULL,
-  `team_leader_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `files`
+--
+
+-- DROP TABLE IF EXISTS `files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `files` (
+  `fileId` int(11) NOT NULL AUTO_INCREMENT,
+  `fileClientId` int(11) DEFAULT NULL,
+  `fileClientContactId` int(11) DEFAULT NULL,
+  `fileContactId` int(11) DEFAULT NULL,
+  `fileAgentId` int(11) DEFAULT NULL,
+  `fileReference` varchar(50) DEFAULT NULL,
+  `fileCauseLossId` int(11) DEFAULT NULL,
+  `fileInsuredDetailsId` int(11) DEFAULT NULL,
+  `fileTPD` int(11) DEFAULT NULL,
+  `fileTPP` int(11) DEFAULT NULL,
+  `fileTPO` int(11) DEFAULT NULL,
+  `fileTPI` int(11) DEFAULT NULL,
+  `fileTPR` int(11) DEFAULT NULL,
+  `filePoliceReportId` int(11) DEFAULT NULL,
+  `fileDateReceived` date DEFAULT NULL,
+  `fileAmountClaimed` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `fileAmountEstimated` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `fileAmountRecovered` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `fileTrustBalance` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `fileMotorcare` bit(1) NOT NULL DEFAULT b'0',
+  `fileStatus` int(11) NOT NULL,
+  `fileWorkGroupId` int(11) NOT NULL,
+  `fileTPStatusId` int(11) DEFAULT NULL,
+  `fileBillingFeeId` int(11) DEFAULT NULL,
+  `INCIDENT_DETAILS_ID` int(11) DEFAULT NULL,
+  `REC_STATUS_ID` int(11) DEFAULT NULL,
+  `EXPECT_REC_ID` int(11) DEFAULT NULL,
+  `LEGALS_COMMENCED` char(1) NOT NULL DEFAULT 'N',
+  `DEBTOR_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `BILLING_USER_ID` int(11) DEFAULT NULL,
+  `jurisdiction_id` int(11) DEFAULT NULL,
+  `max_hourly_rate` decimal(19,2) DEFAULT NULL,
+  `parent_file_id` int(11) DEFAULT NULL,
+  `amount_insured_loss` decimal(19,2) DEFAULT NULL,
+  `amount_uninsured_loss` decimal(19,2) DEFAULT NULL,
+  `amount_insured_excess` decimal(19,2) DEFAULT NULL,
+  `amount_gst_recover` decimal(19,2) DEFAULT NULL,
+  `trade_practices_action` char(1) NOT NULL DEFAULT 'N',
+  `date_closed` datetime DEFAULT NULL,
+  `date_opened` datetime DEFAULT NULL,
+  `rec_status_updated_date` timestamp NULL DEFAULT NULL,
+  `rec_status_updated_by` int(11) DEFAULT NULL,
+  `event_no` varchar(50) DEFAULT NULL,
+  `amount_target` decimal(19,2) DEFAULT NULL,
+  `date_closed_final` datetime DEFAULT NULL,
+  `date_archived` datetime DEFAULT NULL,
+  `amount_owing` decimal(19,2) DEFAULT NULL,
+  `date_stage2` datetime DEFAULT NULL,
+  `manager_id` int(11) DEFAULT NULL,
+  `team_leader_id` int(11) DEFAULT NULL,
+  `account_id` char(36) DEFAULT NULL,
   PRIMARY KEY (`fileId`),
-  UNIQUE INDEX `FILES_UK1` (`fileReference` ASC),
-  INDEX `FILES_FK1` (`INCIDENT_DETAILS_ID` ASC),
-  INDEX `FILES_FK2` (`REC_STATUS_ID` ASC),
-  INDEX `FILES_FK3` (`EXPECT_REC_ID` ASC),
-  INDEX `FILES_FK4` (`fileClientId` ASC),
-  INDEX `FILES_IDX1` (`fileWorkGroupId` ASC),
-  INDEX `USERS_FK5` (`fileAgentId` ASC),
-  INDEX `FILES_FK6` (`fileBillingFeeId` ASC),
-  INDEX `FILES_FK8` (`fileTPStatusId` ASC),
-  INDEX `FILES_FK9` (`DEBTOR_ID` ASC),
-  INDEX `FILES_FK11` (`fileTPD` ASC),
-  INDEX `FILES_FK12` (`BILLING_USER_ID` ASC),
-  INDEX `files_fk13` (`jurisdiction_id` ASC),
-  INDEX `FILES_FK10` (`parent_file_id` ASC),
-  INDEX `files_idx4` (`fileStatus` ASC),
-  INDEX `FILES_FK14` (`manager_id` ASC),
-  INDEX `FILES_FK15` (`team_leader_id` ASC),
-  CONSTRAINT `FILES_FK1`
-    FOREIGN KEY (`INCIDENT_DETAILS_ID`)
-    REFERENCES `incident_details` (`INCIDENT_DETAILS_ID`),
-  CONSTRAINT `FILES_FK10`
-    FOREIGN KEY (`parent_file_id`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `FILES_FK11`
-    FOREIGN KEY (`fileTPD`)
-    REFERENCES `tpdebtors` (`tpdId`),
-  CONSTRAINT `FILES_FK12`
-    FOREIGN KEY (`BILLING_USER_ID`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `FILES_FK14`
-    FOREIGN KEY (`manager_id`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `FILES_FK15`
-    FOREIGN KEY (`team_leader_id`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `FILES_FK2`
-    FOREIGN KEY (`REC_STATUS_ID`)
-    REFERENCES `rec_status` (`REC_STATUS_ID`),
-  CONSTRAINT `FILES_FK3`
-    FOREIGN KEY (`EXPECT_REC_ID`)
-    REFERENCES `expect_rec` (`EXPECT_REC_ID`),
-  CONSTRAINT `FILES_FK4`
-    FOREIGN KEY (`fileClientId`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `FILES_FK6`
-    FOREIGN KEY (`fileBillingFeeId`)
-    REFERENCES `billing_file` (`feeId`),
-  CONSTRAINT `FILES_FK7`
-    FOREIGN KEY (`fileWorkGroupId`)
-    REFERENCES `workgroups` (`wgroupId`),
-  CONSTRAINT `FILES_FK8`
-    FOREIGN KEY (`fileTPStatusId`)
-    REFERENCES `tpstatus` (`statusId`),
-  CONSTRAINT `FILES_FK9`
-    FOREIGN KEY (`DEBTOR_ID`)
-    REFERENCES `debtor` (`DEBTOR_ID`),
-  CONSTRAINT `USERS_FK5`
-    FOREIGN KEY (`fileAgentId`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `files_fk13`
-    FOREIGN KEY (`jurisdiction_id`)
-    REFERENCES `state` (`STATE_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `FILES_UK1` (`fileReference`),
+  UNIQUE KEY `files_uk2` (`account_id`),
+  KEY `FILES_FK1` (`INCIDENT_DETAILS_ID`),
+  KEY `FILES_FK2` (`REC_STATUS_ID`),
+  KEY `FILES_FK3` (`EXPECT_REC_ID`),
+  KEY `FILES_FK4` (`fileClientId`),
+  KEY `FILES_IDX1` (`fileWorkGroupId`),
+  KEY `USERS_FK5` (`fileAgentId`),
+  KEY `FILES_FK6` (`fileBillingFeeId`),
+  KEY `FILES_FK8` (`fileTPStatusId`),
+  KEY `FILES_FK9` (`DEBTOR_ID`),
+  KEY `FILES_FK11` (`fileTPD`),
+  KEY `FILES_FK12` (`BILLING_USER_ID`),
+  KEY `files_fk13` (`jurisdiction_id`),
+  KEY `FILES_FK10` (`parent_file_id`),
+  KEY `files_idx4` (`fileStatus`),
+  KEY `FILES_FK14` (`manager_id`),
+  KEY `FILES_FK15` (`team_leader_id`),
+  CONSTRAINT `FILES_FK1` FOREIGN KEY (`INCIDENT_DETAILS_ID`) REFERENCES `incident_details` (`INCIDENT_DETAILS_ID`),
+  CONSTRAINT `FILES_FK10` FOREIGN KEY (`parent_file_id`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `FILES_FK11` FOREIGN KEY (`fileTPD`) REFERENCES `tpdebtors` (`tpdId`),
+  CONSTRAINT `FILES_FK12` FOREIGN KEY (`BILLING_USER_ID`) REFERENCES `users` (`userId`),
+  CONSTRAINT `FILES_FK14` FOREIGN KEY (`manager_id`) REFERENCES `users` (`userId`),
+  CONSTRAINT `FILES_FK15` FOREIGN KEY (`team_leader_id`) REFERENCES `users` (`userId`),
+  CONSTRAINT `FILES_FK2` FOREIGN KEY (`REC_STATUS_ID`) REFERENCES `rec_status` (`REC_STATUS_ID`),
+  CONSTRAINT `FILES_FK3` FOREIGN KEY (`EXPECT_REC_ID`) REFERENCES `expect_rec` (`EXPECT_REC_ID`),
+  CONSTRAINT `FILES_FK4` FOREIGN KEY (`fileClientId`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `FILES_FK6` FOREIGN KEY (`fileBillingFeeId`) REFERENCES `billing_file` (`feeId`),
+  CONSTRAINT `FILES_FK7` FOREIGN KEY (`fileWorkGroupId`) REFERENCES `workgroups` (`wgroupId`),
+  CONSTRAINT `FILES_FK8` FOREIGN KEY (`fileTPStatusId`) REFERENCES `tpstatus` (`statusId`),
+  CONSTRAINT `FILES_FK9` FOREIGN KEY (`DEBTOR_ID`) REFERENCES `debtor` (`DEBTOR_ID`),
+  CONSTRAINT `USERS_FK5` FOREIGN KEY (`fileAgentId`) REFERENCES `users` (`userId`),
+  CONSTRAINT `files_fk13` FOREIGN KEY (`jurisdiction_id`) REFERENCES `state` (`STATE_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table files_aud
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `files_aud` (
-  `fileId` INT(11) NOT NULL,
-  `fileClientId` INT(11) NULL DEFAULT NULL,
-  `fileClientContactId` INT(11) NULL DEFAULT NULL,
-  `fileContactId` INT(11) NULL DEFAULT NULL,
-  `fileAgentId` INT(11) NULL DEFAULT NULL,
-  `fileReference` VARCHAR(50) NULL DEFAULT NULL,
-  `fileCauseLossId` INT(11) NULL DEFAULT NULL,
-  `fileInsuredName` VARCHAR(100) NULL DEFAULT NULL,
-  `fileInsuredDetailsId` INT(11) NULL DEFAULT NULL,
-  `fileTPD` INT(11) NULL DEFAULT NULL,
-  `fileTPP` INT(11) NULL DEFAULT NULL,
-  `fileTPO` INT(11) NULL DEFAULT NULL,
-  `fileTPI` INT(11) NULL DEFAULT NULL,
-  `fileTPR` INT(11) NULL DEFAULT NULL,
-  `filePoliceReportId` INT(11) NULL DEFAULT NULL,
-  `fileDateReceived` DATE NULL DEFAULT NULL,
-  `fileAmountClaimed` DECIMAL(19,2) NULL DEFAULT NULL,
-  `fileAmountEstimated` DECIMAL(19,2) NULL DEFAULT NULL,
-  `fileAmountRecovered` DECIMAL(19,2) NULL DEFAULT NULL,
-  `fileTrustBalance` DECIMAL(19,2) NULL DEFAULT NULL,
-  `fileMotorcare` BIT(1) NULL DEFAULT NULL,
-  `fileStatus` INT(11) NULL DEFAULT NULL,
-  `fileWorkGroupId` INT(11) NULL DEFAULT NULL,
-  `fileTPStatusId` INT(11) NULL DEFAULT NULL,
-  `fileBillingFeeId` INT(11) NULL DEFAULT NULL,
-  `INCIDENT_DETAILS_ID` INT(11) NULL DEFAULT NULL,
-  `REC_STATUS_ID` INT(11) NULL DEFAULT NULL,
-  `EXPECT_REC_ID` INT(11) NULL DEFAULT NULL,
-  `LEGALS_COMMENCED` CHAR(1) NULL DEFAULT NULL,
-  `DEBTOR_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NULL DEFAULT NULL,
-  `BILLING_USER_ID` INT(11) NULL DEFAULT NULL,
-  `jurisdiction_id` INT(11) NULL DEFAULT NULL,
-  `max_hourly_rate` DECIMAL(19,2) NULL DEFAULT NULL,
-  `parent_file_id` INT(11) NULL DEFAULT NULL,
-  `amount_insured_loss` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_uninsured_loss` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_insured_excess` DECIMAL(19,2) NULL DEFAULT NULL,
-  `amount_gst_recover` DECIMAL(19,2) NULL DEFAULT NULL,
-  `trade_practices_action` CHAR(1) NULL DEFAULT NULL,
-  `date_closed` DATETIME NULL DEFAULT NULL,
-  `date_opened` DATETIME NULL DEFAULT NULL,
-  `rec_status_updated_date` TIMESTAMP NULL DEFAULT NULL,
-  `rec_status_updated_by` INT(11) NULL DEFAULT NULL,
-  `event_no` VARCHAR(50) NULL DEFAULT NULL,
-  `amount_target` DECIMAL(19,2) NULL DEFAULT NULL,
-  `date_closed_final` DATETIME NULL DEFAULT NULL,
-  `date_archived` DATETIME NULL DEFAULT NULL,
-  `amount_owing` DECIMAL(19,2) NULL DEFAULT NULL,
-  `rev_id` INT(11) NOT NULL,
-  `rev_type` TINYINT(4) NOT NULL,
-  `date_stage2` DATETIME NULL DEFAULT NULL,
-  `manager_id` INT(11) NULL DEFAULT NULL,
-  `team_leader_id` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`fileId`, `rev_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `files_aud`
+--
 
--- ----------------------------------------------------------------------------
--- Table filesuppliers
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `filesuppliers` (
-  `fileId` INT(11) NOT NULL,
-  `supplierId` INT(11) NOT NULL,
-  `SORT_ORDER` INT(11) NOT NULL DEFAULT '0',
-  `SUPPLIER_FILE_REFERENCE` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`fileId`, `supplierId`),
-  INDEX `FILE_SUPPLIERS_FK2` (`supplierId` ASC),
-  CONSTRAINT `FILE_SUPPLIERS_FK1`
-    FOREIGN KEY (`fileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `FILE_SUPPLIERS_FK2`
-    FOREIGN KEY (`supplierId`)
-    REFERENCES `suppliers` (`supplierId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `files_aud`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `files_aud` (
+  `fileId` int(11) NOT NULL,
+  `fileClientId` int(11) DEFAULT NULL,
+  `fileClientContactId` int(11) DEFAULT NULL,
+  `fileContactId` int(11) DEFAULT NULL,
+  `fileAgentId` int(11) DEFAULT NULL,
+  `fileReference` varchar(50) DEFAULT NULL,
+  `fileCauseLossId` int(11) DEFAULT NULL,
+  `fileInsuredName` varchar(100) DEFAULT NULL,
+  `fileInsuredDetailsId` int(11) DEFAULT NULL,
+  `fileTPD` int(11) DEFAULT NULL,
+  `fileTPP` int(11) DEFAULT NULL,
+  `fileTPO` int(11) DEFAULT NULL,
+  `fileTPI` int(11) DEFAULT NULL,
+  `fileTPR` int(11) DEFAULT NULL,
+  `filePoliceReportId` int(11) DEFAULT NULL,
+  `fileDateReceived` date DEFAULT NULL,
+  `fileAmountClaimed` decimal(19,2) DEFAULT NULL,
+  `fileAmountEstimated` decimal(19,2) DEFAULT NULL,
+  `fileAmountRecovered` decimal(19,2) DEFAULT NULL,
+  `fileTrustBalance` decimal(19,2) DEFAULT NULL,
+  `fileMotorcare` bit(1) DEFAULT NULL,
+  `fileStatus` int(11) DEFAULT NULL,
+  `fileWorkGroupId` int(11) DEFAULT NULL,
+  `fileTPStatusId` int(11) DEFAULT NULL,
+  `fileBillingFeeId` int(11) DEFAULT NULL,
+  `INCIDENT_DETAILS_ID` int(11) DEFAULT NULL,
+  `REC_STATUS_ID` int(11) DEFAULT NULL,
+  `EXPECT_REC_ID` int(11) DEFAULT NULL,
+  `LEGALS_COMMENCED` char(1) DEFAULT NULL,
+  `DEBTOR_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NULL DEFAULT NULL,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) DEFAULT NULL,
+  `BILLING_USER_ID` int(11) DEFAULT NULL,
+  `jurisdiction_id` int(11) DEFAULT NULL,
+  `max_hourly_rate` decimal(19,2) DEFAULT NULL,
+  `parent_file_id` int(11) DEFAULT NULL,
+  `amount_insured_loss` decimal(19,2) DEFAULT NULL,
+  `amount_uninsured_loss` decimal(19,2) DEFAULT NULL,
+  `amount_insured_excess` decimal(19,2) DEFAULT NULL,
+  `amount_gst_recover` decimal(19,2) DEFAULT NULL,
+  `trade_practices_action` char(1) DEFAULT NULL,
+  `date_closed` datetime DEFAULT NULL,
+  `date_opened` datetime DEFAULT NULL,
+  `rec_status_updated_date` timestamp NULL DEFAULT NULL,
+  `rec_status_updated_by` int(11) DEFAULT NULL,
+  `event_no` varchar(50) DEFAULT NULL,
+  `amount_target` decimal(19,2) DEFAULT NULL,
+  `date_closed_final` datetime DEFAULT NULL,
+  `date_archived` datetime DEFAULT NULL,
+  `amount_owing` decimal(19,2) DEFAULT NULL,
+  `rev_id` int(11) NOT NULL,
+  `rev_type` tinyint(4) NOT NULL,
+  `date_stage2` datetime DEFAULT NULL,
+  `manager_id` int(11) DEFAULT NULL,
+  `team_leader_id` int(11) DEFAULT NULL,
+  `account_id` char(36) DEFAULT NULL,
+  PRIMARY KEY (`fileId`,`rev_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table frequency_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `frequency_type` (
-  `frequency_type_id` INT(11) NOT NULL,
-  `description` VARCHAR(64) NOT NULL,
-  `cron` VARCHAR(32) NULL DEFAULT NULL,
-  PRIMARY KEY (`frequency_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `filesuppliers`
+--
 
--- ----------------------------------------------------------------------------
--- Table gst_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `gst_type` (
-  `gst_type_id` INT(11) NOT NULL,
-  `name` VARCHAR(10) NOT NULL,
-  `description` VARCHAR(50) NOT NULL,
-  `gst` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`gst_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+-- DROP TABLE IF EXISTS `filesuppliers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `filesuppliers` (
+  `fileId` int(11) NOT NULL,
+  `supplierId` int(11) NOT NULL,
+  `SORT_ORDER` int(11) NOT NULL DEFAULT '0',
+  `SUPPLIER_FILE_REFERENCE` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`fileId`,`supplierId`),
+  KEY `FILE_SUPPLIERS_FK2` (`supplierId`),
+  CONSTRAINT `FILE_SUPPLIERS_FK1` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `FILE_SUPPLIERS_FK2` FOREIGN KEY (`supplierId`) REFERENCES `suppliers` (`supplierId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table hibernate_sequences
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hibernate_sequences` (
-  `sequence_name` VARCHAR(32) NOT NULL,
-  `next_val` INT(11) NOT NULL,
-  PRIMARY KEY (`sequence_name`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `frequency_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table import_file
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `import_file` (
-  `import_file_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `status` CHAR(1) NULL DEFAULT NULL,
-  `status_description` VARCHAR(2048) NULL DEFAULT NULL,
-  `source` VARCHAR(255) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`import_file_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `frequency_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `frequency_type` (
+  `frequency_type_id` int(11) NOT NULL,
+  `description` varchar(64) NOT NULL,
+  `cron` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`frequency_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table incident_details
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `incident_details` (
-  `INCIDENT_DETAILS_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `INCIDENT_DATE` DATETIME NOT NULL,
-  `LOCATION` VARCHAR(250) NULL DEFAULT NULL,
-  `DESCRIPTION` TEXT NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`INCIDENT_DETAILS_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `gst_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table info_request
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `info_request` (
-  `info_request_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_id` INT(11) NOT NULL,
-  `notation` TEXT NOT NULL,
-  `who_from` VARCHAR(255) NOT NULL,
-  `date_requested` DATE NOT NULL,
-  `date_received` DATE NULL DEFAULT NULL,
-  `LOGICALLY_DELETED` CHAR(1) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `gst_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gst_type` (
+  `gst_type_id` int(11) NOT NULL,
+  `name` varchar(10) NOT NULL,
+  `description` varchar(50) NOT NULL,
+  `gst` decimal(19,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`gst_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `hibernate_sequences`
+--
+
+-- DROP TABLE IF EXISTS `hibernate_sequences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hibernate_sequences` (
+  `sequence_name` varchar(32) NOT NULL,
+  `next_val` int(11) NOT NULL,
+  PRIMARY KEY (`sequence_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `import_file`
+--
+
+-- DROP TABLE IF EXISTS `import_file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `import_file` (
+  `import_file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `status` char(1) DEFAULT NULL,
+  `status_description` varchar(2048) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`import_file_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `incident_details`
+--
+
+-- DROP TABLE IF EXISTS `incident_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `incident_details` (
+  `INCIDENT_DETAILS_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `INCIDENT_DATE` datetime NOT NULL,
+  `LOCATION` varchar(250) DEFAULT NULL,
+  `DESCRIPTION` text,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`INCIDENT_DETAILS_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `info_request`
+--
+
+-- DROP TABLE IF EXISTS `info_request`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `info_request` (
+  `info_request_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_id` int(11) NOT NULL,
+  `notation` text NOT NULL,
+  `who_from` varchar(255) NOT NULL,
+  `date_requested` date NOT NULL,
+  `date_received` date DEFAULT NULL,
+  `LOGICALLY_DELETED` char(1) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`info_request_id`),
-  INDEX `info_request_fk1` (`file_id` ASC),
-  INDEX `info_request_idx1` (`who_from` ASC),
-  CONSTRAINT `info_request_fk1`
-    FOREIGN KEY (`file_id`)
-    REFERENCES `files` (`fileId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = latin1;
+  KEY `info_request_fk1` (`file_id`),
+  KEY `info_request_idx1` (`who_from`),
+  CONSTRAINT `info_request_fk1` FOREIGN KEY (`file_id`) REFERENCES `files` (`fileId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table insureddetails
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `insureddetails` (
-  `insdetId` INT(11) NOT NULL AUTO_INCREMENT,
-  `insdetContactId` INT(11) NULL DEFAULT NULL,
-  `LICENCE_NUMBER` VARCHAR(20) NULL DEFAULT NULL,
-  `REGO_NUMBER` VARCHAR(20) NULL DEFAULT NULL,
-  `VEHICLE_MAKE` VARCHAR(64) NULL DEFAULT NULL,
-  `VEHICLE_MODEL` VARCHAR(64) NULL DEFAULT NULL,
-  `LOSS_DESCRIPTION` VARCHAR(2000) NULL DEFAULT NULL,
-  PRIMARY KEY (`insdetId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `insureddetails`
+--
 
--- ----------------------------------------------------------------------------
--- Table invoices
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `invoices` (
-  `invoiceId` INT(11) NOT NULL AUTO_INCREMENT,
-  `invoiceClientId` INT(11) NULL DEFAULT NULL,
-  `invoiceDate` DATETIME NULL DEFAULT NULL,
-  `invoiceAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceFee` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceAuthorisedBy` INT(11) NULL DEFAULT NULL,
-  `invoiceDateAuthorised` DATETIME NULL DEFAULT NULL,
-  `invoiceFileId` INT(11) NULL DEFAULT NULL,
-  `invoiceCCFee` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceGST` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceBillingFeeId` INT(11) NULL DEFAULT NULL,
-  `invoiceChequeId` INT(11) NULL DEFAULT NULL,
-  `FEE_FLAT` CHAR(1) NULL DEFAULT NULL,
-  `AMOUNT_RECOVERED` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
+-- DROP TABLE IF EXISTS `insureddetails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `insureddetails` (
+  `insdetId` int(11) NOT NULL AUTO_INCREMENT,
+  `insdetContactId` int(11) DEFAULT NULL,
+  `LICENCE_NUMBER` varchar(20) DEFAULT NULL,
+  `REGO_NUMBER` varchar(20) DEFAULT NULL,
+  `VEHICLE_MAKE` varchar(64) DEFAULT NULL,
+  `VEHICLE_MODEL` varchar(64) DEFAULT NULL,
+  `LOSS_DESCRIPTION` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`insdetId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `invoices`
+--
+
+-- DROP TABLE IF EXISTS `invoices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invoices` (
+  `invoiceId` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceClientId` int(11) DEFAULT NULL,
+  `invoiceDate` datetime DEFAULT NULL,
+  `invoiceAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceFee` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceAuthorisedBy` int(11) DEFAULT NULL,
+  `invoiceDateAuthorised` datetime DEFAULT NULL,
+  `invoiceFileId` int(11) DEFAULT NULL,
+  `invoiceCCFee` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceGST` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceBillingFeeId` int(11) DEFAULT NULL,
+  `invoiceChequeId` int(11) DEFAULT NULL,
+  `FEE_FLAT` char(1) DEFAULT NULL,
+  `AMOUNT_RECOVERED` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoice_id` char(36) DEFAULT NULL,
   PRIMARY KEY (`invoiceId`),
-  INDEX `INVOICES_FK1` (`invoiceBillingFeeId` ASC),
-  INDEX `INVOICES_FK2` (`invoiceClientId` ASC),
-  INDEX `INVOICES_FK3` (`invoiceAuthorisedBy` ASC),
-  INDEX `INVOICES_FK4` (`invoiceFileId` ASC),
-  INDEX `INVOICES_FK5` (`invoiceChequeId` ASC),
-  CONSTRAINT `INVOICES_FK1`
-    FOREIGN KEY (`invoiceBillingFeeId`)
-    REFERENCES `billing_file` (`feeId`),
-  CONSTRAINT `INVOICES_FK2`
-    FOREIGN KEY (`invoiceClientId`)
-    REFERENCES `clients` (`clientId`),
-  CONSTRAINT `INVOICES_FK3`
-    FOREIGN KEY (`invoiceAuthorisedBy`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `INVOICES_FK4`
-    FOREIGN KEY (`invoiceFileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `INVOICES_FK5`
-    FOREIGN KEY (`invoiceChequeId`)
-    REFERENCES `cheques` (`chequeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `invoices_uk1` (`invoice_id`),
+  KEY `INVOICES_FK1` (`invoiceBillingFeeId`),
+  KEY `INVOICES_FK2` (`invoiceClientId`),
+  KEY `INVOICES_FK3` (`invoiceAuthorisedBy`),
+  KEY `INVOICES_FK4` (`invoiceFileId`),
+  KEY `INVOICES_FK5` (`invoiceChequeId`),
+  CONSTRAINT `INVOICES_FK1` FOREIGN KEY (`invoiceBillingFeeId`) REFERENCES `billing_file` (`feeId`),
+  CONSTRAINT `INVOICES_FK2` FOREIGN KEY (`invoiceClientId`) REFERENCES `clients` (`clientId`),
+  CONSTRAINT `INVOICES_FK3` FOREIGN KEY (`invoiceAuthorisedBy`) REFERENCES `users` (`userId`),
+  CONSTRAINT `INVOICES_FK4` FOREIGN KEY (`invoiceFileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `INVOICES_FK5` FOREIGN KEY (`invoiceChequeId`) REFERENCES `cheques` (`chequeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table journals
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `journals` (
-  `journalId` INT(11) NOT NULL AUTO_INCREMENT,
-  `journalDate` DATE NULL DEFAULT NULL,
-  `journalAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `journalExplanation` TEXT NULL DEFAULT NULL,
-  `journalStatus` INT(11) NOT NULL,
-  `journalFromFileId` INT(11) NULL DEFAULT NULL,
-  `journalToFileId` INT(11) NULL DEFAULT NULL,
-  `journalCreatedBy` INT(11) NULL DEFAULT NULL,
-  `journalAuthorisedBy` INT(11) NULL DEFAULT NULL,
-  `journalDateAuthorised` DATE NULL DEFAULT NULL,
-  `PAYEE` VARCHAR(100) NULL DEFAULT NULL,
-  `BANK_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `journals`
+--
+
+-- DROP TABLE IF EXISTS `journals`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `journals` (
+  `journalId` int(11) NOT NULL AUTO_INCREMENT,
+  `journalDate` date DEFAULT NULL,
+  `journalAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `journalExplanation` text,
+  `journalStatus` int(11) NOT NULL,
+  `journalFromFileId` int(11) DEFAULT NULL,
+  `journalToFileId` int(11) DEFAULT NULL,
+  `journalCreatedBy` int(11) DEFAULT NULL,
+  `journalAuthorisedBy` int(11) DEFAULT NULL,
+  `journalDateAuthorised` date DEFAULT NULL,
+  `PAYEE` varchar(100) DEFAULT NULL,
+  `BANK_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`journalId`),
-  INDEX `JOURNALS_FK1` (`BANK_ID` ASC),
-  CONSTRAINT `JOURNALS_FK1`
-    FOREIGN KEY (`BANK_ID`)
-    REFERENCES `banks` (`bankId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `JOURNALS_FK1` (`BANK_ID`),
+  CONSTRAINT `JOURNALS_FK1` FOREIGN KEY (`BANK_ID`) REFERENCES `banks` (`bankId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table legal_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `legal_type` (
-  `LEGAL_TYPE_ID` INT(11) NOT NULL,
-  `NAME` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`LEGAL_TYPE_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `legal_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table letters
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `letters` (
-  `letterId` INT(11) NOT NULL AUTO_INCREMENT,
-  `letterName` VARCHAR(255) NULL DEFAULT NULL,
-  `letterBody` TEXT NULL DEFAULT NULL,
-  PRIMARY KEY (`letterId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `legal_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `legal_type` (
+  `LEGAL_TYPE_ID` int(11) NOT NULL,
+  `NAME` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`LEGAL_TYPE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table links
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `links` (
-  `links_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `links_title` VARCHAR(255) NULL DEFAULT NULL,
-  `links_date` DATE NULL DEFAULT NULL,
-  `links_date_end` DATE NULL DEFAULT NULL,
-  `links_text` TEXT NOT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`links_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `letters`
+--
 
--- ----------------------------------------------------------------------------
--- Table loss_desc
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `loss_desc` (
-  `LOSS_DESC_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `DESCRIPTION` VARCHAR(50) NOT NULL,
-  `CREATED_BY` INT(11) NOT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `letters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `letters` (
+  `letterId` int(11) NOT NULL AUTO_INCREMENT,
+  `letterName` varchar(255) DEFAULT NULL,
+  `letterBody` text,
+  PRIMARY KEY (`letterId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `links`
+--
+
+-- DROP TABLE IF EXISTS `links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `links` (
+  `links_id` int(11) NOT NULL AUTO_INCREMENT,
+  `links_title` varchar(255) DEFAULT NULL,
+  `links_date` date DEFAULT NULL,
+  `links_date_end` date DEFAULT NULL,
+  `links_text` text NOT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`links_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `loss_desc`
+--
+
+-- DROP TABLE IF EXISTS `loss_desc`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `loss_desc` (
+  `LOSS_DESC_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DESCRIPTION` varchar(50) NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `action_code_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`LOSS_DESC_ID`),
-  INDEX `LOSS_DESC_FK1` (`CREATED_BY` ASC),
-  CONSTRAINT `LOSS_DESC_FK1`
-    FOREIGN KEY (`CREATED_BY`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `LOSS_DESC_FK1` (`CREATED_BY`),
+  KEY `loss_desc_fk2` (`action_code_id`),
+  CONSTRAINT `LOSS_DESC_FK1` FOREIGN KEY (`CREATED_BY`) REFERENCES `users` (`userId`),
+  CONSTRAINT `loss_desc_fk2` FOREIGN KEY (`action_code_id`) REFERENCES `actioncodes` (`actcId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table loss_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `loss_type` (
-  `LOSS_TYPE_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `DESCRIPTION` VARCHAR(50) NOT NULL,
-  `CREATED_BY` INT(11) NOT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `loss_type`
+--
+
+-- DROP TABLE IF EXISTS `loss_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `loss_type` (
+  `LOSS_TYPE_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DESCRIPTION` varchar(50) NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`LOSS_TYPE_ID`),
-  INDEX `LOSS_TYPE_FK1` (`CREATED_BY` ASC),
-  CONSTRAINT `LOSS_TYPE_FK1`
-    FOREIGN KEY (`CREATED_BY`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `LOSS_TYPE_FK1` (`CREATED_BY`),
+  CONSTRAINT `LOSS_TYPE_FK1` FOREIGN KEY (`CREATED_BY`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table news
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `news` (
-  `news_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `news_title` VARCHAR(255) NULL DEFAULT NULL,
-  `news_date` DATE NOT NULL,
-  `news_date_end` DATE NULL DEFAULT NULL,
-  `news_text` TEXT NOT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`news_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `news`
+--
 
--- ----------------------------------------------------------------------------
--- Table notes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notes` (
-  `noteId` INT(11) NOT NULL AUTO_INCREMENT,
-  `noteDate` DATETIME NULL DEFAULT NULL,
-  `noteCreatedBy` INT(11) NULL DEFAULT NULL,
-  `noteText` TEXT NULL DEFAULT NULL,
-  `noteFileId` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`noteId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `news`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `news` (
+  `news_id` int(11) NOT NULL AUTO_INCREMENT,
+  `news_title` varchar(255) DEFAULT NULL,
+  `news_date` date NOT NULL,
+  `news_date_end` date DEFAULT NULL,
+  `news_text` text NOT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`news_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table pol_documents
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pol_documents` (
-  `poldocId` INT(11) NOT NULL AUTO_INCREMENT,
-  `poldocName` VARCHAR(255) NULL DEFAULT NULL,
-  `poldocSign` CHAR(1) NOT NULL DEFAULT '+',
-  PRIMARY KEY (`poldocId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `notes`
+--
 
--- ----------------------------------------------------------------------------
--- Table pol_type_docs
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pol_type_docs` (
-  `poltId` INT(11) NOT NULL,
-  `poldocId` INT(11) NOT NULL,
-  PRIMARY KEY (`poltId`, `poldocId`),
-  INDEX `POL_TYPE_DOCS_FK2` (`poldocId` ASC),
-  CONSTRAINT `POL_TYPE_DOCS_FK1`
-    FOREIGN KEY (`poltId`)
-    REFERENCES `pol_types` (`poltId`),
-  CONSTRAINT `POL_TYPE_DOCS_FK2`
-    FOREIGN KEY (`poldocId`)
-    REFERENCES `pol_documents` (`poldocId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notes` (
+  `noteId` int(11) NOT NULL AUTO_INCREMENT,
+  `noteDate` datetime DEFAULT NULL,
+  `noteCreatedBy` int(11) DEFAULT NULL,
+  `noteText` text,
+  `noteFileId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`noteId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table pol_types
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pol_types` (
-  `poltId` INT(11) NOT NULL AUTO_INCREMENT,
-  `poltName` VARCHAR(255) NULL DEFAULT NULL,
-  `poltActive` BIT(1) NOT NULL,
-  PRIMARY KEY (`poltId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `pol_documents`
+--
 
--- ----------------------------------------------------------------------------
--- Table policereports
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `policereports` (
-  `policeRepId` INT(11) NOT NULL AUTO_INCREMENT,
-  `policeRepNumber` VARCHAR(50) NULL DEFAULT NULL,
-  `policeRepOfficerName` VARCHAR(50) NULL DEFAULT NULL,
-  `policeRepStationName` VARCHAR(50) NULL DEFAULT NULL,
-  `policeRepStationPhone` VARCHAR(20) NULL DEFAULT NULL,
-  `policeRepStationFax` VARCHAR(20) NULL DEFAULT NULL,
-  `policeRepStationEmail` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`policeRepId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `pol_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pol_documents` (
+  `poldocId` int(11) NOT NULL AUTO_INCREMENT,
+  `poldocName` varchar(255) DEFAULT NULL,
+  `poldocSign` char(1) NOT NULL DEFAULT '+',
+  PRIMARY KEY (`poldocId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table proof_of_loss
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `proof_of_loss` (
-  `polId` INT(11) NOT NULL AUTO_INCREMENT,
-  `polFileId` INT(11) NOT NULL,
-  `polType` INT(11) NULL DEFAULT NULL,
-  `POL_COMPLETED` CHAR(1) NOT NULL DEFAULT 'N',
-  `AMOUNT_OK` CHAR(1) NOT NULL DEFAULT 'N',
-  `ASSESSOR_OK` CHAR(1) NULL DEFAULT NULL,
-  `QUOTE_OK` CHAR(1) NULL DEFAULT NULL,
-  `INVOICE_OK` CHAR(1) NULL DEFAULT NULL,
-  `PAV_OK` CHAR(1) NULL DEFAULT NULL,
-  `SALVAGE_OK` CHAR(1) NULL DEFAULT NULL,
-  `TOW_INVOICE_OK` CHAR(1) NULL DEFAULT NULL,
-  `UPDATED_BY` INT(11) NOT NULL,
-  `UPDATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `DEMURRAGE_OK` CHAR(1) NULL DEFAULT NULL,
+--
+-- Table structure for table `pol_type_docs`
+--
+
+-- DROP TABLE IF EXISTS `pol_type_docs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pol_type_docs` (
+  `poltId` int(11) NOT NULL,
+  `poldocId` int(11) NOT NULL,
+  PRIMARY KEY (`poltId`,`poldocId`),
+  KEY `POL_TYPE_DOCS_FK2` (`poldocId`),
+  CONSTRAINT `POL_TYPE_DOCS_FK1` FOREIGN KEY (`poltId`) REFERENCES `pol_types` (`poltId`),
+  CONSTRAINT `POL_TYPE_DOCS_FK2` FOREIGN KEY (`poldocId`) REFERENCES `pol_documents` (`poldocId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `pol_types`
+--
+
+-- DROP TABLE IF EXISTS `pol_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pol_types` (
+  `poltId` int(11) NOT NULL AUTO_INCREMENT,
+  `poltName` varchar(255) DEFAULT NULL,
+  `poltActive` bit(1) NOT NULL,
+  PRIMARY KEY (`poltId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `policereports`
+--
+
+-- DROP TABLE IF EXISTS `policereports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `policereports` (
+  `policeRepId` int(11) NOT NULL AUTO_INCREMENT,
+  `policeRepNumber` varchar(50) DEFAULT NULL,
+  `policeRepOfficerName` varchar(50) DEFAULT NULL,
+  `policeRepStationName` varchar(50) DEFAULT NULL,
+  `policeRepStationPhone` varchar(20) DEFAULT NULL,
+  `policeRepStationFax` varchar(20) DEFAULT NULL,
+  `policeRepStationEmail` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`policeRepId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `proof_of_loss`
+--
+
+-- DROP TABLE IF EXISTS `proof_of_loss`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `proof_of_loss` (
+  `polId` int(11) NOT NULL AUTO_INCREMENT,
+  `polFileId` int(11) NOT NULL,
+  `polType` int(11) DEFAULT NULL,
+  `POL_COMPLETED` char(1) NOT NULL DEFAULT 'N',
+  `AMOUNT_OK` char(1) NOT NULL DEFAULT 'N',
+  `ASSESSOR_OK` char(1) DEFAULT NULL,
+  `QUOTE_OK` char(1) DEFAULT NULL,
+  `INVOICE_OK` char(1) DEFAULT NULL,
+  `PAV_OK` char(1) DEFAULT NULL,
+  `SALVAGE_OK` char(1) DEFAULT NULL,
+  `TOW_INVOICE_OK` char(1) DEFAULT NULL,
+  `UPDATED_BY` int(11) NOT NULL,
+  `UPDATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `DEMURRAGE_OK` char(1) DEFAULT NULL,
   PRIMARY KEY (`polId`),
-  INDEX `PROOF_OF_LOSS_FK2` (`polType` ASC),
-  INDEX `PROOF_OF_LOSS_FK3` (`UPDATED_BY` ASC),
-  INDEX `PROOF_OF_LOSS_IDX1` (`polFileId` ASC),
-  INDEX `PROOF_OF_LOSS_IDX2` (`UPDATED_DATE` ASC),
-  CONSTRAINT `PROOF_OF_LOSS_FK1`
-    FOREIGN KEY (`polFileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `PROOF_OF_LOSS_FK2`
-    FOREIGN KEY (`polType`)
-    REFERENCES `pol_types` (`poltId`),
-  CONSTRAINT `PROOF_OF_LOSS_FK3`
-    FOREIGN KEY (`UPDATED_BY`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `PROOF_OF_LOSS_FK2` (`polType`),
+  KEY `PROOF_OF_LOSS_FK3` (`UPDATED_BY`),
+  KEY `PROOF_OF_LOSS_IDX1` (`polFileId`),
+  KEY `PROOF_OF_LOSS_IDX2` (`UPDATED_DATE`),
+  CONSTRAINT `PROOF_OF_LOSS_FK1` FOREIGN KEY (`polFileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `PROOF_OF_LOSS_FK2` FOREIGN KEY (`polType`) REFERENCES `pol_types` (`poltId`),
+  CONSTRAINT `PROOF_OF_LOSS_FK3` FOREIGN KEY (`UPDATED_BY`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table proof_of_loss_docs
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `proof_of_loss_docs` (
-  `docId` INT(11) NOT NULL AUTO_INCREMENT,
-  `docPOL` INT(11) NULL DEFAULT NULL,
-  `docType` INT(11) NULL DEFAULT NULL,
-  `docSubtotal` DECIMAL(19,2) NULL DEFAULT NULL,
-  `docGST` DECIMAL(19,2) NULL DEFAULT NULL,
-  `docSupplier` VARCHAR(255) NULL DEFAULT NULL,
-  `docNotes` TEXT NULL DEFAULT NULL,
+--
+-- Table structure for table `proof_of_loss_docs`
+--
+
+-- DROP TABLE IF EXISTS `proof_of_loss_docs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `proof_of_loss_docs` (
+  `docId` int(11) NOT NULL AUTO_INCREMENT,
+  `docPOL` int(11) DEFAULT NULL,
+  `docType` int(11) DEFAULT NULL,
+  `docSubtotal` decimal(19,2) DEFAULT NULL,
+  `docGST` decimal(19,2) DEFAULT NULL,
+  `docSupplier` varchar(255) DEFAULT NULL,
+  `docNotes` text,
   PRIMARY KEY (`docId`),
-  INDEX `PROOF_OF_LOSS_DOCS_FK1` (`docPOL` ASC),
-  INDEX `PROOF_OF_LOSS_DOCS_FK2` (`docType` ASC),
-  CONSTRAINT `PROOF_OF_LOSS_DOCS_FK1`
-    FOREIGN KEY (`docPOL`)
-    REFERENCES `proof_of_loss` (`polId`),
-  CONSTRAINT `PROOF_OF_LOSS_DOCS_FK2`
-    FOREIGN KEY (`docType`)
-    REFERENCES `pol_documents` (`poldocId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `PROOF_OF_LOSS_DOCS_FK1` (`docPOL`),
+  KEY `PROOF_OF_LOSS_DOCS_FK2` (`docType`),
+  CONSTRAINT `PROOF_OF_LOSS_DOCS_FK1` FOREIGN KEY (`docPOL`) REFERENCES `proof_of_loss` (`polId`),
+  CONSTRAINT `PROOF_OF_LOSS_DOCS_FK2` FOREIGN KEY (`docType`) REFERENCES `pol_documents` (`poldocId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table public_holiday
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `public_holiday` (
-  `PUBLIC_HOLIDAY_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `START_DATE` DATE NOT NULL,
-  `END_DATE` DATE NOT NULL,
-  `STATE` VARCHAR(3) NULL DEFAULT NULL,
-  `DESCRIPTION` VARCHAR(250) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `public_holiday`
+--
 
--- ----------------------------------------------------------------------------
--- Table quality_rating
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `quality_rating` (
-  `quality_rating_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
-  `description` VARCHAR(255) NOT NULL,
-  `active` CHAR(1) NOT NULL DEFAULT 'Y',
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `priority` INT(9) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `public_holiday`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `public_holiday` (
+  `PUBLIC_HOLIDAY_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `START_DATE` date NOT NULL,
+  `END_DATE` date NOT NULL,
+  `STATE` varchar(3) DEFAULT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`PUBLIC_HOLIDAY_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `quality_rating`
+--
+
+-- DROP TABLE IF EXISTS `quality_rating`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `quality_rating` (
+  `quality_rating_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `active` char(1) NOT NULL DEFAULT 'Y',
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `priority` int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`quality_rating_id`),
-  UNIQUE INDEX `quality_rating_uk1` (`name` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `quality_rating_uk1` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table question_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `question_type` (
-  `question_type_id` INT(11) NOT NULL,
-  `question_type_name` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`question_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `question_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table questionary
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `questionary` (
-  `questionary_id` INT(11) NOT NULL,
-  `questionary_name` VARCHAR(255) NOT NULL,
-  `questionary_description` VARCHAR(512) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `questionary_optional` CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`questionary_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `question_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `question_type` (
+  `question_type_id` int(11) NOT NULL,
+  `question_type_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`question_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table questionary_answer
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `questionary_answer` (
-  `questionary_answer_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `question_id` INT(11) NOT NULL,
-  `next_question_id` INT(11) NULL DEFAULT NULL,
-  `answer_order` INT(11) NOT NULL,
-  `answer_name` VARCHAR(512) NOT NULL,
-  `answer_record_reason` CHAR(1) NOT NULL DEFAULT 'N',
-  `answer_spel` VARCHAR(512) NULL DEFAULT NULL,
-  `outcome_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `questionary`
+--
+
+-- DROP TABLE IF EXISTS `questionary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `questionary` (
+  `questionary_id` int(11) NOT NULL,
+  `questionary_name` varchar(255) NOT NULL,
+  `questionary_description` varchar(512) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `questionary_optional` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`questionary_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `questionary_answer`
+--
+
+-- DROP TABLE IF EXISTS `questionary_answer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `questionary_answer` (
+  `questionary_answer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `next_question_id` int(11) DEFAULT NULL,
+  `answer_order` int(11) DEFAULT NULL,
+  `answer_name` varchar(512) DEFAULT NULL,
+  `answer_record_reason` char(1) NOT NULL DEFAULT 'N',
+  `answer_spel` varchar(512) DEFAULT NULL,
+  `outcome_id` int(11) DEFAULT NULL,
+  `answer_description` varchar(512) DEFAULT NULL,
+  `answer_definition` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`questionary_answer_id`),
-  INDEX `questionary_answer_fk1` (`question_id` ASC),
-  INDEX `questionary_answer_fk2` (`next_question_id` ASC),
-  INDEX `questionary_answer_fk3` (`outcome_id` ASC),
-  CONSTRAINT `questionary_answer_fk1`
-    FOREIGN KEY (`question_id`)
-    REFERENCES `questionary_question` (`questionary_question_id`),
-  CONSTRAINT `questionary_answer_fk2`
-    FOREIGN KEY (`next_question_id`)
-    REFERENCES `questionary_question` (`questionary_question_id`),
-  CONSTRAINT `questionary_answer_fk3`
-    FOREIGN KEY (`outcome_id`)
-    REFERENCES `actionoutcomes` (`outId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `questionary_answer_fk1` (`question_id`),
+  KEY `questionary_answer_fk2` (`next_question_id`),
+  KEY `questionary_answer_fk3` (`outcome_id`),
+  CONSTRAINT `questionary_answer_fk1` FOREIGN KEY (`question_id`) REFERENCES `questionary_question` (`questionary_question_id`),
+  CONSTRAINT `questionary_answer_fk2` FOREIGN KEY (`next_question_id`) REFERENCES `questionary_question` (`questionary_question_id`),
+  CONSTRAINT `questionary_answer_fk3` FOREIGN KEY (`outcome_id`) REFERENCES `actionoutcomes` (`outId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table questionary_question
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `questionary_question` (
-  `questionary_question_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `questionary_id` INT(11) NOT NULL,
-  `question_order` INT(11) NOT NULL,
-  `question_type_id` INT(11) NOT NULL,
-  `question_name` VARCHAR(255) NOT NULL,
-  `question_description` VARCHAR(512) NULL DEFAULT NULL,
+--
+-- Table structure for table `questionary_question`
+--
+
+-- DROP TABLE IF EXISTS `questionary_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `questionary_question` (
+  `questionary_question_id` int(11) NOT NULL AUTO_INCREMENT,
+  `questionary_id` int(11) NOT NULL,
+  `question_order` int(11) NOT NULL,
+  `question_type_id` int(11) NOT NULL,
+  `question_name` varchar(255) NOT NULL,
+  `question_description` varchar(512) DEFAULT NULL,
+  `tab_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`questionary_question_id`),
-  INDEX `questionary_question_fk1` (`question_type_id` ASC),
-  INDEX `questionary_question_fk2` (`questionary_id` ASC),
-  CONSTRAINT `questionary_question_fk1`
-    FOREIGN KEY (`question_type_id`)
-    REFERENCES `question_type` (`question_type_id`),
-  CONSTRAINT `questionary_question_fk2`
-    FOREIGN KEY (`questionary_id`)
-    REFERENCES `questionary` (`questionary_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `questionary_question_fk1` (`question_type_id`),
+  KEY `questionary_question_fk2` (`questionary_id`),
+  KEY `questionary_question_fk3` (`tab_id`),
+  CONSTRAINT `questionary_question_fk1` FOREIGN KEY (`question_type_id`) REFERENCES `question_type` (`question_type_id`),
+  CONSTRAINT `questionary_question_fk2` FOREIGN KEY (`questionary_id`) REFERENCES `questionary` (`questionary_id`),
+  CONSTRAINT `questionary_question_fk3` FOREIGN KEY (`tab_id`) REFERENCES `questionary_tab` (`questionary_tab_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table rec_status
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `rec_status` (
-  `REC_STATUS_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `REC_STATUS_NAME` VARCHAR(50) NOT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`REC_STATUS_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `questionary_tab`
+--
 
--- ----------------------------------------------------------------------------
--- Table receipts
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `receipts` (
-  `receiptId` INT(11) NOT NULL,
-  `receiptBankId` INT(11) NULL DEFAULT NULL,
-  `receiptDate` DATE NULL DEFAULT NULL,
-  `receiptType` INT(11) NOT NULL,
-  `receiptAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `receiptDatePrinted` DATETIME NULL DEFAULT NULL,
-  `receiptPayee` VARCHAR(50) NULL DEFAULT NULL,
-  `receiptChequeNumber` VARCHAR(20) NULL DEFAULT NULL,
-  `receiptDepositId` INT(11) NULL DEFAULT NULL,
-  `receiptDatePresented` DATE NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `questionary_tab`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `questionary_tab` (
+  `questionary_tab_id` int(11) NOT NULL AUTO_INCREMENT,
+  `questionary_id` int(11) NOT NULL,
+  `tab_order` int(11) NOT NULL,
+  `tab_name` varchar(255) NOT NULL,
+  `tab_description` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`questionary_tab_id`),
+  KEY `questionary_tab_fk1` (`questionary_id`),
+  CONSTRAINT `questionary_tab_fk1` FOREIGN KEY (`questionary_id`) REFERENCES `questionary` (`questionary_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rec_status`
+--
+
+-- DROP TABLE IF EXISTS `rec_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rec_status` (
+  `REC_STATUS_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `REC_STATUS_NAME` varchar(50) NOT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`REC_STATUS_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `receipts`
+--
+
+-- DROP TABLE IF EXISTS `receipts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `receipts` (
+  `receiptId` int(11) NOT NULL,
+  `receiptBankId` int(11) DEFAULT NULL,
+  `receiptDate` date DEFAULT NULL,
+  `receiptType` int(11) NOT NULL,
+  `receiptAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `receiptDatePrinted` datetime DEFAULT NULL,
+  `receiptPayee` varchar(255) DEFAULT NULL,
+  `receiptChequeNumber` varchar(20) DEFAULT NULL,
+  `receiptDepositId` int(11) DEFAULT NULL,
+  `receiptDatePresented` date DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`receiptId`),
-  INDEX `RECEIPTS_FK1` (`receiptBankId` ASC),
-  CONSTRAINT `RECEIPTS_FK1`
-    FOREIGN KEY (`receiptBankId`)
-    REFERENCES `banks` (`bankId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  KEY `RECEIPTS_FK1` (`receiptBankId`),
+  CONSTRAINT `RECEIPTS_FK1` FOREIGN KEY (`receiptBankId`) REFERENCES `banks` (`bankId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table repayment
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `repayment` (
-  `REPAYMENT_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `FILE_ID` INT(11) NOT NULL,
-  `INITIAL_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `FEE` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `INITIAL_DATE` DATE NULL DEFAULT NULL,
-  `START_DATE` DATE NULL DEFAULT NULL,
-  `AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `FREQUENCY` INT(11) NOT NULL,
-  `FREQUENCY_TYPE` INT(11) NOT NULL,
-  `COMMENT` TEXT NULL DEFAULT NULL,
-  `PAYMENT_METHOD` INT(11) NOT NULL,
-  `PAYMENT_REFERENCE` VARCHAR(64) NULL DEFAULT NULL,
-  `SIGNED_AGREE` BIT(1) NULL DEFAULT NULL,
-  `STOP_REMINDER` BIT(1) NULL DEFAULT NULL,
-  `NEXT_ID` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NOT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `AMOUNT_OWING` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `STOP_OVERDUE` BIT(1) NULL DEFAULT NULL,
+--
+-- Table structure for table `repayment`
+--
+
+-- DROP TABLE IF EXISTS `repayment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `repayment` (
+  `REPAYMENT_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `FILE_ID` int(11) NOT NULL,
+  `INITIAL_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `FEE` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `INITIAL_DATE` date DEFAULT NULL,
+  `START_DATE` date DEFAULT NULL,
+  `AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `FREQUENCY` int(11) NOT NULL,
+  `FREQUENCY_TYPE` int(11) NOT NULL,
+  `COMMENT` text,
+  `PAYMENT_METHOD` int(11) NOT NULL,
+  `PAYMENT_REFERENCE` varchar(64) DEFAULT NULL,
+  `SIGNED_AGREE` bit(1) DEFAULT NULL,
+  `STOP_REMINDER` bit(1) DEFAULT NULL,
+  `NEXT_ID` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `AMOUNT_OWING` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `STOP_OVERDUE` bit(1) DEFAULT NULL,
   PRIMARY KEY (`REPAYMENT_ID`),
-  INDEX `REPAYMENT_FK1` (`FILE_ID` ASC),
-  INDEX `REPAYMENT_FK2` (`CREATED_BY` ASC),
-  INDEX `REPAYMENT_FK3` (`NEXT_ID` ASC),
-  CONSTRAINT `REPAYMENT_FK1`
-    FOREIGN KEY (`FILE_ID`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `REPAYMENT_FK2`
-    FOREIGN KEY (`CREATED_BY`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `REPAYMENT_FK3`
-    FOREIGN KEY (`NEXT_ID`)
-    REFERENCES `repayment` (`REPAYMENT_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `REPAYMENT_FK1` (`FILE_ID`),
+  KEY `REPAYMENT_FK2` (`CREATED_BY`),
+  KEY `REPAYMENT_FK3` (`NEXT_ID`),
+  CONSTRAINT `REPAYMENT_FK1` FOREIGN KEY (`FILE_ID`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `REPAYMENT_FK2` FOREIGN KEY (`CREATED_BY`) REFERENCES `users` (`userId`),
+  CONSTRAINT `REPAYMENT_FK3` FOREIGN KEY (`NEXT_ID`) REFERENCES `repayment` (`REPAYMENT_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table repayment_schedule
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `repayment_schedule` (
-  `REPAYMENT_SCHEDULE_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `REPAYMENT_ID` INT(11) NOT NULL,
-  `DUE_DATE` DATE NOT NULL,
-  `AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `PAID_DATE` DATE NULL DEFAULT NULL,
-  `PAID_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `CREATED_BY` INT(11) NOT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+--
+-- Table structure for table `repayment_schedule`
+--
+
+-- DROP TABLE IF EXISTS `repayment_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `repayment_schedule` (
+  `REPAYMENT_SCHEDULE_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `REPAYMENT_ID` int(11) NOT NULL,
+  `DUE_DATE` date NOT NULL,
+  `AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `PAID_DATE` date DEFAULT NULL,
+  `PAID_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `CREATED_BY` int(11) NOT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`REPAYMENT_SCHEDULE_ID`),
-  INDEX `REPAYMENT_SCHEDULE_FK1` (`REPAYMENT_ID` ASC),
-  INDEX `REPAYMENT_SCHEDULE_FK2` (`CREATED_BY` ASC),
-  CONSTRAINT `REPAYMENT_SCHEDULE_FK1`
-    FOREIGN KEY (`REPAYMENT_ID`)
-    REFERENCES `repayment` (`REPAYMENT_ID`),
-  CONSTRAINT `REPAYMENT_SCHEDULE_FK2`
-    FOREIGN KEY (`CREATED_BY`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `REPAYMENT_SCHEDULE_FK1` (`REPAYMENT_ID`),
+  KEY `REPAYMENT_SCHEDULE_FK2` (`CREATED_BY`),
+  CONSTRAINT `REPAYMENT_SCHEDULE_FK1` FOREIGN KEY (`REPAYMENT_ID`) REFERENCES `repayment` (`REPAYMENT_ID`),
+  CONSTRAINT `REPAYMENT_SCHEDULE_FK2` FOREIGN KEY (`CREATED_BY`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table revinfo
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `revinfo` (
-  `rev_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `rev_tstmp` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`rev_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `revinfo`
+--
 
--- ----------------------------------------------------------------------------
--- Table securitygroups
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `securitygroups` (
-  `groupId` INT(11) NOT NULL AUTO_INCREMENT,
-  `groupName` VARCHAR(50) NULL DEFAULT NULL,
-  `file_type_id` INT(11) NULL DEFAULT NULL,
+-- DROP TABLE IF EXISTS `revinfo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `revinfo` (
+  `rev_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rev_tstmp` bigint(20) NOT NULL,
+  PRIMARY KEY (`rev_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `securitygroups`
+--
+
+-- DROP TABLE IF EXISTS `securitygroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `securitygroups` (
+  `groupId` int(11) NOT NULL AUTO_INCREMENT,
+  `groupName` varchar(50) DEFAULT NULL,
+  `file_type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`groupId`),
-  UNIQUE INDEX `securitygroups_uk1` (`file_type_id` ASC),
-  CONSTRAINT `securitygroups_fk1`
-    FOREIGN KEY (`file_type_id`)
-    REFERENCES `file_type` (`file_type_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `securitygroups_uk1` (`file_type_id`),
+  CONSTRAINT `securitygroups_fk1` FOREIGN KEY (`file_type_id`) REFERENCES `file_type` (`file_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table state
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `state` (
-  `STATE_ID` INT(11) NOT NULL,
-  `STATE` VARCHAR(10) NOT NULL,
-  `COUNTRY` CHAR(2) NULL DEFAULT NULL,
-  `STATUTE_BARRED_MONTHS` INT(11) NOT NULL,
+--
+-- Table structure for table `state`
+--
+
+-- DROP TABLE IF EXISTS `state`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `state` (
+  `STATE_ID` int(11) NOT NULL,
+  `STATE` varchar(10) NOT NULL,
+  `COUNTRY` char(2) DEFAULT NULL,
+  `STATUTE_BARRED_MONTHS` int(11) NOT NULL,
   PRIMARY KEY (`STATE_ID`),
-  INDEX `state_fk1` (`COUNTRY` ASC),
-  CONSTRAINT `state_fk1`
-    FOREIGN KEY (`COUNTRY`)
-    REFERENCES `country` (`country_id`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  KEY `state_fk1` (`COUNTRY`),
+  CONSTRAINT `state_fk1` FOREIGN KEY (`COUNTRY`) REFERENCES `country` (`country_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table supplier_service
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `supplier_service` (
-  `supplier_service_id` INT(11) NOT NULL,
-  `name` VARCHAR(50) NOT NULL,
-  `myob_inventory_type` VARCHAR(10) NULL DEFAULT NULL,
-  `myob_account_number` INT(11) NOT NULL,
-  `gst_type_id` INT(11) NOT NULL,
-  `active` CHAR(1) NOT NULL DEFAULT 'Y',
+--
+-- Table structure for table `supplier_service`
+--
+
+-- DROP TABLE IF EXISTS `supplier_service`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `supplier_service` (
+  `supplier_service_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `myob_inventory_type` varchar(10) DEFAULT NULL,
+  `myob_account_number` int(11) NOT NULL,
+  `gst_type_id` int(11) NOT NULL,
+  `active` char(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`supplier_service_id`),
-  INDEX `supplier_service_fk1` (`gst_type_id` ASC),
-  CONSTRAINT `supplier_service_fk1`
-    FOREIGN KEY (`gst_type_id`)
-    REFERENCES `gst_type` (`gst_type_id`))
-ENGINE = InnoDB
-CHARACTER SET = latin1;
+  KEY `supplier_service_fk1` (`gst_type_id`),
+  CONSTRAINT `supplier_service_fk1` FOREIGN KEY (`gst_type_id`) REFERENCES `gst_type` (`gst_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table supplierinvoices
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `supplierinvoices` (
-  `invoiceId` INT(11) NOT NULL AUTO_INCREMENT,
-  `invoiceSupplierId` INT(11) NULL DEFAULT NULL,
-  `invoiceNumber` VARCHAR(50) NULL DEFAULT NULL,
-  `invoiceFileId` INT(11) NOT NULL,
-  `invoiceDescription` TEXT NULL DEFAULT NULL,
-  `invoiceSubtotal` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceGST` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `invoiceAuthorisedBy` INT(11) NULL DEFAULT NULL,
-  `invoiceWhoPays` INT(11) NULL DEFAULT NULL,
-  `invoiceDateExported` DATETIME NULL DEFAULT NULL,
-  `invoiceDateEntered` DATETIME NULL DEFAULT NULL,
-  `invoiceEnteredBy` INT(11) NULL DEFAULT NULL,
-  `invoiceClientInvoiceId` INT(11) NULL DEFAULT NULL,
-  `INVOICE_DATE` DATE NULL DEFAULT NULL,
-  `document_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `supplierinvoices`
+--
+
+-- DROP TABLE IF EXISTS `supplierinvoices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `supplierinvoices` (
+  `invoiceId` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceSupplierId` int(11) DEFAULT NULL,
+  `invoiceNumber` varchar(50) DEFAULT NULL,
+  `invoiceFileId` int(11) NOT NULL,
+  `invoiceDescription` text,
+  `invoiceSubtotal` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceGST` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `invoiceAuthorisedBy` int(11) DEFAULT NULL,
+  `invoiceWhoPays` int(11) DEFAULT NULL,
+  `invoiceDateExported` datetime DEFAULT NULL,
+  `invoiceDateEntered` datetime DEFAULT NULL,
+  `invoiceEnteredBy` int(11) DEFAULT NULL,
+  `invoiceClientInvoiceId` int(11) DEFAULT NULL,
+  `INVOICE_DATE` date DEFAULT NULL,
+  `document_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`invoiceId`),
-  UNIQUE INDEX `invoiceNumber` (`invoiceSupplierId` ASC, `invoiceNumber` ASC),
-  INDEX `SUPPLIERINVOICES_FK2` (`invoiceFileId` ASC),
-  INDEX `SUPPLIERINVOICES_FK3` (`invoiceAuthorisedBy` ASC),
-  INDEX `SUPPLIERINVOICES_FK4` (`invoiceEnteredBy` ASC),
-  INDEX `supplierinvoices_fk5` (`document_id` ASC),
-  CONSTRAINT `SUPPLIERINVOICES_FK1`
-    FOREIGN KEY (`invoiceSupplierId`)
-    REFERENCES `suppliers` (`supplierId`),
-  CONSTRAINT `SUPPLIERINVOICES_FK2`
-    FOREIGN KEY (`invoiceFileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `SUPPLIERINVOICES_FK3`
-    FOREIGN KEY (`invoiceAuthorisedBy`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `SUPPLIERINVOICES_FK4`
-    FOREIGN KEY (`invoiceEnteredBy`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `supplierinvoices_fk5`
-    FOREIGN KEY (`document_id`)
-    REFERENCES `document` (`document_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `invoiceNumber` (`invoiceSupplierId`,`invoiceNumber`),
+  KEY `SUPPLIERINVOICES_FK2` (`invoiceFileId`),
+  KEY `SUPPLIERINVOICES_FK3` (`invoiceAuthorisedBy`),
+  KEY `SUPPLIERINVOICES_FK4` (`invoiceEnteredBy`),
+  KEY `supplierinvoices_fk5` (`document_id`),
+  CONSTRAINT `SUPPLIERINVOICES_FK1` FOREIGN KEY (`invoiceSupplierId`) REFERENCES `suppliers` (`supplierId`),
+  CONSTRAINT `SUPPLIERINVOICES_FK2` FOREIGN KEY (`invoiceFileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `SUPPLIERINVOICES_FK3` FOREIGN KEY (`invoiceAuthorisedBy`) REFERENCES `users` (`userId`),
+  CONSTRAINT `SUPPLIERINVOICES_FK4` FOREIGN KEY (`invoiceEnteredBy`) REFERENCES `users` (`userId`),
+  CONSTRAINT `supplierinvoices_fk5` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table suppliers
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `suppliers` (
-  `supplierId` INT(11) NOT NULL AUTO_INCREMENT,
-  `supplierName` VARCHAR(50) NULL DEFAULT NULL,
-  `supplierTradingName` VARCHAR(50) NULL DEFAULT NULL,
-  `supplierHowTrading` INT(11) NOT NULL,
-  `supplierABN` VARCHAR(50) NULL DEFAULT NULL,
-  `supplierACN` VARCHAR(50) NULL DEFAULT NULL,
-  `supplierTypeId` INT(11) NULL DEFAULT NULL,
-  `supplierPrimaryContactId` INT(11) NULL DEFAULT NULL,
-  `supplierPayableContactId` INT(11) NULL DEFAULT NULL,
-  `supplierAddressId` INT(11) NULL DEFAULT NULL,
-  `supplierPostalAddressId` INT(11) NULL DEFAULT NULL,
-  `supplierCreatedBy` INT(11) NULL DEFAULT NULL,
-  `supplierDateCreated` DATETIME NULL DEFAULT NULL,
-  `supplier_service_id` INT(11) NULL DEFAULT NULL,
-  `myob_card_name` VARCHAR(250) NULL DEFAULT NULL,
+--
+-- Table structure for table `suppliers`
+--
+
+-- DROP TABLE IF EXISTS `suppliers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `suppliers` (
+  `supplierId` int(11) NOT NULL AUTO_INCREMENT,
+  `supplierName` varchar(50) DEFAULT NULL,
+  `supplierTradingName` varchar(50) DEFAULT NULL,
+  `supplierHowTrading` int(11) NOT NULL,
+  `supplierABN` varchar(50) DEFAULT NULL,
+  `supplierACN` varchar(50) DEFAULT NULL,
+  `supplierTypeId` int(11) DEFAULT NULL,
+  `supplierPrimaryContactId` int(11) DEFAULT NULL,
+  `supplierPayableContactId` int(11) DEFAULT NULL,
+  `supplierAddressId` int(11) DEFAULT NULL,
+  `supplierPostalAddressId` int(11) DEFAULT NULL,
+  `supplierCreatedBy` int(11) DEFAULT NULL,
+  `supplierDateCreated` datetime DEFAULT NULL,
+  `supplier_service_id` int(11) DEFAULT NULL,
+  `myob_card_name` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`supplierId`),
-  INDEX `suppliers_fk1` (`supplier_service_id` ASC),
-  CONSTRAINT `suppliers_fk1`
-    FOREIGN KEY (`supplier_service_id`)
-    REFERENCES `supplier_service` (`supplier_service_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `suppliers_fk1` (`supplier_service_id`),
+  CONSTRAINT `suppliers_fk1` FOREIGN KEY (`supplier_service_id`) REFERENCES `supplier_service` (`supplier_service_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table suppliertypes
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `suppliertypes` (
-  `suptId` INT(11) NOT NULL AUTO_INCREMENT,
-  `suptName` VARCHAR(100) NULL DEFAULT NULL,
-  PRIMARY KEY (`suptId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `suppliertypes`
+--
 
--- ----------------------------------------------------------------------------
--- Table supplierusers
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `supplierusers` (
-  `userId` INT(11) NOT NULL,
-  `supplierId` INT(11) NOT NULL,
-  PRIMARY KEY (`userId`, `supplierId`),
-  INDEX `SUPPLIER_USERS_FK2` (`supplierId` ASC),
-  CONSTRAINT `SUPPLIER_USERS_FK1`
-    FOREIGN KEY (`userId`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `SUPPLIER_USERS_FK2`
-    FOREIGN KEY (`supplierId`)
-    REFERENCES `suppliers` (`supplierId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `suppliertypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `suppliertypes` (
+  `suptId` int(11) NOT NULL AUTO_INCREMENT,
+  `suptName` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`suptId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table system_access
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `system_access` (
-  `SECURITY_GROUP_ID` INT(11) NOT NULL,
-  `SYSTEM_FUNCTION_ID` INT(11) NOT NULL,
-  PRIMARY KEY (`SECURITY_GROUP_ID`, `SYSTEM_FUNCTION_ID`),
-  INDEX `SYSTEM_ACCESS_FK2` (`SYSTEM_FUNCTION_ID` ASC),
-  CONSTRAINT `SYSTEM_ACCESS_FK1`
-    FOREIGN KEY (`SECURITY_GROUP_ID`)
-    REFERENCES `securitygroups` (`groupId`),
-  CONSTRAINT `SYSTEM_ACCESS_FK2`
-    FOREIGN KEY (`SYSTEM_FUNCTION_ID`)
-    REFERENCES `system_function` (`SYSTEM_FUNCTION_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `supplierusers`
+--
 
--- ----------------------------------------------------------------------------
--- Table system_function
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `system_function` (
-  `SYSTEM_FUNCTION_ID` INT(11) NOT NULL,
-  `MODULE` VARCHAR(50) NOT NULL,
-  `NAME` VARCHAR(100) NOT NULL,
-  `DESCRIPTION` VARCHAR(255) NOT NULL,
-  `QUERY` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`SYSTEM_FUNCTION_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `supplierusers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `supplierusers` (
+  `userId` int(11) NOT NULL,
+  `supplierId` int(11) NOT NULL,
+  PRIMARY KEY (`userId`,`supplierId`),
+  KEY `SUPPLIER_USERS_FK2` (`supplierId`),
+  CONSTRAINT `SUPPLIER_USERS_FK1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+  CONSTRAINT `SUPPLIER_USERS_FK2` FOREIGN KEY (`supplierId`) REFERENCES `suppliers` (`supplierId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table templates
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `templates` (
-  `tempId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tempType` INT(11) NOT NULL,
-  `tempName` VARCHAR(255) NULL DEFAULT NULL,
-  `tempBody` TEXT NULL DEFAULT NULL,
-  `tempContentType` VARCHAR(128) NULL DEFAULT NULL,
-  `TEMP_CONTENT` MEDIUMBLOB NULL DEFAULT NULL,
-  `internal` CHAR(1) NOT NULL DEFAULT 'Y',
-  `content_name` VARCHAR(100) NULL DEFAULT NULL,
-  PRIMARY KEY (`tempId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `system_access`
+--
 
--- ----------------------------------------------------------------------------
--- Table tpdebtors
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpdebtors` (
-  `tpdId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tpdContactId` INT(11) NULL DEFAULT NULL,
-  `NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `LEGAL_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `TRADING_NAME` VARCHAR(255) NULL DEFAULT NULL,
-  `ABN` VARCHAR(20) NULL DEFAULT NULL,
-  `ACN` VARCHAR(20) NULL DEFAULT NULL,
-  `next_tpd_id` INT(11) NULL DEFAULT NULL,
-  `bank_details` VARCHAR(512) NULL DEFAULT NULL,
+-- DROP TABLE IF EXISTS `system_access`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `system_access` (
+  `SECURITY_GROUP_ID` int(11) NOT NULL,
+  `SYSTEM_FUNCTION_ID` int(11) NOT NULL,
+  PRIMARY KEY (`SECURITY_GROUP_ID`,`SYSTEM_FUNCTION_ID`),
+  KEY `SYSTEM_ACCESS_FK2` (`SYSTEM_FUNCTION_ID`),
+  CONSTRAINT `SYSTEM_ACCESS_FK1` FOREIGN KEY (`SECURITY_GROUP_ID`) REFERENCES `securitygroups` (`groupId`),
+  CONSTRAINT `SYSTEM_ACCESS_FK2` FOREIGN KEY (`SYSTEM_FUNCTION_ID`) REFERENCES `system_function` (`SYSTEM_FUNCTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `system_function`
+--
+
+-- DROP TABLE IF EXISTS `system_function`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `system_function` (
+  `SYSTEM_FUNCTION_ID` int(11) NOT NULL,
+  `MODULE` varchar(50) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `DESCRIPTION` varchar(255) NOT NULL,
+  `QUERY` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`SYSTEM_FUNCTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `templates`
+--
+
+-- DROP TABLE IF EXISTS `templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `templates` (
+  `tempId` int(11) NOT NULL AUTO_INCREMENT,
+  `tempType` int(11) NOT NULL,
+  `tempName` varchar(255) DEFAULT NULL,
+  `tempBody` text,
+  `tempContentType` varchar(128) DEFAULT NULL,
+  `TEMP_CONTENT` mediumblob,
+  `internal` char(1) NOT NULL DEFAULT 'Y',
+  `content_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`tempId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tpdebtors`
+--
+
+-- DROP TABLE IF EXISTS `tpdebtors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpdebtors` (
+  `tpdId` int(11) NOT NULL AUTO_INCREMENT,
+  `tpdContactId` int(11) DEFAULT NULL,
+  `NAME` varchar(255) DEFAULT NULL,
+  `LEGAL_NAME` varchar(255) DEFAULT NULL,
+  `TRADING_NAME` varchar(255) DEFAULT NULL,
+  `ABN` varchar(20) DEFAULT NULL,
+  `ACN` varchar(20) DEFAULT NULL,
+  `next_tpd_id` int(11) DEFAULT NULL,
+  `bank_details` varchar(512) DEFAULT NULL,
+  `fileAmountClaimed` decimal(19,2) DEFAULT NULL,
+  `fileAmountEstimated` decimal(19,2) DEFAULT NULL,
+  `file_id` int(11) DEFAULT NULL,
+  `tpp_id` int(11) DEFAULT NULL,
+  `tpo_id` int(11) DEFAULT NULL,
+  `tpi_id` int(11) DEFAULT NULL,
+  `tpr_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tpdId`),
-  INDEX `tpdContactId` (`tpdContactId` ASC),
-  INDEX `tpdebtors_fk1` (`next_tpd_id` ASC),
-  CONSTRAINT `tpdebtors_fk1`
-    FOREIGN KEY (`next_tpd_id`)
-    REFERENCES `tpdebtors` (`tpdId`),
-  CONSTRAINT `tpdebtors_ibfk_1`
-    FOREIGN KEY (`tpdContactId`)
-    REFERENCES `contacts` (`contactId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `tpdContactId` (`tpdContactId`),
+  KEY `tpdebtors_fk1` (`next_tpd_id`),
+  KEY `tpdebtors_fk2` (`file_id`),
+  KEY `tpdebtors_fk3` (`tpp_id`),
+  KEY `tpdebtors_fk4` (`tpo_id`),
+  KEY `tpdebtors_fk5` (`tpi_id`),
+  KEY `tpdebtors_fk6` (`tpr_id`),
+  CONSTRAINT `tpdebtors_fk1` FOREIGN KEY (`next_tpd_id`) REFERENCES `tpdebtors` (`tpdId`),
+  CONSTRAINT `tpdebtors_fk2` FOREIGN KEY (`file_id`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `tpdebtors_fk3` FOREIGN KEY (`tpp_id`) REFERENCES `tpproperties` (`tppId`),
+  CONSTRAINT `tpdebtors_fk4` FOREIGN KEY (`tpo_id`) REFERENCES `tpowners` (`tpoId`),
+  CONSTRAINT `tpdebtors_fk5` FOREIGN KEY (`tpi_id`) REFERENCES `tpinsurers` (`tpiId`),
+  CONSTRAINT `tpdebtors_fk6` FOREIGN KEY (`tpr_id`) REFERENCES `tprepresentatives` (`tprId`),
+  CONSTRAINT `tpdebtors_ibfk_1` FOREIGN KEY (`tpdContactId`) REFERENCES `contacts` (`contactId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table tpi
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpi` (
-  `tpiId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tpiName` VARCHAR(50) NULL DEFAULT NULL,
-  `CONTACT_PHONE` VARCHAR(255) NULL DEFAULT NULL,
-  `CONTACT_ID` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `tpi`
+--
+
+-- DROP TABLE IF EXISTS `tpi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpi` (
+  `tpiId` int(11) NOT NULL AUTO_INCREMENT,
+  `tpiName` varchar(50) DEFAULT NULL,
+  `CONTACT_PHONE` varchar(255) DEFAULT NULL,
+  `CONTACT_ID` int(11) DEFAULT NULL,
   PRIMARY KEY (`tpiId`),
-  UNIQUE INDEX `tpi_uk1` (`tpiName` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `tpi_uk1` (`tpiName`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table tpinsurers
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpinsurers` (
-  `tpiId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tpiTPI` INT(11) NULL DEFAULT NULL,
-  `tpiContactId` INT(11) NULL DEFAULT NULL,
-  `tpiPolicyNumber` VARCHAR(100) NULL DEFAULT NULL,
-  `tpiClaimNumber` VARCHAR(100) NULL DEFAULT NULL,
+--
+-- Table structure for table `tpinsurers`
+--
+
+-- DROP TABLE IF EXISTS `tpinsurers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpinsurers` (
+  `tpiId` int(11) NOT NULL AUTO_INCREMENT,
+  `tpiTPI` int(11) DEFAULT NULL,
+  `tpiContactId` int(11) DEFAULT NULL,
+  `tpiPolicyNumber` varchar(100) DEFAULT NULL,
+  `tpiClaimNumber` varchar(100) DEFAULT NULL,
+  `tpd_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tpiId`),
-  INDEX `TPINSURERS_FK1` (`tpiTPI` ASC),
-  INDEX `TPINSURERS_FK2` (`tpiContactId` ASC),
-  CONSTRAINT `TPINSURERS_FK1`
-    FOREIGN KEY (`tpiTPI`)
-    REFERENCES `tpi` (`tpiId`),
-  CONSTRAINT `TPINSURERS_FK2`
-    FOREIGN KEY (`tpiContactId`)
-    REFERENCES `contacts` (`contactId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `TPINSURERS_FK1` (`tpiTPI`),
+  KEY `TPINSURERS_FK2` (`tpiContactId`),
+  KEY `tpinsurers_fk3` (`tpd_id`),
+  CONSTRAINT `TPINSURERS_FK1` FOREIGN KEY (`tpiTPI`) REFERENCES `tpi` (`tpiId`),
+  CONSTRAINT `TPINSURERS_FK2` FOREIGN KEY (`tpiContactId`) REFERENCES `contacts` (`contactId`),
+  CONSTRAINT `tpinsurers_fk3` FOREIGN KEY (`tpd_id`) REFERENCES `tpdebtors` (`tpdId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table tpowners
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpowners` (
-  `tpoId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tpoContactId` INT(11) NULL DEFAULT NULL,
-  `tpoName` VARCHAR(100) NULL DEFAULT NULL,
-  `tpoCompanyName` VARCHAR(100) NULL DEFAULT NULL,
-  PRIMARY KEY (`tpoId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `tpowners`
+--
 
--- ----------------------------------------------------------------------------
--- Table tpproperties
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpproperties` (
-  `tppId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tppLicenceNumber` VARCHAR(20) NULL DEFAULT NULL,
-  `tppRegoNumber` VARCHAR(20) NULL DEFAULT NULL,
-  `tppVehicleMake` VARCHAR(50) NULL DEFAULT NULL,
-  `tppVehicleModel` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`tppId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `tpowners`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpowners` (
+  `tpoId` int(11) NOT NULL AUTO_INCREMENT,
+  `tpoContactId` int(11) DEFAULT NULL,
+  `tpoName` varchar(100) DEFAULT NULL,
+  `tpoCompanyName` varchar(100) DEFAULT NULL,
+  `tpd_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tpoId`),
+  KEY `tpowners_fk1` (`tpd_id`),
+  CONSTRAINT `tpowners_fk1` FOREIGN KEY (`tpd_id`) REFERENCES `tpdebtors` (`tpdId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table tprepresentatives
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tprepresentatives` (
-  `tprId` INT(11) NOT NULL AUTO_INCREMENT,
-  `tprContactId` INT(11) NULL DEFAULT NULL,
-  `tprName` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`tprId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `tpproperties`
+--
 
--- ----------------------------------------------------------------------------
--- Table tpstatus
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tpstatus` (
-  `statusId` INT(11) NOT NULL AUTO_INCREMENT,
-  `statusName` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`statusId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `tpproperties`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpproperties` (
+  `tppId` int(11) NOT NULL AUTO_INCREMENT,
+  `tppLicenceNumber` varchar(20) DEFAULT NULL,
+  `tppRegoNumber` varchar(20) DEFAULT NULL,
+  `tppVehicleMake` varchar(50) DEFAULT NULL,
+  `tppVehicleModel` varchar(50) DEFAULT NULL,
+  `tpd_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tppId`),
+  KEY `tpproperties_fk1` (`tpd_id`),
+  CONSTRAINT `tpproperties_fk1` FOREIGN KEY (`tpd_id`) REFERENCES `tpdebtors` (`tpdId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table transaction_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `transaction_type` (
-  `TRANSACTION_TYPE_ID` INT(11) NOT NULL,
-  `FACTOR` INT(11) NOT NULL DEFAULT '1',
-  `CODE` VARCHAR(32) NULL DEFAULT NULL,
-  `DESCRIPTION` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`TRANSACTION_TYPE_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `tprepresentatives`
+--
 
--- ----------------------------------------------------------------------------
--- Table transactions
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `transactions` (
-  `transId` INT(11) NOT NULL AUTO_INCREMENT,
-  `transFileId` INT(11) NULL DEFAULT NULL,
-  `transExplanation` TEXT NULL DEFAULT NULL,
-  `transAmount` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `transType` INT(11) NOT NULL,
-  `transDate` DATE NOT NULL,
-  `transOwnerId` INT(11) NULL DEFAULT NULL,
-  `transOwnerType` VARCHAR(50) NULL DEFAULT NULL,
-  `transInvoiceId` INT(11) NULL DEFAULT NULL,
-  `transGST` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `transFee` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `RECOVERED_BY` VARCHAR(10) NULL DEFAULT NULL,
-  `JOURNALLED` CHAR(1) NOT NULL DEFAULT 'N',
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `REVERSE_ID` INT(11) NULL DEFAULT NULL,
-  `UNITS` INT(11) NULL DEFAULT NULL,
-  `UNIT_PRICE` DECIMAL(19,2) NULL DEFAULT NULL,
-  `exclude_from_invoice` CHAR(1) NULL DEFAULT NULL,
-  `defer_from_invoice` CHAR(1) NULL DEFAULT NULL,
-  `gst_type_id` INT(11) NULL DEFAULT NULL,
-  `supplier_service_id` INT(11) NULL DEFAULT NULL,
+-- DROP TABLE IF EXISTS `tprepresentatives`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tprepresentatives` (
+  `tprId` int(11) NOT NULL AUTO_INCREMENT,
+  `tprContactId` int(11) DEFAULT NULL,
+  `tprName` varchar(50) DEFAULT NULL,
+  `tpd_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tprId`),
+  KEY `tprepresentatives_fk1` (`tpd_id`),
+  CONSTRAINT `tprepresentatives_fk1` FOREIGN KEY (`tpd_id`) REFERENCES `tpdebtors` (`tpdId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tpstatus`
+--
+
+-- DROP TABLE IF EXISTS `tpstatus`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tpstatus` (
+  `statusId` int(11) NOT NULL AUTO_INCREMENT,
+  `statusName` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`statusId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `transaction_type`
+--
+
+-- DROP TABLE IF EXISTS `transaction_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transaction_type` (
+  `TRANSACTION_TYPE_ID` int(11) NOT NULL,
+  `FACTOR` int(11) NOT NULL DEFAULT '1',
+  `CODE` varchar(32) DEFAULT NULL,
+  `DESCRIPTION` varchar(255) NOT NULL,
+  PRIMARY KEY (`TRANSACTION_TYPE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `transactions`
+--
+
+-- DROP TABLE IF EXISTS `transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transactions` (
+  `transId` int(11) NOT NULL AUTO_INCREMENT,
+  `transFileId` int(11) DEFAULT NULL,
+  `transExplanation` text,
+  `transAmount` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `transType` int(11) NOT NULL,
+  `transDate` date NOT NULL,
+  `transOwnerId` int(11) DEFAULT NULL,
+  `transOwnerType` varchar(50) DEFAULT NULL,
+  `transInvoiceId` int(11) DEFAULT NULL,
+  `transGST` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `transFee` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `RECOVERED_BY` varchar(10) DEFAULT NULL,
+  `JOURNALLED` char(1) NOT NULL DEFAULT 'N',
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `REVERSE_ID` int(11) DEFAULT NULL,
+  `UNITS` int(11) DEFAULT NULL,
+  `UNIT_PRICE` decimal(19,2) DEFAULT NULL,
+  `exclude_from_invoice` char(1) DEFAULT NULL,
+  `defer_from_invoice` char(1) DEFAULT NULL,
+  `gst_type_id` int(11) DEFAULT NULL,
+  `supplier_service_id` int(11) DEFAULT NULL,
+  `bank_transaction_id` char(36) DEFAULT NULL,
   PRIMARY KEY (`transId`),
-  INDEX `TRANSACTIONS_FK1` (`transFileId` ASC),
-  INDEX `TRANSACTIONS_FK2` (`transType` ASC),
-  INDEX `TRANSACTIONS_FK3` (`transInvoiceId` ASC),
-  INDEX `TRANSACTIONS_IDX1` (`transOwnerType` ASC),
-  INDEX `TRANSACTIONS_FK4` (`REVERSE_ID` ASC),
-  INDEX `transactions_fk5` (`gst_type_id` ASC),
-  INDEX `transactions_fk6` (`supplier_service_id` ASC),
-  INDEX `transactions_idx4` (`transDate` ASC),
-  INDEX `transactions_idx5` (`transOwnerId` ASC, `transOwnerType` ASC),
-  CONSTRAINT `TRANSACTIONS_FK1`
-    FOREIGN KEY (`transFileId`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `TRANSACTIONS_FK2`
-    FOREIGN KEY (`transType`)
-    REFERENCES `transaction_type` (`TRANSACTION_TYPE_ID`),
-  CONSTRAINT `TRANSACTIONS_FK3`
-    FOREIGN KEY (`transInvoiceId`)
-    REFERENCES `invoices` (`invoiceId`),
-  CONSTRAINT `TRANSACTIONS_FK4`
-    FOREIGN KEY (`REVERSE_ID`)
-    REFERENCES `transactions` (`transId`),
-  CONSTRAINT `transactions_fk5`
-    FOREIGN KEY (`gst_type_id`)
-    REFERENCES `gst_type` (`gst_type_id`),
-  CONSTRAINT `transactions_fk6`
-    FOREIGN KEY (`supplier_service_id`)
-    REFERENCES `supplier_service` (`supplier_service_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `transactions_uk1` (`bank_transaction_id`),
+  KEY `TRANSACTIONS_FK1` (`transFileId`),
+  KEY `TRANSACTIONS_FK2` (`transType`),
+  KEY `TRANSACTIONS_FK3` (`transInvoiceId`),
+  KEY `TRANSACTIONS_IDX1` (`transOwnerType`),
+  KEY `TRANSACTIONS_FK4` (`REVERSE_ID`),
+  KEY `transactions_fk5` (`gst_type_id`),
+  KEY `transactions_fk6` (`supplier_service_id`),
+  KEY `transactions_idx4` (`transDate`),
+  KEY `transactions_idx5` (`transOwnerId`,`transOwnerType`),
+  CONSTRAINT `TRANSACTIONS_FK1` FOREIGN KEY (`transFileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `TRANSACTIONS_FK2` FOREIGN KEY (`transType`) REFERENCES `transaction_type` (`TRANSACTION_TYPE_ID`),
+  CONSTRAINT `TRANSACTIONS_FK3` FOREIGN KEY (`transInvoiceId`) REFERENCES `invoices` (`invoiceId`),
+  CONSTRAINT `TRANSACTIONS_FK4` FOREIGN KEY (`REVERSE_ID`) REFERENCES `transactions` (`transId`),
+  CONSTRAINT `transactions_fk5` FOREIGN KEY (`gst_type_id`) REFERENCES `gst_type` (`gst_type_id`),
+  CONSTRAINT `transactions_fk6` FOREIGN KEY (`supplier_service_id`) REFERENCES `supplier_service` (`supplier_service_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table user_audit
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_audit` (
-  `user_audit_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `user_id` INT(11) NOT NULL,
-  `audit_type_id` INT(11) NOT NULL,
-  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description` VARCHAR(1024) NULL DEFAULT NULL,
+--
+-- Table structure for table `user_audit`
+--
+
+-- DROP TABLE IF EXISTS `user_audit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_audit` (
+  `user_audit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `audit_type_id` int(11) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`user_audit_id`),
-  UNIQUE INDEX `user_audit_uk1` (`user_id` ASC, `audit_type_id` ASC, `created_date` ASC),
-  INDEX `user_audit_fk2` (`audit_type_id` ASC),
-  CONSTRAINT `user_audit_fk1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `user_audit_fk2`
-    FOREIGN KEY (`audit_type_id`)
-    REFERENCES `audit_type` (`audit_type_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `user_audit_uk1` (`user_id`,`audit_type_id`,`created_date`),
+  KEY `user_audit_fk2` (`audit_type_id`),
+  CONSTRAINT `user_audit_fk1` FOREIGN KEY (`user_id`) REFERENCES `users` (`userId`),
+  CONSTRAINT `user_audit_fk2` FOREIGN KEY (`audit_type_id`) REFERENCES `audit_type` (`audit_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table user_notification
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_notification` (
-  `userId` INT(11) NOT NULL,
-  `close_file_advice` CHAR(1) NOT NULL DEFAULT 'Y',
-  `write_off_advice` CHAR(1) NOT NULL DEFAULT 'Y',
-  `close_file_advice_rule` VARCHAR(512) NULL DEFAULT NULL,
-  `write_off_advice_rule` VARCHAR(512) NULL DEFAULT NULL,
+--
+-- Table structure for table `user_device`
+--
+
+-- DROP TABLE IF EXISTS `user_device`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_device` (
+  `user_device_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `device` varchar(128) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_device_id`),
+  UNIQUE KEY `user_device_uk1` (`user_id`,`device`),
+  CONSTRAINT `user_device_fk1` FOREIGN KEY (`user_id`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_notification`
+--
+
+-- DROP TABLE IF EXISTS `user_notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_notification` (
+  `userId` int(11) NOT NULL,
+  `close_file_advice` char(1) NOT NULL DEFAULT 'Y',
+  `write_off_advice` char(1) NOT NULL DEFAULT 'Y',
+  `close_file_advice_rule` varchar(512) DEFAULT NULL,
+  `write_off_advice_rule` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`userId`),
-  CONSTRAINT `USER_NOTIFICATION_FK1`
-    FOREIGN KEY (`userId`)
-    REFERENCES `users` (`userId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+  CONSTRAINT `USER_NOTIFICATION_FK1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table user_type
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_type` (
-  `USER_TYPE_ID` INT(11) NOT NULL,
-  `USER_TYPE_NAME` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`USER_TYPE_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `user_type`
+--
 
--- ----------------------------------------------------------------------------
--- Table user_workgroup
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_workgroup` (
-  `USER_ID` INT(11) NOT NULL,
-  `WORKGROUP_ID` INT(11) NOT NULL,
-  `WORKGROUP_RESPONSIBLE` CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`USER_ID`, `WORKGROUP_ID`),
-  INDEX `USER_WORKGROUP_FK2` (`WORKGROUP_ID` ASC),
-  CONSTRAINT `USER_WORKGROUP_FK1`
-    FOREIGN KEY (`USER_ID`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `USER_WORKGROUP_FK2`
-    FOREIGN KEY (`WORKGROUP_ID`)
-    REFERENCES `workgroups` (`wgroupId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `user_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_type` (
+  `USER_TYPE_ID` int(11) NOT NULL,
+  `USER_TYPE_NAME` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`USER_TYPE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table useractivities
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `useractivities` (
-  `activityId` INT(11) NOT NULL AUTO_INCREMENT,
-  `activityType` INT(11) NULL DEFAULT NULL,
-  `activityDate` DATETIME NULL DEFAULT NULL,
-  `activityUserId` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`activityId`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+--
+-- Table structure for table `user_workgroup`
+--
 
--- ----------------------------------------------------------------------------
--- Table users
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `users` (
-  `userId` INT(11) NOT NULL AUTO_INCREMENT,
-  `userLogin` VARCHAR(50) NULL DEFAULT NULL,
-  `userPassword` VARCHAR(50) NULL DEFAULT NULL,
-  `userName` VARCHAR(100) NULL DEFAULT NULL,
-  `userEmail` VARCHAR(100) NULL DEFAULT NULL,
-  `userPhone` VARCHAR(20) NULL DEFAULT NULL,
-  `userSecurityGroupId` INT(11) NOT NULL,
-  `userType` INT(11) NOT NULL,
-  `userPasswordExpireDate` DATE NULL DEFAULT NULL,
-  `userStatus` INT(11) NULL DEFAULT '1',
-  `PARENT_USER_ID` INT(11) NULL DEFAULT NULL,
-  `DEFAULT_RATE` DECIMAL(19,2) NULL DEFAULT NULL,
-  `BUDGET_UNITS` INT(11) NULL DEFAULT NULL,
-  `CREATED_BY` INT(11) NULL DEFAULT NULL,
-  `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `UPDATED_BY` INT(11) NULL DEFAULT NULL,
-  `UPDATED_DATE` TIMESTAMP NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `userCreatedBy` INT(11) NULL DEFAULT NULL,
-  `userCreatedDate` DATETIME NULL DEFAULT NULL,
-  `report_schedule` TEXT NULL DEFAULT NULL,
-  `country` CHAR(2) NULL DEFAULT NULL,
-  `password_encrypted` CHAR(1) NOT NULL DEFAULT 'N',
-  `ftp_username_host` VARCHAR(100) NULL DEFAULT NULL,
-  `ftp_pathname` VARCHAR(100) NULL DEFAULT NULL,
-  `ssh_identity` VARCHAR(100) NULL DEFAULT NULL,
-  `alt_user_id` VARCHAR(50) NULL DEFAULT NULL,
-  `user_initials` CHAR(3) NULL DEFAULT NULL,
-  `email_alt` VARCHAR(100) NULL DEFAULT NULL,
-  `idp` CHAR(1) NOT NULL DEFAULT 'N',
+-- DROP TABLE IF EXISTS `user_workgroup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_workgroup` (
+  `USER_ID` int(11) NOT NULL,
+  `WORKGROUP_ID` int(11) NOT NULL,
+  `WORKGROUP_RESPONSIBLE` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`USER_ID`,`WORKGROUP_ID`),
+  KEY `USER_WORKGROUP_FK2` (`WORKGROUP_ID`),
+  CONSTRAINT `USER_WORKGROUP_FK1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`userId`),
+  CONSTRAINT `USER_WORKGROUP_FK2` FOREIGN KEY (`WORKGROUP_ID`) REFERENCES `workgroups` (`wgroupId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `useractivities`
+--
+
+-- DROP TABLE IF EXISTS `useractivities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `useractivities` (
+  `activityId` int(11) NOT NULL AUTO_INCREMENT,
+  `activityType` int(11) DEFAULT NULL,
+  `activityDate` datetime DEFAULT NULL,
+  `activityUserId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`activityId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+-- DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `userId` int(11) NOT NULL AUTO_INCREMENT,
+  `userLogin` varchar(50) DEFAULT NULL,
+  `userPassword` varchar(50) DEFAULT NULL,
+  `userName` varchar(100) DEFAULT NULL,
+  `userEmail` varchar(100) DEFAULT NULL,
+  `userPhone` varchar(20) DEFAULT NULL,
+  `userSecurityGroupId` int(11) NOT NULL,
+  `userType` int(11) NOT NULL,
+  `userPasswordExpireDate` date DEFAULT NULL,
+  `userStatus` int(11) DEFAULT '1',
+  `PARENT_USER_ID` int(11) DEFAULT NULL,
+  `DEFAULT_RATE` decimal(19,2) DEFAULT NULL,
+  `BUDGET_UNITS` int(11) DEFAULT NULL,
+  `CREATED_BY` int(11) DEFAULT NULL,
+  `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATED_BY` int(11) DEFAULT NULL,
+  `UPDATED_DATE` timestamp NULL DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `userCreatedBy` int(11) DEFAULT NULL,
+  `userCreatedDate` datetime DEFAULT NULL,
+  `report_schedule` text,
+  `country` char(2) DEFAULT NULL,
+  `password_encrypted` char(1) NOT NULL DEFAULT 'N',
+  `ftp_username_host` varchar(100) DEFAULT NULL,
+  `ftp_pathname` varchar(100) DEFAULT NULL,
+  `ssh_identity` varchar(100) DEFAULT NULL,
+  `alt_user_id` varchar(50) DEFAULT NULL,
+  `user_initials` char(3) DEFAULT NULL,
+  `email_alt` varchar(100) DEFAULT NULL,
+  `idp` char(1) NOT NULL DEFAULT 'N',
+  `mfa` char(1) NOT NULL DEFAULT 'N',
+  `user_id` char(36) DEFAULT NULL,
   PRIMARY KEY (`userId`),
-  INDEX `USERS_FK1` (`userSecurityGroupId` ASC),
-  INDEX `USERS_FK4` (`PARENT_USER_ID` ASC),
-  INDEX `users_fk6` (`country` ASC),
-  CONSTRAINT `USERS_FK1`
-    FOREIGN KEY (`userSecurityGroupId`)
-    REFERENCES `securitygroups` (`groupId`),
-  CONSTRAINT `USERS_FK4`
-    FOREIGN KEY (`PARENT_USER_ID`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `users_fk6`
-    FOREIGN KEY (`country`)
-    REFERENCES `country` (`country_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  UNIQUE KEY `users_uk1` (`userLogin`),
+  UNIQUE KEY `users_uk2` (`user_id`),
+  KEY `USERS_FK1` (`userSecurityGroupId`),
+  KEY `USERS_FK4` (`PARENT_USER_ID`),
+  KEY `users_fk6` (`country`),
+  CONSTRAINT `USERS_FK1` FOREIGN KEY (`userSecurityGroupId`) REFERENCES `securitygroups` (`groupId`),
+  CONSTRAINT `USERS_FK4` FOREIGN KEY (`PARENT_USER_ID`) REFERENCES `users` (`userId`),
+  CONSTRAINT `users_fk6` FOREIGN KEY (`country`) REFERENCES `country` (`country_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `witnesses`
+--
 
--- ----------------------------------------------------------------------------
--- Table user_device
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_device` (
-  user_device_id int(11)      NOT NULL AUTO_INCREMENT,
-  user_id        int(11)      NOT NULL,
-  device         varchar(128) NOT NULL,
-  created_date   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT user_device_pk PRIMARY KEY (user_device_id),
-  UNIQUE INDEX `user_device_uk1` (`user_id` ASC, `device` ASC),
-  CONSTRAINT `user_device_fk1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `users` (`userId`))
-ENGINE=InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARSET=utf8;
+-- DROP TABLE IF EXISTS `witnesses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `witnesses` (
+  `witnessId` int(11) NOT NULL AUTO_INCREMENT,
+  `witnessFileId` int(11) DEFAULT NULL,
+  `witnessContactId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`witnessId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `woauth_limit`
+--
 
--- ----------------------------------------------------------------------------
--- Table witnesses
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `witnesses` (
-  `witnessId` INT(11) NOT NULL AUTO_INCREMENT,
-  `witnessFileId` INT(11) NULL DEFAULT NULL,
-  `witnessContactId` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`witnessId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
-
--- ----------------------------------------------------------------------------
--- Table woauth_limit
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `woauth_limit` (
-  `WOAUTH_LIMIT_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `LIMIT_MIN` INT(11) NOT NULL,
-  `LIMIT_MAX` INT(11) NULL DEFAULT NULL,
-  `SECURITY_GROUP_ID` INT(11) NOT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
+-- DROP TABLE IF EXISTS `woauth_limit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `woauth_limit` (
+  `WOAUTH_LIMIT_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `LIMIT_MIN` int(11) NOT NULL,
+  `LIMIT_MAX` int(11) DEFAULT NULL,
+  `SECURITY_GROUP_ID` int(11) NOT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`WOAUTH_LIMIT_ID`),
-  INDEX `WOAUTH_LIMIT_FK1` (`SECURITY_GROUP_ID` ASC),
-  CONSTRAINT `WOAUTH_LIMIT_FK1`
-    FOREIGN KEY (`SECURITY_GROUP_ID`)
-    REFERENCES `securitygroups` (`groupId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `WOAUTH_LIMIT_FK1` (`SECURITY_GROUP_ID`),
+  CONSTRAINT `WOAUTH_LIMIT_FK1` FOREIGN KEY (`SECURITY_GROUP_ID`) REFERENCES `securitygroups` (`groupId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table wodata
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `wodata` (
-  `WODATA_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `WO_TYPE` VARCHAR(10) NOT NULL DEFAULT 'WO',
-  `FILE_ID` INT(11) NOT NULL,
-  `WO_DATE` DATE NOT NULL,
-  `WO_AMOUNT` DECIMAL(19,2) NOT NULL DEFAULT '0.00',
-  `REASON` TEXT NOT NULL,
-  `REQUESTED_BY` INT(11) NOT NULL,
-  `REQUESTED_DATE` DATE NOT NULL,
-  `AUTHORISED_BY` INT(11) NULL DEFAULT NULL,
-  `AUTHORISED_DATE` DATE NULL DEFAULT NULL,
-  `STATUS` CHAR(1) NULL DEFAULT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  `CLOSE_CODE_ID` INT(11) NULL DEFAULT NULL,
-  `parent_wodata_id` INT(11) NULL DEFAULT NULL,
+--
+-- Table structure for table `wodata`
+--
+
+-- DROP TABLE IF EXISTS `wodata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wodata` (
+  `WODATA_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `WO_TYPE` varchar(10) NOT NULL DEFAULT 'WO',
+  `FILE_ID` int(11) NOT NULL,
+  `WO_DATE` date NOT NULL,
+  `WO_AMOUNT` decimal(19,2) NOT NULL DEFAULT '0.00',
+  `REASON` text NOT NULL,
+  `REQUESTED_BY` int(11) NOT NULL,
+  `REQUESTED_DATE` date NOT NULL,
+  `AUTHORISED_BY` int(11) DEFAULT NULL,
+  `AUTHORISED_DATE` date DEFAULT NULL,
+  `STATUS` char(1) DEFAULT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  `CLOSE_CODE_ID` int(11) DEFAULT NULL,
+  `parent_wodata_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`WODATA_ID`),
-  INDEX `WODATA_FK1` (`FILE_ID` ASC),
-  INDEX `WODATA_FK2` (`REQUESTED_BY` ASC),
-  INDEX `WODATA_FK3` (`AUTHORISED_BY` ASC),
-  INDEX `WODATA_FK4` (`CLOSE_CODE_ID` ASC),
-  CONSTRAINT `WODATA_FK1`
-    FOREIGN KEY (`FILE_ID`)
-    REFERENCES `files` (`fileId`),
-  CONSTRAINT `WODATA_FK2`
-    FOREIGN KEY (`REQUESTED_BY`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `WODATA_FK3`
-    FOREIGN KEY (`AUTHORISED_BY`)
-    REFERENCES `users` (`userId`),
-  CONSTRAINT `WODATA_FK4`
-    FOREIGN KEY (`CLOSE_CODE_ID`)
-    REFERENCES `closecodes` (`closeId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+  KEY `WODATA_FK1` (`FILE_ID`),
+  KEY `WODATA_FK2` (`REQUESTED_BY`),
+  KEY `WODATA_FK3` (`AUTHORISED_BY`),
+  KEY `WODATA_FK4` (`CLOSE_CODE_ID`),
+  CONSTRAINT `WODATA_FK1` FOREIGN KEY (`FILE_ID`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `WODATA_FK2` FOREIGN KEY (`REQUESTED_BY`) REFERENCES `users` (`userId`),
+  CONSTRAINT `WODATA_FK3` FOREIGN KEY (`AUTHORISED_BY`) REFERENCES `users` (`userId`),
+  CONSTRAINT `WODATA_FK4` FOREIGN KEY (`CLOSE_CODE_ID`) REFERENCES `closecodes` (`closeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table wodata_action
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `wodata_action` (
-  `WODATA_ACTION_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `WO_TYPE` VARCHAR(10) NOT NULL DEFAULT 'WO',
-  `ACTION_CODE` VARCHAR(20) NOT NULL,
-  `ACTION_NOTATION` VARCHAR(250) NOT NULL,
-  `LOCK_VERSION` INT(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`WODATA_ACTION_ID`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `wodata_action`
+--
 
--- ----------------------------------------------------------------------------
--- Table wodata_action_taken
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `wodata_action_taken` (
-  `WODATA_ID` INT(11) NOT NULL,
-  `WODATA_ACTION_ID` INT(11) NOT NULL,
-  PRIMARY KEY (`WODATA_ID`, `WODATA_ACTION_ID`),
-  INDEX `WODATA_ACTION_TAKEN_FK2` (`WODATA_ACTION_ID` ASC),
-  CONSTRAINT `WODATA_ACTION_TAKEN_FK1`
-    FOREIGN KEY (`WODATA_ID`)
-    REFERENCES `wodata` (`WODATA_ID`),
-  CONSTRAINT `WODATA_ACTION_TAKEN_FK2`
-    FOREIGN KEY (`WODATA_ACTION_ID`)
-    REFERENCES `wodata_action` (`WODATA_ACTION_ID`))
-ENGINE = InnoDB
-CHARACTER SET = utf8;
+-- DROP TABLE IF EXISTS `wodata_action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wodata_action` (
+  `WODATA_ACTION_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `WO_TYPE` varchar(10) NOT NULL DEFAULT 'WO',
+  `ACTION_CODE` varchar(20) NOT NULL,
+  `ACTION_NOTATION` varchar(250) NOT NULL,
+  `LOCK_VERSION` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`WODATA_ACTION_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ----------------------------------------------------------------------------
--- Table workgroups
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `workgroups` (
-  `wgroupId` INT(11) NOT NULL AUTO_INCREMENT,
-  `wgroupName` VARCHAR(100) NULL DEFAULT NULL,
-  `ACTIVE` CHAR(1) NOT NULL DEFAULT 'Y',
-  `date_closed_delay` CHAR(1) NOT NULL DEFAULT 'N',
-  `date_closed_delay_advice` INT(11) NOT NULL DEFAULT '0',
-  `background_color` VARCHAR(32) NULL DEFAULT NULL,
-  PRIMARY KEY (`wgroupId`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-CHARACTER SET = utf8;
+--
+-- Table structure for table `wodata_action_taken`
+--
+
+-- DROP TABLE IF EXISTS `wodata_action_taken`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wodata_action_taken` (
+  `WODATA_ID` int(11) NOT NULL,
+  `WODATA_ACTION_ID` int(11) NOT NULL,
+  PRIMARY KEY (`WODATA_ID`,`WODATA_ACTION_ID`),
+  KEY `WODATA_ACTION_TAKEN_FK2` (`WODATA_ACTION_ID`),
+  CONSTRAINT `WODATA_ACTION_TAKEN_FK1` FOREIGN KEY (`WODATA_ID`) REFERENCES `wodata` (`WODATA_ID`),
+  CONSTRAINT `WODATA_ACTION_TAKEN_FK2` FOREIGN KEY (`WODATA_ACTION_ID`) REFERENCES `wodata_action` (`WODATA_ACTION_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `workgroups`
+--
+
+-- DROP TABLE IF EXISTS `workgroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workgroups` (
+  `wgroupId` int(11) NOT NULL AUTO_INCREMENT,
+  `wgroupName` varchar(100) DEFAULT NULL,
+  `ACTIVE` char(1) NOT NULL DEFAULT 'Y',
+  `date_closed_delay` char(1) NOT NULL DEFAULT 'N',
+  `date_closed_delay_advice` int(11) NOT NULL DEFAULT '0',
+  `background_color` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`wgroupId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 */;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-04-22 11:04:03
 
 -- ----------------------------------------------------------------------------
 -- Routine getActionPriority
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getActionPriority`(action_id INT) RETURNS int(11)
+CREATE FUNCTION `getActionPriority`(action_id INT) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE days, p_0, p_7, p_14, p_21 INT;
@@ -2675,7 +2868,7 @@ DELIMITER ;
 -- Routine getChequeId
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getChequeId`(cheque_type INT, cheque_date DATE, bank_id INT, cheque_payee varchar(50), cheque_number INT) RETURNS int(11)
+CREATE FUNCTION `getChequeId`(cheque_type INT, cheque_date DATE, bank_id INT, cheque_payee varchar(50), cheque_number INT) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE cheque_id INT;
@@ -2690,7 +2883,7 @@ DELIMITER ;
 -- Routine getCompletedActions
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getCompletedActions`(file_id INT) RETURNS int(11)
+CREATE FUNCTION `getCompletedActions`(file_id INT) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE result INT;
@@ -2703,7 +2896,7 @@ DELIMITER ;
 -- Routine getCompletedActions4Client
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getCompletedActions4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE) RETURNS int(11)
+CREATE FUNCTION `getCompletedActions4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE result INT;
@@ -2737,7 +2930,7 @@ DELIMITER ;
 -- ----------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE FUNCTION `getFileAverageDaysOpen4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE) RETURNS int(11)
+CREATE FUNCTION `getFileAverageDaysOpen4Client`(client_id INT, file_status INT, date_start DATE, date_end DATE) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE result INT;
@@ -2812,7 +3005,7 @@ DELIMITER ;
 -- Routine getOwnerBank
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getOwnerBank`(ownerId INT, ownerType VARCHAR(50)) RETURNS int(11)
+CREATE FUNCTION `getOwnerBank`(ownerId INT, ownerType VARCHAR(50)) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE bankId INT;
@@ -2941,7 +3134,7 @@ DELIMITER ;
 -- Routine getWorkingDays
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `getWorkingDays`(date_end DATE, date_start DATE) RETURNS int(11)
+CREATE FUNCTION `getWorkingDays`(date_end DATE, date_start DATE) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE days INT;
@@ -2954,7 +3147,7 @@ DELIMITER ;
 -- Routine updateBillingFile
 -- ----------------------------------------------------------------------------
 DELIMITER $$
-CREATE FUNCTION `updateBillingFile`(file_id INT, fee_flat INT, fee_value INT) RETURNS int(11)
+CREATE FUNCTION `updateBillingFile`(file_id INT, fee_flat INT, fee_value INT) RETURNS int
     DETERMINISTIC
 BEGIN
     DECLARE fee_id INT;
@@ -3045,5 +3238,3 @@ BEGIN
     RETURN result;
 END$$
 DELIMITER ;
-
-SET FOREIGN_KEY_CHECKS = 1;

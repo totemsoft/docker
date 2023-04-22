@@ -12,6 +12,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "date="$(date)
 
 # get source code
+# yes | git archive --format=tar --remote=git@github.com:totemsoft/elixir.git master | tar -xf
+# apt install gh | gh repo clone totemsoft/elixir
 RUN git clone --depth=1 --single-branch --branch master https://github.com/totemsoft/elixir.git /tmp/build
 RUN rm -rf /tmp/build/.git
 # Maven
@@ -19,7 +21,7 @@ ENV M2_REPO https://repo1.maven.org/maven2
 ADD $M2_REPO/com/lowagie/itext/4.2.1/itext-4.2.1.jar /tmp/build/elixir-web/src/main/webapp/WEB-INF/lib
 # create elixir war file
 WORKDIR /tmp/build/
-RUN mvn clean package -Dtest -DfailIfNoTests=false
+RUN mvn clean package -DskipTests
 
 # https://hub.docker.com/r/jboss/wildfly/
 #FROM jboss/wildfly:latest

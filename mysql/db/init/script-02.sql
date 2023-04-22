@@ -1,8 +1,16 @@
 -- USE elixirdb;
 
+-- In MySQL 8.0, XA RECOVER is permitted only to users who have the XA_RECOVER_ADMIN privilege,
+-- which is expected to be granted only to administrative users who have need for it.
 GRANT XA_RECOVER_ADMIN ON *.* TO 'elixir'@'%';
-
 FLUSH PRIVILEGES;
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table DBVERSION
+--
+
+INSERT INTO dbversion (DBVERSION, PREV_DBVERSION) VALUES ('ELIXIR.03.001', NULL);
 
 -- --------------------------------------------------------
 --
@@ -100,10 +108,20 @@ INSERT INTO config (configKey, configValue) VALUES
 ('company.address.suburb', 'TBD'),
 ('company.address.state', 'TBD'),
 ('company.address.postcode', 'TBD'),
-('links.host', 'https://host.com'),
-('links.publicHolidays', 'https://data.gov.au/data/api/3/action/datastore_search?resource_id=31eec35e-1de6-4f04-9703-9be1d43d405b&limit=200');
-
--- update config set configValue = 'localhost' where configKey = 'mail.host';
+('financial.disbursement','25,26,27,28,29,35'),
+('financial.discount','12,24'),
+('financial.fee','21'),
+('financial.journal','14,15'),
+('financial.receipt','1,2,3,4,5,6,7,8,13,14,15,16,17,22,38'),
+('financial.refund','32'),
+('financial.repayment','1,2,3,4,5,6,7,8,13,15,16'),
+('financial.reversal','10,31,32,39'),
+('financial.reversible','9,21,22,36'),
+('financial.trustBalance','1,2,3,4,5,6,7,8,9,10,14,15,16,17,21,22,30,31,32,33,36,37,38,39'),
+('financial.writeoff','11,23'),
+('links.host','https://lana.elixirlegal.com'),
+('links.publicHolidays','https://data.gov.au/data/api/3/action/datastore_search?resource_id=31eec35e-1de6-4f04-9703-9be1d43d405b&limit=200')
+;
 
 
 -- --------------------------------------------------------
@@ -157,6 +175,18 @@ INSERT INTO file_type (file_type_id, name, background_color) VALUES
 
 -- --------------------------------------------------------
 --
+-- Dumping data for table question_type
+--
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (1, 'Checkbox');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (2, 'Radio');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (3, 'Text');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (4, 'Textarea');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (5, 'Date');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (6, 'Dropdown');
+INSERT INTO question_type (question_type_id, question_type_name) VALUES (7, 'Title');
+
+-- --------------------------------------------------------
+--
 -- Dumping data for table securitygroups
 --
 
@@ -190,7 +220,10 @@ INSERT INTO user_type (USER_TYPE_ID, USER_TYPE_NAME) VALUES
 (2, 'Client'),
 (3, 'Agent'),
 (4, 'Supplier'),
-(5, 'System');
+(5, 'System'),
+(6, 'Staff Client'),
+(7, 'Insured')
+;
 
 -- --------------------------------------------------------
 --
@@ -457,7 +490,11 @@ INSERT INTO transaction_type (TRANSACTION_TYPE_ID, FACTOR, CODE, DESCRIPTION) VA
 (32, +1, 'CHQ_REF_REV', 'Cheque refund Reversal'),
 (33, +1, 'RFRC', 'Receipt File Refund Cheque'),
 (34, +1, 'DISC_ACTION', 'Discount allowed on actions'),
-(35, +1, 'DISC_TRANSACTION', 'Discount allowed on transactions')
+(35, +1, 'DISC_TRANSACTION', 'Discount allowed on transactions'),
+(36, -1, 'CHQ_EFT', 'Cheque EFT remittance'),
+(37, -1, 'CHQ_EFT_OVER', 'Cheque EFT Over remittance'),
+(38, -1, 'CHQ_EFT_REF', 'Cheque Refund EFT'),
+(39, +1, 'CHQ_EFT_REV', 'Cheque EFT Reversal')
 ;
 
 -- --------------------------------------------------------
@@ -502,371 +539,206 @@ INSERT INTO workgroups (wgroupId, wgroupName, ACTIVE) VALUES
 ;
 
 --
-DELETE FROM system_access; DELETE FROM system_function;
---
 -- system_function
 --
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1, '/', '/main', 'Main screen access');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(2, '/', '/windowsStatus', 'Windows Status');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(3, '/', '/searchFile', 'Search File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(4, '/', '/editContact', 'Edit Contact');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(5, '/', '/editBilling', 'Edit Billing');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(6, '/', '/getContacts', 'Get Contacts');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(7, '/', '/filter', 'Filter data (ajax request)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(8, '/', '/main', 'parameter=getFileDocuments', 'Get File Documents');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(101, '/', '/mytodo', 'parameter=searchMyToDo', 'My ToDo');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(102, '/', '/toDoToday', 'ToDo Today');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(103, '/', '/exportMyToDo2Csv', 'Export My ToDo to Csv');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(104, '/', '/mytodo', 'parameter=searchBulkAction', 'My ToDo - Search Bulk Action');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(105, '/', '/mytodo', 'parameter=completeBulkAction', 'My ToDo - Complete Bulk Action');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(201, '/', '/listClients', 'List all Clients');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(202, '/', '/editClient', 'Edit Client');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(301, '/', '/listFiles', 'List all Files');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(302, '/', '/viewFile', 'View File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(303, '/', '/listAgentFiles', 'List Agent Files');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(304, '/', '/listSupplierFiles', 'List Supplier Files');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(305, '/', '/editFile', 'Edit File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(306, '/', '/editFileInfo', 'Edit File Info');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(307, '/', '/editThirdParties', 'Edit Third Parties');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(308, '/', '/editPolice', 'Edit Police');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(310, '/', '/editPoliceSimple', 'Edit Police Simple');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(311, '/', '/editFileStatus', 'Edit File Status');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(312, '/', '/editThirdPartiesSimple', 'Edit Third Parties Simple');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(313, '/', '/editIncidentDetailsSimple', 'Edit Incident Details Simple');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(314, '/', '/editInsuredDetails', 'Edit Insured Details');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(315, '/', '/editClientDetails', 'Edit Client Details (for File)');
--- UPDATE system_function SET NAME = '/editClientDetails', DESCRIPTION = 'Edit Client Details (for File)' WHERE NAME = '/editClientDetailsSimple';
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(316, '/', '/editUserDetailsSimple', 'Edit User Details Simple');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(317, '/', '/completeAction', 'Complete Action');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(318, '/', '/editAction', 'Edit Action');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(319, '/', '/editWriteOffRequest', 'Edit Write-Off Request');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(320, '/', '/editDiscountRequest', 'Edit Discount Request');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(321, '/', '/editCloseFile', 'Edit Close File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(322, '/', '/editFileNote', 'Edit File Note');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(323, '/', '/editFileSuppliers', 'Edit File Suppliers');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(324, '/', '/editFileSupplier', 'Edit File Supplier');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(325, '/', '/editMessage', 'Edit Message');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(326, '/', '/editMailIn', 'Edit MailIn');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(327, '/', '/completeMessage', 'Complete Message');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(328, '/', '/quickAction', 'Quick Action');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(329, '/', '/printLetter', 'Print Letter');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(330, '/', '/printLetters', 'Print Letters (bulk)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(331, '/', '/editLetter', 'Edit Letter');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(332, '/', '/listLetters', 'List Letters');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(333, '/', '/listRepayments', 'ListRepayments');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(334, '/', '/editRepayment', 'EditRepayment');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(335, '/', '/viewRepaymentPerformance', 'ViewRepaymentPerformance');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(336, '/', '/printBankDeposit', 'PrintBankDeposit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(337, '/', '/printLetters', 'Print Bulk Letters');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(338, '/', '/completeAction', 'parameter=authorise&type=9', 'Complete Action (Authorise Write Off Request)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(339, '/', '/completeAction', 'parameter=authorise&type=10', 'Complete Action (Authorise Discount Request)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(340, '/', '/completeAction', 'parameter=authorise&type=12', 'Complete Action (Authorise File Close Request)');
-
--- INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
--- (309, '/', '/editFileSimple', 'Edit File Simple');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(341, '/', '/reopenFile', 'Reopen File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(342, '/', '/renameFile', 'Rename File');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(343, '/', '/download', 'parameter=actionDocument', 'Download Action Document');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(344, '/', '/multiAction', NULL, 'Multiple Actions Entry');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, QUERY, DESCRIPTION) VALUES
-(345, '/', '/download', 'parameter=fileDocument', 'Download File Document');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(346, '/', '/editActionCompleted', 'Edit Completed Action');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(401, '/', '/listPOL', 'List all POL');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(402, '/', '/editFilePOL', 'EditFilePOL');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(403, '/', '/editFilePOLComplete', 'EditFilePOLComplete');
-
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(501, '/', '/listReports', 'List all Reports');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(502, '/', '/generateReport', 'GenerateReport');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(503, '/', '/printReport', 'PrintReport');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(504, '/', '/exportReport', 'ExportReport');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(505, '/', '/printFileReport', 'PrintFileReport');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(506, '/', '/reportCompHealth', 'ReportCompHealth');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(507, '/', '/exportInvoices', 'ExportInvoices');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(508, '/', '/editReportCriteria', 'Edit Report Criteria');
-
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(601, '/', '/listMessages', 'List all Messages');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(701, '/', '/listSuppliers', 'List all Suppliers');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(702, '/', '/editSupplier', 'EditSupplier');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(703, '/', '/listSupplierInvoices', 'ListSupplierInvoices');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(704, '/', '/editSupplierInvoice', 'EditSupplierInvoice');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(705, '/', '/addSupplierInvoice', 'AddSupplierInvoice');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(706, '/', '/getSupplierFiles', 'GetSupplierFiles');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(707, '/', '/authoriseInvoice', 'AuthoriseInvoice');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(708, '/', '/viewSupplierInvoice', 'ViewSupplierInvoice');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(709, '/', '/exportSupplierInvoices', 'ExportSupplierInvoices');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(710, '/', '/sendSupplierInvoices', 'SendSupplierInvoices');
-
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(801, '/', '/financials', 'Financials');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(802, '/', '/editReceipt', 'EditReceipt');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(803, '/', '/listReceipts', 'ListReceipts');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(804, '/', '/editCheque', 'EditCheque');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(805, '/', '/printReceipts', 'PrintReceipts');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(806, '/', '/printCheques', 'PrintCheques');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(807, '/', '/listCheques', 'ListCheques');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(808, '/', '/cancelCheque', 'CancelCheque');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(809, '/', '/listJournals', 'ListJournals');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(810, '/', '/editJournal', 'EditJournal');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(811, '/', '/bankDeposit', 'BankDeposit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(812, '/', '/bankReconciliation', 'BankReconciliation');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(813, '/', '/printBankRec', 'PrintBankRec');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(814, '/', '/editBankError', 'EditBankError');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(815, '/', '/editChequeRev', 'EditChequeRev');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(816, '/', '/getCheque', 'GetCheque');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(817, '/', '/listInvoices', 'ListInvoices');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(818, '/', '/listFlatFeeFiles', 'ListFlatFeeFiles');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(819, '/', '/listCommissionBasedFiles', 'ListCommissionBasedFiles');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(820, '/', '/listActionsBillable', 'ListActionsBillable');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(821, '/', '/editTransactionRev', 'Edit Transaction - Reverse');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(824, '/', '/listDisbursements', 'List Disbursements');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(825, '/', '/editDisbursement', 'Edit Disbursement');
-
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(900, '/setup', '/', 'Setup (All)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(901, '/setup', '/setup', 'Setup');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(902, '/setup', '/listPOLTypes', 'ListPOLTypes');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(903, '/setup', '/editPOLType', 'EditPOLType');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(904, '/setup', '/listActionCodes', 'ListActionCodes');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(905, '/setup', '/editActionCode', 'EditActionCode');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(906, '/setup', '/listActionsFlow', 'ListActionsFlow');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(907, '/setup', '/editActionsFlow', 'EditActionsFlow');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(908, '/setup', '/listActionOutcomes', 'ListActionOutcomes');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(909, '/setup', '/editActionOutcome', 'EditActionOutcome');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(910, '/setup', '/listWorkGroups', 'ListWorkGroups');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(911, '/setup', '/editWorkGroup', 'EditWorkGroup');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(912, '/setup', '/listSecurityGroups', 'ListSecurityGroups');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(913, '/setup', '/editSecurityGroup', 'EditSecurityGroup');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(914, '/setup', '/listWriteOffLimit', 'ListWriteOffLimit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(915, '/setup', '/editWriteOffLimit', 'EditWriteOffLimit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(916, '/setup', '/listTPI', 'ListTPI');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(917, '/setup', '/editTPI', 'EditTPI');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(918, '/setup', '/listRecStatus', 'ListRecStatus');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(919, '/setup', '/editRecStatus', 'EditRecStatus');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(920, '/setup', '/listCloseCode', 'ListCloseCode');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(921, '/setup', '/editCloseCode', 'EditCloseCode');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(922, '/setup', '/listSupplierTypes', 'ListSupplierTypes');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(923, '/setup', '/editSupplierType', 'EditSupplierType');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(924, '/setup', '/listBanks', 'ListBanks');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(925, '/setup', '/editBank', 'EditBank');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(926, '/', '/listBankDeposits', 'ListBankDeposits');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(927, '/', '/viewBankDeposit', 'ViewBankDeposit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(928, '/setup', '/listTask', 'ListTask');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(929, '/setup', '/listTemplates', 'ListTemplates');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(930, '/setup', '/editTemplate', 'Edit Template');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(931, '/setup', '/listSupplierServices', 'List Supplier Services');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(932, '/setup', '/editSupplierService', 'Edit Supplier Service');
--- UPDATE system_function SET MODULE = '/setup' WHERE SYSTEM_FUNCTION_ID >= 900 AND SYSTEM_FUNCTION_ID <= 930;
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1001, '/', '/listUsers', 'List all Users');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1002, '/', '/editUser', 'EditUser');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1003, '/', '/editMyInfo', 'EditMyInfo');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1004, '/', '/changePassword', 'ChangePassword');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1005, '/', '/resetPassword', 'ResetPassword');
-
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1101, '/', '/uploadActions', 'UploadActions');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1102, '/', '/uploadFiles', 'UploadFiles');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1103, '/', '/uploadFilesSave', 'UploadFilesSave');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1104, '/', '/uploadFilesValidate', 'UploadFilesValidate');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1105, '/', '/uploadUsers', 'UploadUsers');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1106, '/', '/uploadSupplierInvoices', 'UploadSupplierInvoices');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1107, '/', '/uploadSupplierInvoicesSave', 'UploadSupplierInvoicesSave');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1108, '/', '/uploadBPay', 'UploadBPay');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1109, '/', '/uploadBPaySave', 'UploadBPaySave');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1110, '/', '/uploadDirectDebit', 'UploadDirectDebit');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1111, '/', '/uploadDirectDebitSave', 'UploadDirectDebitSave');
-
--- dashboard
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(1200, '/', '/dashboard', 'Dashboard');
-
--- debtor
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10000, '/debtor', '/', 'Debtors (All)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10001, '/debtor', '/list', 'List all Debtors');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10002, '/debtor', '/edit', 'Edit Debtor');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10003, '/debtor', '/view', 'View Debtor');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10011, '/debtor', '/upload', 'Upload Debtors');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10012, '/debtor', '/uploadSave', 'Upload and Save Debtors');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10021, '/debtor', '/listMatter', 'List Matter');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10022, '/debtor', '/addMatter', 'Add Matter');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(10023, '/debtor', '/editMatter', 'Edit Matter');
-
--- timesheet
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(20000, '/timesheet', '/', 'Timesheet (All)');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(20001, '/timesheet', '/find', 'Search Timesheet');
-INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION) VALUES
-(20002, '/timesheet', '/list', 'List Timesheet');
+INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUERY) VALUES
+(1, '/', '/main', 'Main screen access', NULL),
+(2, '/', '/windowsStatus', 'Windows Status', NULL),
+(3, '/', '/searchFile', 'Search File', NULL),
+(4, '/', '/editContact', 'Edit Contact', NULL),
+(5, '/', '/editBilling', 'Edit Billing', NULL),
+(6, '/', '/getContacts', 'Get Contacts', NULL),
+(7, '/', '/filter', 'Filter data (ajax request)', NULL),
+(8, '/', '/main', 'Get File Documents', 'parameter=getFileDocuments')
+(9, '/', '/main', 'File/Entity Services', 'parameter=getActionCodeService')
+(101, '/', '/mytodo', 'My ToDo', 'parameter=searchMyToDo')
+(102, '/', '/toDoToday', 'ToDo Today', NULL),
+(103, '/', '/exportMyToDo2Csv', 'Export My ToDo to Csv', NULL),
+(104, '/', '/mytodo', 'My ToDo - Search Bulk Action', 'parameter=searchBulkAction')
+(105, '/', '/mytodo', 'My ToDo - Complete Bulk Action', 'parameter=completeBulkAction')
+(201, '/', '/listClients', 'List all Clients', NULL),
+(202, '/', '/editClient', 'Edit Client', NULL),
+(301, '/', '/listFiles', 'List all Files', NULL),
+(302, '/', '/viewFile', 'View File', NULL),
+(303, '/', '/listAgentFiles', 'List Agent Files', NULL),
+(304, '/', '/listSupplierFiles', 'List Supplier Files', NULL),
+(305, '/', '/editFile', 'Edit File', NULL),
+(306, '/', '/editFileInfo', 'Edit File Info', NULL),
+(307, '/', '/editThirdParties', 'Edit Third Parties', NULL),
+(308, '/', '/editPolice', 'Edit Police', NULL),
+(309, '/', '/editFileSimple', 'Edit File Simple', NULL),
+(310, '/', '/editPoliceSimple', 'Edit Police Simple', NULL),
+(311, '/', '/editFileStatus', 'Edit File Status', NULL),
+(312, '/', '/editThirdPartiesSimple', 'Edit Third Parties Simple', NULL),
+(313, '/', '/editMatterDetails', 'Edit Incident Details Simple', NULL),
+(314, '/', '/editInsuredDetails', 'Edit Insured Details', NULL),
+(315, '/', '/editClientDetails', 'Edit Client Details (for File)', NULL),
+(316, '/', '/editUserDetailsSimple', 'Edit User Details Simple', NULL),
+(317, '/', '/completeAction', 'Complete Action', NULL),
+(318, '/', '/editAction', 'Edit Action', NULL),
+(319, '/', '/editWriteOffRequest', 'Edit Write-Off Request', NULL),
+(320, '/', '/editDiscountRequest', 'Edit Discount Request', NULL),
+(321, '/', '/editCloseFile', 'Edit Close File', NULL),
+(322, '/', '/editFileNote', 'Edit File Note', NULL),
+(323, '/', '/editFileSuppliers', 'Edit File Suppliers', NULL),
+(324, '/', '/editFileSupplier', 'Edit File Supplier', NULL),
+(325, '/', '/editMessage', 'Edit Message', NULL),
+(326, '/', '/editMailIn', 'Edit MailIn', NULL),
+(327, '/', '/completeMessage', 'Complete Message', NULL),
+(328, '/', '/quickAction', 'Quick Action', NULL),
+(329, '/', '/printLetter', 'Print Letter', NULL),
+(330, '/', '/editLetter', 'Edit Letter', NULL),
+(331, '/', '/listLetters', 'List Letters', NULL),
+(332, '/', '/listRepayments', 'ListRepayments', NULL),
+(333, '/', '/editRepayment', 'EditRepayment', NULL),
+(334, '/', '/viewRepaymentPerformance', 'ViewRepaymentPerformance', NULL),
+(335, '/', '/printBankDeposit', 'PrintBankDeposit', NULL),
+(337, '/', '/printLetters', 'Print Bulk Letters', NULL),
+(338, '/', '/completeAction', 'Complete Action (Authorise Write Off Request)', 'parameter=authorise&type=9')
+(339, '/', '/completeAction', 'Complete Action (Authorise Discount Request)', 'parameter=authorise&type=10')
+(340, '/', '/completeAction', 'Complete Action (Authorise File Close Request)', 'parameter=authorise&type=12')
+(341, '/', '/reopenFile', 'Reopen File', NULL),
+(342, '/', '/renameFile', 'Rename File', NULL),
+(343, '/', '/download', 'Download Action Document', 'parameter=actionDocument')
+(344, '/', '/multiAction', 'Multiple Actions Entry', NULL),
+(345, '/', '/download', 'Download File Document', 'parameter=fileDocument')
+(346, '/', '/editActionCompleted', 'Edit Completed Action', NULL),
+(347, '/', '/viewMultiFile', 'View Multi File', NULL),
+(348, '/', '/editFileContact', 'Edit File Contact', NULL),
+(349, '/', '/businessReview', 'Business Review', NULL),
+(350, '/', '/infoRequired', 'Information Required', NULL),
+(351, '/', '/fileProperties', 'File Properties', NULL),
+(352, '/', '/findActionTree', 'Find Action (Tree)', NULL),
+(353, '/', '/findActionCompletedTree', 'Find Completed Action (Tree)', NULL),
+(354, '/', '/findAction', 'Find Action', NULL),
+(355, '/', '/findActionCompleted', 'Find Completed Action', NULL),
+(356, '/', '/documentStructure', 'Create Document Structure', NULL),
+(357, '/', '/removeAction', 'Remove Action', NULL),
+(358, '/', '/main', 'Edit File/Entity Services', 'parameter=editActionCodeService')
+(359, '/', '/survey', 'Survey', NULL),
+(360, '/', '/editMultiFile', 'Edit Multi File', NULL),
+(361, '/', '/homepage', 'Homepage', NULL),
+(401, '/', '/listPOL', 'List all POL', NULL),
+(402, '/', '/editFilePOL', 'EditFilePOL', NULL),
+(403, '/', '/editFilePOLComplete', 'EditFilePOLComplete', NULL),
+(501, '/', '/listReports', 'List all Reports', NULL),
+(502, '/', '/generateReport', 'GenerateReport', NULL),
+(503, '/', '/printReport', 'PrintReport', NULL),
+(504, '/', '/exportReport', 'ExportReport', NULL),
+(505, '/', '/printFileReport', 'PrintFileReport', NULL),
+(506, '/', '/reportCompHealth', 'ReportCompHealth', NULL),
+(507, '/', '/exportInvoices', 'ExportInvoices', NULL),
+(508, '/', '/editReportCriteria', 'Edit Report Criteria', NULL),
+(509, '/', '/viewClientHierarchy', 'View Client Hierarchy', NULL),
+(510, '/', '/editClientHierarchy', 'Edit Client Hierarchy', NULL),
+(601, '/', '/listMessages', 'List all Messages', NULL),
+(701, '/', '/listSuppliers', 'List all Suppliers', NULL),
+(702, '/', '/editSupplier', 'EditSupplier', NULL),
+(703, '/', '/listSupplierInvoices', 'ListSupplierInvoices', NULL),
+(704, '/', '/editSupplierInvoice', 'EditSupplierInvoice', NULL),
+(705, '/', '/addSupplierInvoice', 'AddSupplierInvoice', NULL),
+(706, '/', '/getSupplierFiles', 'GetSupplierFiles', NULL),
+(707, '/', '/authoriseInvoice', 'AuthoriseInvoice', NULL),
+(708, '/', '/viewSupplierInvoice', 'ViewSupplierInvoice', NULL),
+(709, '/', '/exportSupplierInvoices', 'ExportSupplierInvoices', NULL),
+(710, '/', '/sendSupplierInvoices', 'SendSupplierInvoices', NULL),
+(801, '/', '/financials', 'Financials', NULL),
+(802, '/', '/editReceipt', 'EditReceipt', NULL),
+(803, '/', '/listReceipts', 'ListReceipts', NULL),
+(804, '/', '/editCheque', 'EditCheque', NULL),
+(805, '/', '/printReceipts', 'PrintReceipts', NULL),
+(806, '/', '/printCheques', 'PrintCheques', NULL),
+(807, '/', '/listCheques', 'ListCheques', NULL),
+(808, '/', '/cancelCheque', 'CancelCheque', NULL),
+(809, '/', '/listJournals', 'ListJournals', NULL),
+(810, '/', '/editJournal', 'EditJournal', NULL),
+(811, '/', '/bankDeposit', 'BankDeposit', NULL),
+(812, '/', '/bankReconciliation', 'BankReconciliation', NULL),
+(813, '/', '/printBankRec', 'PrintBankRec', NULL),
+(814, '/', '/editBankError', 'EditBankError', NULL),
+(815, '/', '/editChequeRev', 'EditChequeRev', NULL),
+(816, '/', '/getCheque', 'GetCheque', NULL),
+(817, '/', '/listInvoices', 'ListInvoices', NULL),
+(818, '/', '/listFlatFeeFiles', 'ListFlatFeeFiles', NULL),
+(819, '/', '/listCommissionBasedFiles', 'ListCommissionBasedFiles', NULL),
+(820, '/', '/listActionsBillable', 'ListActionsBillable', NULL),
+(821, '/', '/editTransactionRev', 'Edit Transaction - Reverse', NULL),
+(822, '/', '/listActionsBillable', 'Create Action Invoice', 'parameter=createInvoices')
+(823, '/', '/listInvoices', 'Delete Invoice', 'parameter=removeInvoice')
+(824, '/', '/listDisbursements', 'List Disbursements', NULL),
+(825, '/', '/editDisbursement', 'Edit Disbursement', NULL),
+(826, '/', '/listFileInvoice', 'List File Invoices', NULL),
+(827, '/', '/editFileInvoice', 'Edit File Invoice', NULL),
+(828, '/', '/mailin', 'Mail In Manager', NULL),
+(900, '/setup', '/', 'Setup (All)', NULL),
+(901, '/setup', '/setup', 'Setup', NULL),
+(902, '/setup', '/listPOLTypes', 'ListPOLTypes', NULL),
+(903, '/setup', '/editPOLType', 'EditPOLType', NULL),
+(904, '/setup', '/listActionCodes', 'ListActionCodes', NULL),
+(905, '/setup', '/editActionCode', 'EditActionCode', NULL),
+(906, '/setup', '/listActionsFlow', 'ListActionsFlow', NULL),
+(907, '/setup', '/editActionsFlow', 'EditActionsFlow', NULL),
+(908, '/setup', '/listActionOutcomes', 'ListActionOutcomes', NULL),
+(909, '/setup', '/editActionOutcome', 'EditActionOutcome', NULL),
+(910, '/setup', '/listWorkGroups', 'ListWorkGroups', NULL),
+(911, '/setup', '/editWorkGroup', 'EditWorkGroup', NULL),
+(912, '/setup', '/listSecurityGroups', 'ListSecurityGroups', NULL),
+(913, '/setup', '/editSecurityGroup', 'EditSecurityGroup', NULL),
+(914, '/setup', '/listWriteOffLimit', 'ListWriteOffLimit', NULL),
+(915, '/setup', '/editWriteOffLimit', 'EditWriteOffLimit', NULL),
+(916, '/setup', '/listTPI', 'ListTPI', NULL),
+(917, '/setup', '/editTPI', 'EditTPI', NULL),
+(918, '/setup', '/listRecStatus', 'ListRecStatus', NULL),
+(919, '/setup', '/editRecStatus', 'EditRecStatus', NULL),
+(920, '/setup', '/listCloseCode', 'ListCloseCode', NULL),
+(921, '/setup', '/editCloseCode', 'EditCloseCode', NULL),
+(922, '/setup', '/listSupplierTypes', 'ListSupplierTypes', NULL),
+(923, '/setup', '/editSupplierType', 'EditSupplierType', NULL),
+(924, '/setup', '/listBanks', 'ListBanks', NULL),
+(925, '/setup', '/editBank', 'EditBank', NULL),
+(926, '/', '/listBankDeposits', 'ListBankDeposits', NULL),
+(927, '/', '/viewBankDeposit', 'ViewBankDeposit', NULL),
+(928, '/setup', '/listTask', 'ListTask', NULL),
+(929, '/setup', '/listTemplates', 'ListTemplates', NULL),
+(930, '/setup', '/editTemplate', 'Edit Template', NULL),
+(931, '/setup', '/listSupplierServices', 'List Supplier Services', NULL),
+(932, '/setup', '/editSupplierService', 'Edit Supplier Service', NULL),
+(933, '/setup', '/fileType', 'Edit File Type', NULL),
+(934, '/setup', '/actionCodeService', 'Find/Edit Action Code Services', NULL),
+(1001, '/', '/listUsers', 'List all Users', NULL),
+(1002, '/', '/editUser', 'EditUser', NULL),
+(1003, '/', '/editMyInfo', 'EditMyInfo', NULL),
+(1004, '/', '/changePassword', 'ChangePassword', NULL),
+(1005, '/', '/resetPassword', 'ResetPassword', NULL),
+(1101, '/', '/uploadActions', 'UploadActions', NULL),
+(1102, '/', '/uploadFiles', 'UploadFiles', NULL),
+(1103, '/', '/uploadFilesSave', 'UploadFilesSave', NULL),
+(1104, '/', '/uploadFilesValidate', 'UploadFilesValidate', NULL),
+(1105, '/', '/uploadUsers', 'UploadUsers', NULL),
+(1106, '/', '/uploadSupplierInvoices', 'UploadSupplierInvoices', NULL),
+(1107, '/', '/uploadSupplierInvoicesSave', 'UploadSupplierInvoicesSave', NULL),
+(1108, '/', '/uploadBPay', 'UploadBPay', NULL),
+(1109, '/', '/uploadBPaySave', 'UploadBPaySave', NULL),
+(1110, '/', '/uploadDirectDebit', 'UploadDirectDebit', NULL),
+(1111, '/', '/uploadDirectDebitSave', 'UploadDirectDebitSave', NULL),
+(1200, '/', '/dashboard', 'Dashboard', NULL),
+(1300, '/', '/news', 'Latest News', NULL),
+(1301, '/', '/news', 'Latest News - add or edit', 'parameter=edit')
+(1310, '/', '/links', 'Links', NULL),
+(1311, '/', '/links', 'Links - add or edit', 'parameter=edit')
+(10000, '/debtor', '/', 'Debtors (All)', NULL),
+(10001, '/debtor', '/list', 'List all Debtors', NULL),
+(10002, '/debtor', '/edit', 'Edit Debtor', NULL),
+(10003, '/debtor', '/view', 'View Debtor', NULL),
+(10011, '/debtor', '/upload', 'Upload Debtors', NULL),
+(10012, '/debtor', '/uploadSave', 'Upload and Save Debtors', NULL),
+(10021, '/debtor', '/listMatter', 'List Matter', NULL),
+(10022, '/debtor', '/addMatter', 'Add Matter', NULL),
+(10023, '/debtor', '/editMatter', 'Edit Matter', NULL),
+(20000, '/timesheet', '/', 'Timesheet (All)', NULL),
+(20001, '/timesheet', '/find', 'View Timesheet', NULL),
+(20002, '/timesheet', '/list', 'List Timesheet', NULL)
+;
 
 --
 -- system_access
@@ -1301,10 +1173,3 @@ INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (12, 50
 
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (12, 1003);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (12, 1004);
-
--- --------------------------------------------------------
---
--- Dumping data for table DBVERSION
---
-
-INSERT INTO dbversion (DBVERSION, PREV_DBVERSION) VALUES ('ELIXIR.02.002', NULL);

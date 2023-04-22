@@ -18,18 +18,17 @@ In addition to environment variables inherited from `jboss/wildfly`, the followi
 
 ## Checkout project locally:
     cd /tmp
-    git clone --depth=1 --single-branch --branch master https://github.com/totemsoft/elixir.git
-    rm -rf /tmp/xcelerate/.git
-    rm -rf /tmp/xcelerate/aws
-    rm -f  /tmp/xcelerate/bitbucket-pipelines.yml
-    rm -f  /tmp/xcelerate/deploy*.*
-    rm -rf /tmp/xcelerate/docker
-    rm -f  /tmp/xcelerate/Dockerfile
-    rm -rf /tmp/xcelerate/docs
-    rm -f  /tmp/xcelerate/README.md
-    rm -rf /tmp/xcelerate/workflow-web
+    git clone --depth=1 --single-branch --branch master https://github.com/totemsoft/elixir.git /tmp/build/
+    rm -rf /tmp/build/.git*
+    rm -rf /tmp/build/aws
+    rm -f  /tmp/build/bitbucket-pipelines.yml
+    rm -f  /tmp/build/deploy*
+    rm -rf /tmp/build/docker
+    rm -f  /tmp/build/Dockerfile
+    rm -rf /tmp/build/docs
+    rm -f  /tmp/build/README.md
     cd ~/git/docker/jboss
-    cp -a /tmp/xcelerate/ ~/git/docker/jboss
+    cp -a /tmp/build/ ~/git/docker/jboss
 
 ## Run the build with:
     docker build --build-arg tz=Australia/Brisbane --tag=wildfly-elixir .
