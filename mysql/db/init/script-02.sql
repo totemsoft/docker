@@ -233,8 +233,8 @@ INSERT INTO user_type (USER_TYPE_ID, USER_TYPE_NAME) VALUES
 INSERT INTO users
   (userLogin, userPassword, userName, userEmail, userPhone, userSecurityGroupId, userType, userPasswordExpireDate)
 VALUES
-  ('admin', 'Passw0rd', 'admin',      'admin@totemsoft.com.au', NULL,  1, 1, NULL),
-  ('system', NULL,      'System User', NULL,                    NULL, 13, 5, NULL)
+  ('admin',  NULL, 'Ad Min',     'admin@totemsoft.com.au', NULL,  1, 1, NULL),
+  ('system', NULL, 'System User', NULL,                    NULL, 13, 5, NULL)
 ;
 
 -- --------------------------------------------------------
