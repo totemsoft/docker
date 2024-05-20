@@ -95,8 +95,24 @@ INSERT INTO closecodes (closeId, CODE, DESCRIPTION) VALUES
 --
 -- Dumping data for table config
 --
+-- local file system with "elixir" folder (default)
+-- app.store.className=com.xcelerate.commons.core.service.impl.FileStoreLocalImpl
+-- SFTP with "elixir" folder
+-- app.store.className=com.xcelerate.elixir.service.impl.FileStoreFtpImpl
+-- AWS S3 with "elixir" folder
+-- app.store.className=com.xcelerate.commons.core.service.impl.FileStoreS3Impl
+-- AWS WorkDocs with "elixir" folder
+-- app.store.className=com.xcelerate.commons.core.service.impl.FileStoreWorkDocsImpl
+-- --------------------------------------------------------
 
 INSERT INTO config (configKey, configValue) VALUES
+('app.documentDirectory', 'elixir'),
+('app.fileExceptionDirectory', '_FileException'),
+('app.fileDocumentDirectory', '_FileDocument'),
+('app.fileInvoiceDirectory', '_FileInvoice'),
+('app.fileArchiveDirectory', '_Archive'),
+('app.fileArchiveDays', '90'),
+('app.store.className', 'com.xcelerate.commons.core.service.impl.FileStoreLocalImpl'),
 ('company.name', 'TBD'),
 ('fee.gst', '10'),
 ('fee.cc', '20'),
@@ -549,13 +565,13 @@ INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUER
 (5, '/', '/editBilling', 'Edit Billing', NULL),
 (6, '/', '/getContacts', 'Get Contacts', NULL),
 (7, '/', '/filter', 'Filter data (ajax request)', NULL),
-(8, '/', '/main', 'Get File Documents', 'parameter=getFileDocuments')
-(9, '/', '/main', 'File/Entity Services', 'parameter=getActionCodeService')
-(101, '/', '/mytodo', 'My ToDo', 'parameter=searchMyToDo')
+(8, '/', '/main', 'Get File Documents', 'parameter=getFileDocuments'),
+(9, '/', '/main', 'File/Entity Services', 'parameter=getActionCodeService'),
+(101, '/', '/mytodo', 'My ToDo', 'parameter=searchMyToDo'),
 (102, '/', '/toDoToday', 'ToDo Today', NULL),
 (103, '/', '/exportMyToDo2Csv', 'Export My ToDo to Csv', NULL),
-(104, '/', '/mytodo', 'My ToDo - Search Bulk Action', 'parameter=searchBulkAction')
-(105, '/', '/mytodo', 'My ToDo - Complete Bulk Action', 'parameter=completeBulkAction')
+(104, '/', '/mytodo', 'My ToDo - Search Bulk Action', 'parameter=searchBulkAction'),
+(105, '/', '/mytodo', 'My ToDo - Complete Bulk Action', 'parameter=completeBulkAction'),
 (201, '/', '/listClients', 'List all Clients', NULL),
 (202, '/', '/editClient', 'Edit Client', NULL),
 (301, '/', '/listFiles', 'List all Files', NULL),
@@ -594,14 +610,14 @@ INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUER
 (334, '/', '/viewRepaymentPerformance', 'ViewRepaymentPerformance', NULL),
 (335, '/', '/printBankDeposit', 'PrintBankDeposit', NULL),
 (337, '/', '/printLetters', 'Print Bulk Letters', NULL),
-(338, '/', '/completeAction', 'Complete Action (Authorise Write Off Request)', 'parameter=authorise&type=9')
-(339, '/', '/completeAction', 'Complete Action (Authorise Discount Request)', 'parameter=authorise&type=10')
-(340, '/', '/completeAction', 'Complete Action (Authorise File Close Request)', 'parameter=authorise&type=12')
+(338, '/', '/completeAction', 'Complete Action (Authorise Write Off Request)', 'parameter=authorise&type=9'),
+(339, '/', '/completeAction', 'Complete Action (Authorise Discount Request)', 'parameter=authorise&type=10'),
+(340, '/', '/completeAction', 'Complete Action (Authorise File Close Request)', 'parameter=authorise&type=12'),
 (341, '/', '/reopenFile', 'Reopen File', NULL),
 (342, '/', '/renameFile', 'Rename File', NULL),
-(343, '/', '/download', 'Download Action Document', 'parameter=actionDocument')
+(343, '/', '/download', 'Download Action Document', 'parameter=actionDocument'),
 (344, '/', '/multiAction', 'Multiple Actions Entry', NULL),
-(345, '/', '/download', 'Download File Document', 'parameter=fileDocument')
+(345, '/', '/download', 'Download File Document', 'parameter=fileDocument'),
 (346, '/', '/editActionCompleted', 'Edit Completed Action', NULL),
 (347, '/', '/viewMultiFile', 'View Multi File', NULL),
 (348, '/', '/editFileContact', 'Edit File Contact', NULL),
@@ -614,7 +630,7 @@ INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUER
 (355, '/', '/findActionCompleted', 'Find Completed Action', NULL),
 (356, '/', '/documentStructure', 'Create Document Structure', NULL),
 (357, '/', '/removeAction', 'Remove Action', NULL),
-(358, '/', '/main', 'Edit File/Entity Services', 'parameter=editActionCodeService')
+(358, '/', '/main', 'Edit File/Entity Services', 'parameter=editActionCodeService'),
 (359, '/', '/survey', 'Survey', NULL),
 (360, '/', '/editMultiFile', 'Edit Multi File', NULL),
 (361, '/', '/homepage', 'Homepage', NULL),
@@ -663,8 +679,8 @@ INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUER
 (819, '/', '/listCommissionBasedFiles', 'ListCommissionBasedFiles', NULL),
 (820, '/', '/listActionsBillable', 'ListActionsBillable', NULL),
 (821, '/', '/editTransactionRev', 'Edit Transaction - Reverse', NULL),
-(822, '/', '/listActionsBillable', 'Create Action Invoice', 'parameter=createInvoices')
-(823, '/', '/listInvoices', 'Delete Invoice', 'parameter=removeInvoice')
+(822, '/', '/listActionsBillable', 'Create Action Invoice', 'parameter=createInvoices'),
+(823, '/', '/listInvoices', 'Delete Invoice', 'parameter=removeInvoice'),
 (824, '/', '/listDisbursements', 'List Disbursements', NULL),
 (825, '/', '/editDisbursement', 'Edit Disbursement', NULL),
 (826, '/', '/listFileInvoice', 'List File Invoices', NULL),
@@ -723,9 +739,9 @@ INSERT INTO system_function (SYSTEM_FUNCTION_ID, MODULE, NAME, DESCRIPTION, QUER
 (1111, '/', '/uploadDirectDebitSave', 'UploadDirectDebitSave', NULL),
 (1200, '/', '/dashboard', 'Dashboard', NULL),
 (1300, '/', '/news', 'Latest News', NULL),
-(1301, '/', '/news', 'Latest News - add or edit', 'parameter=edit')
+(1301, '/', '/news', 'Latest News - add or edit', 'parameter=edit'),
 (1310, '/', '/links', 'Links', NULL),
-(1311, '/', '/links', 'Links - add or edit', 'parameter=edit')
+(1311, '/', '/links', 'Links - add or edit', 'parameter=edit'),
 (10000, '/debtor', '/', 'Debtors (All)', NULL),
 (10001, '/debtor', '/list', 'List all Debtors', NULL),
 (10002, '/debtor', '/edit', 'Edit Debtor', NULL),
@@ -815,7 +831,6 @@ INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 332
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 333);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 334);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 335);
-INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 336);
 
 -- INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 309);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (3, 341);
@@ -958,9 +973,7 @@ INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 332
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 333);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 334);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 335);
-INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 336);
 
--- INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 309);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 341);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 342);
 INSERT INTO system_access (SECURITY_GROUP_ID, SYSTEM_FUNCTION_ID) VALUES (6, 343);

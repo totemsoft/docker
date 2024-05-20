@@ -26,6 +26,7 @@ RUN mvn clean package -DskipTests
 # https://hub.docker.com/r/jboss/wildfly/
 #FROM jboss/wildfly:latest
 FROM jboss/wildfly:24.0.0.Final
+#FROM jboss/wildfly:25.0.0.Final
 #RUN echo $(whoami)
 RUN echo $JBOSS_HOME
 
@@ -67,17 +68,24 @@ USER root
 RUN echo $(cat /etc/os-release)
 RUN yum update -y
 RUN $(yes | rm /usr/bin/python)
+
 # Maven
 ENV M2_REPO https://repo1.maven.org/maven2
+
 # add mysql module
+ENV MYSQL_VERSION 8.0.33
+RUN echo Adding module com.mysql $MYSQL_VERSION
 COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/com/mysql/main/module.xml $JBOSS_HOME/modules/com/mysql/main/
-ADD $M2_REPO/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar $JBOSS_HOME/modules/com/mysql/main/
+ADD $M2_REPO/mysql/mysql-connector-j/$MYSQL_VERSION/mysql-connector-j-$MYSQL_VERSION.jar $JBOSS_HOME/modules/com/mysql/main/
 ADD $M2_REPO/org/jboss/jbossas/jboss-as-connector/6.1.0.Final/jboss-as-connector-6.1.0.Final.jar $JBOSS_HOME/modules/com/mysql/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/com/mysql/main/*
+RUN ls -al $JBOSS_HOME/modules/com/mysql/main
+
 # add org.aspectj module
 COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/org/aspectj/main/module.xml $JBOSS_HOME/modules/org/aspectj/main/
 ADD $M2_REPO/org/aspectj/aspectjweaver/1.8.9/aspectjweaver-1.8.9.jar $JBOSS_HOME/modules/org/aspectj/main/
 RUN chmod u+rw,g+rw,o+r $JBOSS_HOME/modules/org/aspectj/main/*
+
 # add spring module
 COPY --from=MAVEN_TOOL_CHAIN /tmp/build/jboss/modules/org/springframework/spring/main/module.xml $JBOSS_HOME/modules/org/springframework/spring/main/
 ADD $M2_REPO/org/springframework/spring-aop/4.3.26.RELEASE/spring-aop-4.3.26.RELEASE.jar $JBOSS_HOME/modules/org/springframework/spring/main/
