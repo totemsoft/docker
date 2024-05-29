@@ -3,12 +3,13 @@ import { ContainerDefinition } from 'aws-cdk-lib/aws-ecs';
 import { MysqlInstance } from './mysql';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
+import { AwsCdkStackProps } from '../aws-cdk-stack';
 
 export class EnvironmentUtils {
-  static addEnvironments(stack: Stack, id: string, containerDef: ContainerDefinition, mysqlInstance: MysqlInstance): void {
+  static addEnvironments(stack: Stack, id: string, props: AwsCdkStackProps, containerDef: ContainerDefinition, mysqlInstance: MysqlInstance): void {
     const smPartialArn = `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret`;
 
-    containerDef.addEnvironment('PROFILE', 'xcelerate');
+    containerDef.addEnvironment('PROFILE', id);
     containerDef.addEnvironment('TZ', 'Australia/Brisbane');
     containerDef.addEnvironment('JAVA_OPTS', '-Xms1024m -Xmx1536m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true');
 
@@ -30,6 +31,9 @@ export class EnvironmentUtils {
     containerDef.addEnvironment('FLYWAY_URL', `jdbc:mysql://${host}:${port}/${dbName}`);
     containerDef.addEnvironment('FLYWAY_USER', username);
     containerDef.addSecret('FLYWAY_PASSWORD', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
+    if (typeof props.flywayTarget !== 'undefined') {
+      containerDef.addEnvironment('FLYWAY_TARGET', props.flywayTarget);
+    }
 
     // SMS
     const smsSecretName = 'prod/elixir/sms';

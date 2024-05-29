@@ -36,7 +36,6 @@ export interface MysqlProps extends StackProps {
   readonly dbName?: string;
 
   /**
-   *
    * ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL)
    * @type {*}
    * @memberof MysqlProps
@@ -69,16 +68,22 @@ export interface MysqlProps extends StackProps {
   readonly backupRetentionDays?: number;
 
   /**
+   * Indicates whether the DB instance should have deletion protection enabled.
+   * @type {boolean}
+   * @memberof MysqlProps
+   * @default false
+   */
+  readonly deletionProtection?: boolean;
+
+  /**
    * backup window time 00:15-01:15
    * @type {string}
    * @memberof MysqlProps
    * @default 00:15-01:15
    */
-
   readonly backupWindow?: string;
 
   /**
-   *
    * maintenance time Sun:23:45-Mon:00:15
    * @type {string}
    * @memberof MysqlProps
@@ -87,7 +92,6 @@ export interface MysqlProps extends StackProps {
   readonly preferredMaintenanceWindow?: string;
 
   /**
-   *
    * list of ingress sources
    * @type {any []}
    * @memberof MysqlProps
@@ -219,7 +223,7 @@ export class MysqlInstance {
       vpc: vpc,
       vpcSubnets: props.vpcSubnets,
       removalPolicy: RemovalPolicy.SNAPSHOT,
-      deletionProtection: true,
+      deletionProtection: props.deletionProtection,
       storageEncrypted: true,
       //monitoringInterval: Duration.seconds(60),
       //enablePerformanceInsights: true,

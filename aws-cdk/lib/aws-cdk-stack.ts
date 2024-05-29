@@ -10,16 +10,29 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 //import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 
+export interface AwsCdkStackProps extends StackProps {
+
+  /**
+   * The zone domain e.g. example.com
+   * @type {string}
+   * @memberof AwsCdkStackProps
+   */
+  readonly domainName: string;
+
+  /**
+   * The target version up to which Flyway should consider migrations.
+   * @type {string}
+   * @memberof AwsCdkStackProps
+   */
+  readonly flywayTarget?: string;
+
+}
+
 export class AwsCdkStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: AwsCdkStackProps) {
     super(scope, id, props);
 
-    var domainName = 'elixirlegal.com';
-    /*
-    if (typeof props.domainName !== 'undefined') {
-      domainName = props.domainName;
-    }
-    */
+    const domainName = props.domainName;
 
     const vpc = new ec2.Vpc(this, `${id}Vpc`, {
       //maxAzs: 3
@@ -37,6 +50,7 @@ export class AwsCdkStack extends Stack {
       vpc: vpc,
       vpcSubnets: vpcSubnets,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
+      deletionProtection: props.terminationProtection,
       //dbName: `${id}db`,
       //dbUsername: ${id}
     });
@@ -75,7 +89,7 @@ export class AwsCdkStack extends Stack {
         { containerPort: 25, name: 'elixir-smtp' }
       ]
     });
-    EnvironmentUtils.addEnvironments(this, id, containerDef, mysqlInstance);
+    EnvironmentUtils.addEnvironments(this, id, props, containerDef, mysqlInstance);
 
     const sg = new ec2.SecurityGroup(this, `${id}System`, {
       vpc,
