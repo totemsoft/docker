@@ -3,6 +3,7 @@
 Install TypeScript
 * `npm install -g typescript`
 * `npm install -g aws-cdk`
+* `brew upgrade node`
 
 Create a project:
 * `mkdir aws-cdk`
@@ -50,6 +51,7 @@ PowerUserAccess Inline policy
 Configuring environments:
 * `export CDK_DEFAULT_ACCOUNT=<aws-account-id>`
 * `export CDK_DEFAULT_REGION=ap-southeast-2`
+* `export STACK_ID=xcelerate`
 * `npm install @types/node`
 
 Create stack:

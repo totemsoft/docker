@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { CfnParameter, Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { AwsLogDriver, Cluster, ContainerDefinition, ContainerImage, FargateTaskDefinition } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
@@ -26,12 +26,26 @@ export interface AwsCdkStackProps extends StackProps {
    */
   readonly flywayTarget?: string;
 
+  /**
+   * A Comma separated list of migrations that Flyway should consider when migrating, undoing, or repairing.
+   * @type {string}
+   * @memberof AwsCdkStackProps
+   */
+  readonly flywayCherryPick?: string;
+
 }
 
 export class AwsCdkStack extends Stack {
   constructor(scope: Construct, id: string, props: AwsCdkStackProps) {
     super(scope, id, props);
-
+/*
+    // cdk deploy xcelerate --parameters domainName=elixirlegal.com
+    const domainNameParameter = new CfnParameter(this, 'domainName', {
+      type: 'String',
+      description: 'The zone domain e.g. example.com'
+    });
+    const domainName = domainNameParameter.valueAsString;
+*/
     const domainName = props.domainName;
 
     const vpc = new ec2.Vpc(this, `${id}Vpc`, {
