@@ -31,14 +31,11 @@ export class EnvironmentUtils {
     containerDef.addEnvironment('FLYWAY_URL', `jdbc:mysql://${host}:${port}/${dbName}`);
     containerDef.addEnvironment('FLYWAY_USER', username);
     containerDef.addSecret('FLYWAY_PASSWORD', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
-    // https://www.red-gate.com/blog/skip-executing-migrations-examples
-    if (typeof props.flywayTarget !== 'undefined') {
+    if (props.flywayTarget !== undefined) {
       containerDef.addEnvironment('FLYWAY_TARGET', props.flywayTarget);
-      //containerDef.addEnvironment('FLYWAY_SKIP_EXECUTING_MIGRATIONS', 'true');
     }
-    if (typeof props.flywayCherryPick !== 'undefined') {
-      containerDef.addEnvironment('FLYWAY_CHERRY_PICK', props.flywayCherryPick);
-      containerDef.addEnvironment('FLYWAY_SKIP_EXECUTING_MIGRATIONS', 'true');
+    if (props.flywayBaselineVersion !== undefined) {
+      containerDef.addEnvironment('FLYWAY_BASELINE_VERSION', props.flywayBaselineVersion);
     }
 
     // SMS

@@ -13,13 +13,14 @@ if (stackId === undefined) {
 var domainName = 'company.com';
 var terminationProtection = undefined;
 var flywayTarget = undefined;
-var flywayCherryPick = undefined;
+var flywayBaselineVersion = undefined;
+
+// XCELERATE MIGRATION
 if (stackId === 'xcelerate') {
-  // XCELERATE MIGRATION
   domainName = 'elixirlegal.com';
   //terminationProtection = true;
-  //flywayTarget = '5.0.2';
-  //flywayCherryPick = '5.0.2';
+  flywayTarget = '5.0.1';
+  //flywayBaselineVersion = '5.0.2';
 }
 // TODO: provide as input parameters
 
@@ -38,5 +39,5 @@ new AwsCdkStack(app, stackId, {
   // AwsCdkStackProps
   domainName: domainName,
   flywayTarget: flywayTarget,
-  flywayCherryPick: flywayCherryPick,
+  flywayBaselineVersion: flywayBaselineVersion,
 });

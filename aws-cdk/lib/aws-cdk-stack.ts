@@ -27,11 +27,11 @@ export interface AwsCdkStackProps extends StackProps {
   readonly flywayTarget?: string;
 
   /**
-   * A Comma separated list of migrations that Flyway should consider when migrating, undoing, or repairing.
+   * The version to tag an existing schema with when executing baseline.
    * @type {string}
    * @memberof AwsCdkStackProps
    */
-  readonly flywayCherryPick?: string;
+  readonly flywayBaselineVersion?: string;
 
 }
 
