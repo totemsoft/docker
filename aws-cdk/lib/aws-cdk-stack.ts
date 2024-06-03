@@ -20,18 +20,12 @@ export interface AwsCdkStackProps extends StackProps {
   readonly domainName: string;
 
   /**
-   * The target version up to which Flyway should consider migrations.
-   * @type {string}
+   * Migrate data from /db/migration/data folder.
+   * @type {boolean}
    * @memberof AwsCdkStackProps
+   * @default false
    */
-  readonly flywayTarget?: string;
-
-  /**
-   * The version to tag an existing schema with when executing baseline.
-   * @type {string}
-   * @memberof AwsCdkStackProps
-   */
-  readonly flywayBaselineVersion?: string;
+  readonly flywayMigrateData?: boolean;
 
 }
 
@@ -61,8 +55,8 @@ export class AwsCdkStack extends Stack {
     const mysqlInstance = new MysqlInstance(this, id, {
       env: { region: this.region },
       description: `${id} Mysql`,
-      vpc: vpc,
-      vpcSubnets: vpcSubnets,
+      vpc,
+      vpcSubnets,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
       deletionProtection: props.terminationProtection,
       //dbName: `${id}db`,
@@ -85,7 +79,7 @@ export class AwsCdkStack extends Stack {
             'workdocs:*'
         ],
         resources: ['*']
-    }))
+    }));
 
     // create a task definition with CloudWatch Logs
     const logDriver = new AwsLogDriver({
@@ -116,7 +110,7 @@ export class AwsCdkStack extends Stack {
     sg.addEgressRule(ec2.Peer.anyIpv4(), ec2.Port.allTcp(), 'Outbound');
 
     const domainZone = HostedZone.fromLookup(this, 'Zone', {
-      domainName: domainName
+      domainName
     });
 
     // Create a load-balanced Fargate service and make it public
@@ -128,7 +122,7 @@ export class AwsCdkStack extends Stack {
       publicLoadBalancer: true,
       assignPublicIp: true,
       domainName: `${id}.${domainName}`,
-      domainZone: domainZone,
+      domainZone,
       protocol: ApplicationProtocol.HTTPS,
       targetProtocol: ApplicationProtocol.HTTPS,
       securityGroups: [sg],

@@ -31,11 +31,8 @@ export class EnvironmentUtils {
     containerDef.addEnvironment('FLYWAY_URL', `jdbc:mysql://${host}:${port}/${dbName}`);
     containerDef.addEnvironment('FLYWAY_USER', username);
     containerDef.addSecret('FLYWAY_PASSWORD', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
-    if (props.flywayTarget !== undefined) {
-      containerDef.addEnvironment('FLYWAY_TARGET', props.flywayTarget);
-    }
-    if (props.flywayBaselineVersion !== undefined) {
-      containerDef.addEnvironment('FLYWAY_BASELINE_VERSION', props.flywayBaselineVersion);
+    if (props.flywayMigrateData === true) {
+      containerDef.addEnvironment('FLYWAY_MIGRATE_DATA', '' + props.flywayMigrateData);
     }
 
     // SMS

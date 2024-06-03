@@ -220,7 +220,7 @@ export class MysqlInstance {
       allowMajorVersionUpgrade: true,
       autoMinorVersionUpgrade: true,
       instanceType: props.instanceType,
-      vpc: vpc,
+      vpc,
       vpcSubnets: props.vpcSubnets,
       removalPolicy: RemovalPolicy.SNAPSHOT,
       deletionProtection: props.deletionProtection,

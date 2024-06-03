@@ -51,7 +51,6 @@ PowerUserAccess Inline policy
 Configuring environments:
 * `export CDK_DEFAULT_ACCOUNT=<aws-account-id>`
 * `export CDK_DEFAULT_REGION=ap-southeast-2`
-* `export STACK_ID=xcelerate`
 * `npm install @types/node`
 
 Create stack:
@@ -59,6 +58,7 @@ Create stack:
 * `cdk synth`
 
 Deploy stack:
+* `export STACK_ID=xcelerate`
 * `cdk deploy`
 
 Destroy stack:

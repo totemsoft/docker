@@ -3,26 +3,22 @@ import { App } from 'aws-cdk-lib';
 import { AwsCdkStack } from '../lib/aws-cdk-stack';
 
 // cdk deploy stack-logical-id --parameters stack-name:parameter-name=parameter-value
-var stackId = process.env.STACK_ID;
+let stackId = process.env.STACK_ID;
 if (stackId === undefined) {
   stackId = 'stack-logical-id';
 }
 
-// TODO: provide as input parameters
 // DEFAULTS
-var domainName = 'company.com';
-var terminationProtection = undefined;
-var flywayTarget = undefined;
-var flywayBaselineVersion = undefined;
+let domainName = 'company.com';
+let terminationProtection = false;
+let flywayMigrateData = true;
 
 // XCELERATE MIGRATION
 if (stackId === 'xcelerate') {
-  domainName = 'elixirlegal.com';
   //terminationProtection = true;
-  flywayTarget = '5.0.1';
-  //flywayBaselineVersion = '5.0.2';
+  domainName = 'elixirlegal.com';
+  flywayMigrateData = false;
 }
-// TODO: provide as input parameters
 
 const app = new App();
 
@@ -35,9 +31,8 @@ new AwsCdkStack(app, stackId, {
   stackName: stackId,
   description: `${stackId} Elixir Stack`,
   tags: {'Name': `${stackId} Elixir`},
-  terminationProtection: terminationProtection,
+  terminationProtection,
   // AwsCdkStackProps
-  domainName: domainName,
-  flywayTarget: flywayTarget,
-  flywayBaselineVersion: flywayBaselineVersion,
+  domainName,
+  flywayMigrateData
 });
