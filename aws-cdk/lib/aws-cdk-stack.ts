@@ -9,6 +9,7 @@ import { MysqlInstance } from './include/mysql';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 //import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 
 export interface AwsCdkStackProps extends StackProps {
 
@@ -113,6 +114,11 @@ export class AwsCdkStack extends Stack {
       domainName
     });
 
+    const certificate = new Certificate(this, `${id}Certificate`, {
+      domainName: `${id}.${domainName}`,
+      validation: CertificateValidation.fromDns(domainZone)
+    });
+
     // Create a load-balanced Fargate service and make it public
     const albFargateService = new ApplicationLoadBalancedFargateService(this, `${id}FargateService`, {
       cluster,
@@ -123,6 +129,7 @@ export class AwsCdkStack extends Stack {
       assignPublicIp: true,
       domainName: `${id}.${domainName}`,
       domainZone,
+      certificate,
       protocol: ApplicationProtocol.HTTPS,
       targetProtocol: ApplicationProtocol.HTTPS,
       securityGroups: [sg],

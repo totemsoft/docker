@@ -9,8 +9,8 @@ if (stackId === undefined) {
 }
 
 // DEFAULTS
-let domainName = 'company.com';
 let terminationProtection = false;
+let domainName = 'company.com';
 let flywayMigrateData = true;
 
 // XCELERATE MIGRATION
