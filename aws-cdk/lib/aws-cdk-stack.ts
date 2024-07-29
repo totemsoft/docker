@@ -102,7 +102,7 @@ export class AwsCdkStack extends Stack {
 
     const sg = new ec2.SecurityGroup(this, `${id}System`, {
       vpc,
-      allowAllOutbound: true,
+      allowAllOutbound: false,
       description: `${id} ALB`,
       securityGroupName: `${id}ALB`
     });

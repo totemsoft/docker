@@ -81,6 +81,7 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
 # References
-[Working with the AWS CDK in TypeScript](https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-typescript.html)
-[Creating an AWS Fargate service using the AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/ecs_example.html)
-[Configuring environments](https://docs.aws.amazon.com/cdk/v2/guide/environments.html)
+* [Working with the AWS CDK in TypeScript](https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-typescript.html)
+* [Creating an AWS Fargate service using the AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/ecs_example.html)
+* [Configuring environments](https://docs.aws.amazon.com/cdk/v2/guide/environments.html)
+* [ASW CDK Examples](https://github.com/aws-samples/aws-cdk-examples/tree/main/typescript)

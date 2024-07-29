@@ -154,7 +154,7 @@ export class MysqlInstance {
 
     const dbsg = new ec2.SecurityGroup(stack, `${id}DatabaseSecurityGroup`, {
       vpc,
-      allowAllOutbound: true,
+      allowAllOutbound: false,
       description: `${id} Database`,
       securityGroupName: `${id}Database`
     });
