@@ -28,6 +28,13 @@ export interface AwsCdkStackProps extends StackProps {
    */
   readonly flywayMigrateData?: boolean;
 
+  /**
+   * The name or Amazon Resource Name (ARN) of the DB snapshot that's used to
+   * restore the DB instance. If you're restoring from a shared manual DB
+   * snapshot, you must specify the ARN of the snapshot.
+   */
+  readonly snapshotIdentifier?: string;
+
 }
 
 export class AwsCdkStack extends Stack {
@@ -60,10 +67,11 @@ export class AwsCdkStack extends Stack {
       vpcSubnets,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
       deletionProtection: props.terminationProtection,
-      //dbName: `${id}db`,
-      //dbUsername: ${id}
+      dbUsername: `${id}`,
+      dbName: `${id}`,
+      snapshotIdentifier: props.snapshotIdentifier,
     });
-
+//*
     const cluster = new Cluster(this, `${id}Cluster`, {
       vpc
     });
@@ -146,5 +154,7 @@ export class AwsCdkStack extends Stack {
       port: '8443',
       interval: Duration.seconds(30)
     });
+//*/
   }
+
 }

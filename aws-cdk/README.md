@@ -59,6 +59,7 @@ Create stack:
 
 Deploy stack:
 * `export STACK_ID=xcelerate`
+* `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:rds:<snapshot-name>`
 * `cdk deploy`
 
 Destroy stack:

@@ -28,14 +28,6 @@ export interface MysqlProps extends StackProps {
   readonly vpcSubnets: ec2.SubnetSelection;
 
   /**
-   * provide the name of the database
-   * @type {string}
-   * @memberof MysqlProps
-   * @default elixirdb
-   */
-  readonly dbName?: string;
-
-  /**
    * ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL)
    * @type {*}
    * @memberof MysqlProps
@@ -50,6 +42,14 @@ export interface MysqlProps extends StackProps {
    * @default rds.MysqlEngineVersion.VER_8_0
    */
   readonly engineVersion?: any;
+
+  /**
+   * provide the name of the database
+   * @type {string}
+   * @memberof MysqlProps
+   * @default elixir
+   */
+  readonly dbName?: string;
 
   /**
    * user name of the database
@@ -97,6 +97,13 @@ export interface MysqlProps extends StackProps {
    * @memberof MysqlProps
    */
   readonly ingressSources?: any[];
+
+  /**
+   * The name or Amazon Resource Name (ARN) of the DB snapshot that's used to
+   * restore the DB instance. If you're restoring from a shared manual DB
+   * snapshot, you must specify the ARN of the snapshot.
+   */
+  readonly snapshotIdentifier?: string;
 }
 
 export class MysqlInstance {
@@ -124,11 +131,11 @@ export class MysqlInstance {
   readonly dbName: string;
 
   /**
-   * provide the credentials of the database
-   * @type {rds.Credentials}
+   * provide the username of the database
+   * @type {string}
    * @memberof MysqlInstance
    */
-  readonly dbCredentials: rds.Credentials;
+  readonly dbUsername: string;
 
   constructor(stack: Stack, id: string, props: MysqlProps) {
     var ingressSources = [];
@@ -139,13 +146,13 @@ export class MysqlInstance {
     if (typeof props.engineVersion !== 'undefined') {
       engineVersion = props.engineVersion;
     }
-    var dbUsername = 'elixir';
-    if (typeof props.dbUsername !== 'undefined') {
-      dbUsername = props.dbUsername;
-    }
-    this.dbName = 'elixirdb';
+    this.dbName = 'elixir';
     if (typeof props.dbName !== 'undefined') {
       this.dbName = props.dbName;
+    }
+    this.dbUsername = 'elixir';
+    if (typeof props.dbUsername !== 'undefined') {
+      this.dbUsername = props.dbUsername;
     }
 
     const vpc = props.vpc;
@@ -190,14 +197,9 @@ export class MysqlInstance {
         excludeCharacters: "\"@/\\ '",
         generateStringKey: 'password',
         passwordLength: 30,
-        secretStringTemplate: JSON.stringify({username: dbUsername}),
+        secretStringTemplate: JSON.stringify({username: this.dbUsername}),
       }
     });
-
-    this.dbCredentials = rds.Credentials.fromSecret(
-      dbSecret,
-      dbUsername
-    );
 
     const dbParameterGroup = new rds.ParameterGroup(stack, `${id}ParameterGroup`, {
       engine: rds.DatabaseInstanceEngine.mysql({
@@ -206,32 +208,75 @@ export class MysqlInstance {
     });
     dbParameterGroup.addParameter('log_bin_trust_function_creators', '1');
 
-    const dbInstance = new rds.DatabaseInstance(stack, `${id}Database`, {
-      port: this.dbPort,
-      instanceIdentifier: `${id}db`,
-      databaseName: this.dbName,
-      credentials: this.dbCredentials,
-      engine: rds.DatabaseInstanceEngine.mysql({
-        version: engineVersion
-      }),
-      backupRetention: Duration.days(7),
-      allocatedStorage: 20,
-      securityGroups: [dbsg],
-      allowMajorVersionUpgrade: true,
-      autoMinorVersionUpgrade: true,
-      instanceType: props.instanceType,
-      vpc,
-      vpcSubnets: props.vpcSubnets,
-      removalPolicy: RemovalPolicy.SNAPSHOT,
-      deletionProtection: props.deletionProtection,
-      storageEncrypted: true,
-      //monitoringInterval: Duration.seconds(60),
-      //enablePerformanceInsights: true,
-      parameterGroup: dbParameterGroup,
-      preferredBackupWindow: props.backupWindow,
-      preferredMaintenanceWindow: props.preferredMaintenanceWindow,
-      publiclyAccessible: true,
-    });
+    let dbInstance;
+    if (typeof props.snapshotIdentifier !== 'undefined') {
+      const dbCredentials = rds.SnapshotCredentials.fromSecret(
+        dbSecret
+      );
+
+      dbInstance = new rds.DatabaseInstanceFromSnapshot(stack, `${id}Database`, {
+        port: this.dbPort,
+        instanceIdentifier: `${id}db`,
+        //databaseName: this.dbName, // DBName must be null when Restoring for this Engine.
+        engine: rds.DatabaseInstanceEngine.mysql({
+          version: engineVersion
+        }),
+        backupRetention: Duration.days(7),
+        securityGroups: [dbsg],
+        allowMajorVersionUpgrade: true,
+        autoMinorVersionUpgrade: true,
+        instanceType: props.instanceType,
+        vpc,
+        vpcSubnets: props.vpcSubnets,
+        removalPolicy: RemovalPolicy.SNAPSHOT,
+        deletionProtection: props.deletionProtection,
+        snapshotIdentifier: props.snapshotIdentifier,
+//        storageEncrypted: true,
+        credentials: dbCredentials,
+        //monitoringInterval: Duration.seconds(60),
+        //enablePerformanceInsights: true,
+        parameterGroup: dbParameterGroup,
+        preferredBackupWindow: props.backupWindow,
+        preferredMaintenanceWindow: props.preferredMaintenanceWindow,
+        publiclyAccessible: true
+      });
+
+      new CfnOutput(stack, `${id}SnapshotIdentifier`, {
+        exportName: `${id}SnapshotIdentifier`,
+        value: props.snapshotIdentifier
+      });
+    } else {
+      const dbCredentials = rds.Credentials.fromSecret(
+        dbSecret,
+        this.dbUsername
+      );
+
+      dbInstance = new rds.DatabaseInstance(stack, `${id}Database`, {
+        port: this.dbPort,
+        instanceIdentifier: `${id}db`,
+        databaseName: this.dbName,
+        engine: rds.DatabaseInstanceEngine.mysql({
+          version: engineVersion
+        }),
+        backupRetention: Duration.days(7),
+        securityGroups: [dbsg],
+        allowMajorVersionUpgrade: true,
+        autoMinorVersionUpgrade: true,
+        instanceType: props.instanceType,
+        vpc,
+        vpcSubnets: props.vpcSubnets,
+        removalPolicy: RemovalPolicy.SNAPSHOT,
+        deletionProtection: props.deletionProtection,
+        storageEncrypted: true,
+        credentials: dbCredentials,
+        //monitoringInterval: Duration.seconds(60),
+        //enablePerformanceInsights: true,
+        parameterGroup: dbParameterGroup,
+        preferredBackupWindow: props.backupWindow,
+        preferredMaintenanceWindow: props.preferredMaintenanceWindow,
+        publiclyAccessible: true
+      });
+    }
 
     //dbInstance.addRotationSingleUser();
 
@@ -248,7 +293,7 @@ export class MysqlInstance {
 
     new CfnOutput(stack, `${id}Username`, {
       exportName: `${id}Username`,
-      value: dbUsername
+      value: this.dbUsername
     });
 
     new CfnOutput(stack, `${id}DbName`, {

@@ -12,6 +12,7 @@ if (stackId === undefined) {
 let terminationProtection = false;
 let domainName = 'company.com';
 let flywayMigrateData = true;
+let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER;
 
 // XCELERATE MIGRATION
 if (stackId === 'xcelerate') {
@@ -29,6 +30,7 @@ new AwsCdkStack(app, stackId, {
     region: process.env.CDK_DEFAULT_REGION
   },
   stackName: stackId,
+  snapshotIdentifier: snapshotIdentifier,
   description: `${stackId} Elixir Stack`,
   tags: {'Name': `${stackId} Elixir`},
   terminationProtection,

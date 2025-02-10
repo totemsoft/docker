@@ -24,7 +24,7 @@ export class EnvironmentUtils {
     containerDef.addEnvironment('DB_PORT', port);
     const dbName = mysqlInstance.dbName;
     containerDef.addEnvironment('DB_NAME', dbName);
-    const username = mysqlInstance.dbCredentials.username;
+    const username = mysqlInstance.dbUsername;
     containerDef.addEnvironment('DB_USER', username);
     containerDef.addSecret('DB_PASS', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
     // Flyway migration
