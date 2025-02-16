@@ -123,7 +123,8 @@ export class AwsCdkStack extends Stack {
     });
 
     const certificate = new Certificate(this, `${id}Certificate`, {
-      domainName: `${id}.${domainName}`,
+      domainName: `*.${domainName}`,
+      //domainName: `${id}.${domainName}`,
       validation: CertificateValidation.fromDns(domainZone)
     });
 

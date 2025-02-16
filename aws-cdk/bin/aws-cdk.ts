@@ -16,7 +16,7 @@ let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER;
 
 // XCELERATE MIGRATION
 if (stackId === 'xcelerate') {
-  //terminationProtection = true;
+  terminationProtection = true;
   domainName = 'elixirlegal.com';
   flywayMigrateData = false;
 }

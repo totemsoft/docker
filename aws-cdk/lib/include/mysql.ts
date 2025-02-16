@@ -166,15 +166,16 @@ export class MysqlInstance {
       securityGroupName: `${id}Database`
     });
 
-    // TODO: remove later - developer test only
+    // TODO: developer test only
     // https://apple.stackexchange.com/questions/20547/how-do-i-find-my-ip-address-from-the-command-line
     const developerIpAddress = execSync('dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com')
       // remove whitespaces
       .toString().trim()
       // remove both single (‘) and double (“) quotes
       .replace(/['"]+/g, '');
+    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Admin ONLY !!!');
     dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Developer ONLY !!!');
-    // TODO: remove later - developer test only
+    // TODO: developer test only
 
     dbsg.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), tcpMysql, 'Inbound MYSQL');
 
