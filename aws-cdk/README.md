@@ -56,10 +56,11 @@ Configuring environments:
 Create stack:
 * `cdk bootstrap`
 * `cdk synth`
+* `cdk diff`
 
 Deploy stack:
 * `export STACK_ID=xcelerate`
-* `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:rds:<snapshot-name>`
+* `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final`
 * `cdk deploy`
 
 Destroy stack:

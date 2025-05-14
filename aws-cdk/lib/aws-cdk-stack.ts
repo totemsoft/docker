@@ -76,7 +76,7 @@ export class AwsCdkStack extends Stack {
       vpc
     });
 
-    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition`, {
+    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition2`, {
       cpu: 1024,
       memoryLimitMiB: 2048
     });
@@ -94,7 +94,7 @@ export class AwsCdkStack extends Stack {
       streamPrefix: `ecs-${id}`
     });
     const containerDef = new ContainerDefinition(this, `${id}ContainerDefinition`, {
-      image: ContainerImage.fromRegistry('totemsoft/wildfly-elixir'),
+      image: ContainerImage.fromRegistry('totemsoft/wildfly-elixir'), // :latest
       taskDefinition: taskDef,
       environment: {
         STAGE: 'prod',
