@@ -174,6 +174,7 @@ export class MysqlInstance {
       // remove both single (‘) and double (“) quotes
       .replace(/['"]+/g, '');
     dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Admin ONLY !!!');
+    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Developer ONLY !!!');
     // TODO: developer test only
 
     dbsg.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), tcpMysql, 'Inbound MYSQL');
