@@ -84,8 +84,7 @@ export class AwsCdkStack extends Stack {
         actions: [
             'cognito-idp:Admin*',
             's3:*',
-            'ses:*',
-            'workdocs:*'
+            'ses:*'
         ],
         resources: ['*']
     }));
@@ -143,7 +142,7 @@ export class AwsCdkStack extends Stack {
       targetProtocol: ApplicationProtocol.HTTPS,
       securityGroups: [sg],
       idleTimeout: Duration.seconds(600),
-      healthCheckGracePeriod: Duration.seconds(120)
+      healthCheckGracePeriod: Duration.seconds(240)
     });
 
     const targetGroup = albFargateService.targetGroup;
@@ -153,6 +152,7 @@ export class AwsCdkStack extends Stack {
       path: '/elixir/',
       protocol: Protocol.HTTPS,
       port: '8443',
+      healthyThresholdCount: 3,
       interval: Duration.seconds(30)
     });
 //*/

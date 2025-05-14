@@ -66,6 +66,9 @@ Destroy stack:
 * `cdk destroy`
 * `aws sso logout`
 
+If you are using the rolling deployment type for your service, you can run the update-service command from the AWS command-line interface specifying force-new-deployment:
+* `$ aws ecs update-service --service service_name \ --cluster cluster_name --force-new-deployment`
+
 # Welcome to your CDK TypeScript project
 
 This is a blank project for CDK development with TypeScript.
