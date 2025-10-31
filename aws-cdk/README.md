@@ -62,6 +62,7 @@ Deploy stack:
 * `export STACK_ID=xcelerate`
 * `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final`
 * `cdk deploy`
+* `cdk deploy xcelerate --parameters domainName=elixirlegal.com`
 
 Destroy stack:
 * `cdk destroy`
@@ -77,6 +78,11 @@ This is a blank project for CDK development with TypeScript.
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands
+
+* `cdk --version`
+* `npm update`
+* `npm audit fix`
+* `npm audit fix --force`
 
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile

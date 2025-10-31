@@ -5,11 +5,12 @@ import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patte
 import { ApplicationProtocol, Protocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { EnvironmentUtils } from './include/environment-utils';
-import { MysqlInstance } from './include/mysql';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 //import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { MysqlInstance as RdsInstance } from './include/mysql';
+//import { AuroraMysqlInstance as RdsInstance } from './include/aurora';
 
 export interface AwsCdkStackProps extends StackProps {
 
@@ -60,7 +61,7 @@ export class AwsCdkStack extends Stack {
       subnetType: ec2.SubnetType.PUBLIC
     };
 
-    const mysqlInstance = new MysqlInstance(this, id, {
+    const mysqlInstance = new RdsInstance(this, id, {
       env: { region: this.region },
       description: `${id} Mysql`,
       vpc,
@@ -141,6 +142,7 @@ export class AwsCdkStack extends Stack {
       protocol: ApplicationProtocol.HTTPS,
       targetProtocol: ApplicationProtocol.HTTPS,
       securityGroups: [sg],
+      minHealthyPercent: 50,
       idleTimeout: Duration.seconds(600),
       healthCheckGracePeriod: Duration.seconds(240)
     });

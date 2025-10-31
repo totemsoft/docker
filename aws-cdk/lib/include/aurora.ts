@@ -4,7 +4,7 @@ import {
   StackProps,
   Tags,
   Duration,
-  RemovalPolicy,
+  RemovalPolicy
 } from 'aws-cdk-lib';
 import { RdsProps } from './rds-props';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -12,19 +12,19 @@ import * as rds from 'aws-cdk-lib/aws-rds';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { execSync } from 'child_process';
 
-export class MysqlInstance {
+export class AuroraMysqlInstance {
 
   /**
    * provide the endpoint of the database
    * @type {string}
-   * @memberof MysqlInstance
+   * @memberof AuroraMysqlInstance
    */
   readonly dbEndpoint: string;
 
   /**
    * provide the port of the database
    * @type {number}
-   * @memberof MysqlInstance
+   * @memberof AuroraMysqlInstance
    * @default 3306
    */
   readonly dbPort: number = 3306;
@@ -32,14 +32,14 @@ export class MysqlInstance {
   /**
    * provide the name of the database
    * @type {string}
-   * @memberof MysqlInstance
+   * @memberof AuroraMysqlInstance
    */
   readonly dbName: string;
 
   /**
    * provide the username of the database
    * @type {string}
-   * @memberof MysqlInstance
+   * @memberof AuroraMysqlInstance
    */
   readonly dbUsername: string;
 
@@ -49,7 +49,8 @@ export class MysqlInstance {
       ingressSources = props.ingressSources;
     }
 
-    var engineVersion = rds.MysqlEngineVersion.VER_8_0_42;
+    // Aurora MySQL 3.10.0 (compatible with MySQL 8.0.42)
+    var engineVersion = rds.AuroraMysqlEngineVersion.VER_3_10_0;
     if (typeof props.engineVersion !== 'undefined') {
       engineVersion = props.engineVersion;
     }
@@ -65,7 +66,7 @@ export class MysqlInstance {
 
     const vpc = props.vpc;
 
-    const tcpMysql = ec2.Port.tcp(this.dbPort);
+    const tcpAuroraMysql = ec2.Port.tcp(this.dbPort);
 
     const dbsg = new ec2.SecurityGroup(stack, `${id}DatabaseSecurityGroup`, {
       vpc,
@@ -81,16 +82,16 @@ export class MysqlInstance {
       .toString().trim()
       // remove both single (‘) and double (“) quotes
       .replace(/['"]+/g, '');
-    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Admin ONLY !!!');
-    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpMysql, 'Developer ONLY !!!');
+    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpAuroraMysql, 'Admin ONLY !!!');
+    dbsg.addIngressRule(ec2.Peer.ipv4(`${developerIpAddress}/32`), tcpAuroraMysql, 'Developer ONLY !!!');
     // TODO: developer test only
 
-    dbsg.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), tcpMysql, 'Inbound MYSQL');
+    dbsg.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), tcpAuroraMysql, 'Inbound MYSQL');
 
     dbsg.addEgressRule(ec2.Peer.anyIpv4(), ec2.Port.allTcp(), 'Outbound');
 
     const mysqlConnectionPorts = [
-      { port: tcpMysql, description: `${id} tcp Mysql` }
+      { port: tcpAuroraMysql, description: `${id} tcp AuroraMysql` }
     ];
 
     for (let ingressSource of ingressSources!) {
@@ -101,7 +102,7 @@ export class MysqlInstance {
 
     const dbSecret = new secretsmanager.Secret(stack, `${id}Credentials`, {
       secretName: `prod/${id}/mysql/credentials`,
-      description: `Mysql ${this.dbName} Database Crendetials`,
+      description: `AuroraMysql ${this.dbName} Database Crendetials`,
       generateSecretString: {
         excludeCharacters: "\"@/\\ '",
         generateStringKey: 'password',
@@ -110,12 +111,13 @@ export class MysqlInstance {
       }
     });
 
-    const dbEngine = rds.DatabaseInstanceEngine.mysql({
+    const dbEngine = rds.DatabaseClusterEngine.auroraMysql({
         version: engineVersion
     });
 
     const dbParameterGroup = new rds.ParameterGroup(stack, `${id}ParameterGroup`, {
-      engine: dbEngine
+      engine: dbEngine,
+      
     });
     dbParameterGroup.addParameter('log_bin_trust_function_creators', '1');
 
@@ -125,29 +127,32 @@ export class MysqlInstance {
         dbSecret
       );
 
-      dbInstance = new rds.DatabaseInstanceFromSnapshot(stack, `${id}Database`, {
+      dbInstance = new rds.DatabaseClusterFromSnapshot(stack, `${id}Database`, {
         port: this.dbPort,
-        instanceIdentifier: `${id}db`,
-        //databaseName: this.dbName, // DBName must be null when Restoring for this Engine.
+        clusterIdentifier: `${id}db`,
+        defaultDatabaseName: this.dbName, // DBName must be null when Restoring for this Engine.
         engine: dbEngine,
-        backupRetention: Duration.days(7),
+        writer: rds.ClusterInstance.provisioned(`${id}dbwriter`, {
+          instanceType: props.instanceType,
+          publiclyAccessible: true,
+        }),
+        //readers: [
+        //  rds.ClusterInstance.provisioned(`${id}dbreader1`, { promotionTier: 1 }),
+        //  rds.ClusterInstance.serverlessV2(`${id}dbreader2`),
+        //],
         securityGroups: [dbsg],
-        allowMajorVersionUpgrade: false,
         autoMinorVersionUpgrade: true,
-        instanceType: props.instanceType,
         vpc,
         vpcSubnets: props.vpcSubnets,
         removalPolicy: RemovalPolicy.SNAPSHOT,
         deletionProtection: props.deletionProtection,
         snapshotIdentifier: props.snapshotIdentifier,
         //storageEncrypted: true,
-        credentials: dbCredentials,
+        snapshotCredentials: dbCredentials,
         //monitoringInterval: Duration.seconds(60),
         //enablePerformanceInsights: true,
         parameterGroup: dbParameterGroup,
-        preferredBackupWindow: props.backupWindow,
-        preferredMaintenanceWindow: props.preferredMaintenanceWindow,
-        publiclyAccessible: true
+        preferredMaintenanceWindow: props.preferredMaintenanceWindow
       });
 
       new CfnOutput(stack, `${id}SnapshotIdentifier`, {
@@ -160,16 +165,22 @@ export class MysqlInstance {
         this.dbUsername
       );
 
-      dbInstance = new rds.DatabaseInstance(stack, `${id}Database`, {
+      dbInstance = new rds.DatabaseCluster(stack, `${id}Database`, {
         port: this.dbPort,
-        instanceIdentifier: `${id}db`,
-        databaseName: this.dbName,
+        clusterIdentifier: `${id}db`,
+        defaultDatabaseName: this.dbName,
         engine: dbEngine,
-        backupRetention: Duration.days(7),
+        writer: rds.ClusterInstance.provisioned(`${id}dbwriter`, {
+          instanceType: props.instanceType,
+          publiclyAccessible: true
+        }),
+        //readers: [
+        //  rds.ClusterInstance.provisioned(`${id}dbreader1`, { promotionTier: 1 }),
+        //  rds.ClusterInstance.serverlessV2(`${id}dbreader2`),
+        //],
+        //backupRetention: Duration.days(7),
         securityGroups: [dbsg],
-        allowMajorVersionUpgrade: false,
         autoMinorVersionUpgrade: true,
-        instanceType: props.instanceType,
         vpc,
         vpcSubnets: props.vpcSubnets,
         removalPolicy: RemovalPolicy.SNAPSHOT,
@@ -179,20 +190,22 @@ export class MysqlInstance {
         //monitoringInterval: Duration.seconds(60),
         //enablePerformanceInsights: true,
         parameterGroup: dbParameterGroup,
-        preferredBackupWindow: props.backupWindow,
-        preferredMaintenanceWindow: props.preferredMaintenanceWindow,
-        publiclyAccessible: true
+        preferredMaintenanceWindow: props.preferredMaintenanceWindow
       });
     }
 
-    //dbInstance.addRotationSingleUser();
+//    dbInstance.addRotationSingleUser({
+//        automaticallyAfter: Duration.days(30),
+//        excludeCharacters: '!@#$%^&*', // defaults to the set " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
+//        securityGroup: dbsg,           // defaults to an auto-created security group
+//    });
 
     // Tags
     Tags.of(dbInstance).add('Name', `${id}Database`, {
       priority: 300
     });
 
-    this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
+    this.dbEndpoint = dbInstance.clusterEndpoint.socketAddress;
     new CfnOutput(stack, `${id}Endpoint`, {
       exportName: `${id}Endpoint`,
       value: this.dbEndpoint

@@ -1,12 +1,13 @@
 import { SecretValue, Stack } from 'aws-cdk-lib';
 import { ContainerDefinition } from 'aws-cdk-lib/aws-ecs';
-import { MysqlInstance } from './mysql';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import { AwsCdkStackProps } from '../aws-cdk-stack';
+import { MysqlInstance as RdsInstance } from './mysql';
+//import { AuroraMysqlInstance as RdsInstance } from './aurora';
 
 export class EnvironmentUtils {
-  static addEnvironments(stack: Stack, id: string, props: AwsCdkStackProps, containerDef: ContainerDefinition, mysqlInstance: MysqlInstance): void {
+  static addEnvironments(stack: Stack, id: string, props: AwsCdkStackProps, containerDef: ContainerDefinition, rdsInstance: RdsInstance): void {
     const smPartialArn = `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret`;
 
     containerDef.addEnvironment('PROFILE', id);
@@ -18,13 +19,13 @@ export class EnvironmentUtils {
     const rdsSecret = sm.Secret.fromSecretAttributes(stack, rdsSecretName, {
       secretPartialArn: `${smPartialArn}:${rdsSecretName}`
     });
-    const host = mysqlInstance.dbEndpoint;
+    const host = rdsInstance.dbEndpoint;
     containerDef.addEnvironment('DB_HOST', host);
-    const port = '' + mysqlInstance.dbPort;
+    const port = '' + rdsInstance.dbPort;
     containerDef.addEnvironment('DB_PORT', port);
-    const dbName = mysqlInstance.dbName;
+    const dbName = rdsInstance.dbName;
     containerDef.addEnvironment('DB_NAME', dbName);
-    const username = mysqlInstance.dbUsername;
+    const username = rdsInstance.dbUsername;
     containerDef.addEnvironment('DB_USER', username);
     containerDef.addSecret('DB_PASS', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
     // Flyway migration
