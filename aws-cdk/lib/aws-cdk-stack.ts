@@ -9,8 +9,8 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 //import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
-import { MysqlInstance as RdsInstance } from './include/mysql';
-//import { AuroraMysqlInstance as RdsInstance } from './include/aurora';
+import { MysqlInstance } from './include/mysql';
+import { AuroraMysqlInstance } from './include/aurora';
 
 export interface AwsCdkStackProps extends StackProps {
 
@@ -41,14 +41,15 @@ export interface AwsCdkStackProps extends StackProps {
 export class AwsCdkStack extends Stack {
   constructor(scope: Construct, id: string, props: AwsCdkStackProps) {
     super(scope, id, props);
+
 /*
-    // cdk deploy xcelerate --parameters domainName=elixirlegal.com
+    // TODO: cdk deploy xcelerate --parameters domainName=elixirlegal.com
     const domainNameParameter = new CfnParameter(this, 'domainName', {
       type: 'String',
       description: 'The zone domain e.g. example.com'
     });
     const domainName = domainNameParameter.valueAsString;
-*/
+//*/
     const domainName = props.domainName;
 
     const vpc = new ec2.Vpc(this, `${id}Vpc`, {
@@ -61,7 +62,7 @@ export class AwsCdkStack extends Stack {
       subnetType: ec2.SubnetType.PUBLIC
     };
 
-    const mysqlInstance = new RdsInstance(this, id, {
+    const rdsInstance = new MysqlInstance(this, id, {
       env: { region: this.region },
       description: `${id} Mysql`,
       vpc,
@@ -72,7 +73,19 @@ export class AwsCdkStack extends Stack {
       dbName: `${id}`,
       snapshotIdentifier: props.snapshotIdentifier,
     });
-//*
+/*
+    const rdsInstance2 = new AuroraMysqlInstance(this, id, {
+      env: { region: this.region },
+      description: `${id} Aurora Mysql`,
+      vpc,
+      vpcSubnets,
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+      //deletionProtection: props.terminationProtection,
+      dbUsername: `${id}`,
+      dbName: `${id}`,
+      snapshotIdentifier: props.snapshotIdentifier,
+    });
+*/
     const cluster = new Cluster(this, `${id}Cluster`, {
       vpc
     });
@@ -106,7 +119,7 @@ export class AwsCdkStack extends Stack {
         { containerPort: 25, name: 'elixir-smtp' }
       ]
     });
-    EnvironmentUtils.addEnvironments(this, id, props, containerDef, mysqlInstance);
+    EnvironmentUtils.addEnvironments(this, id, props, containerDef, rdsInstance);
 
     const sg = new ec2.SecurityGroup(this, `${id}System`, {
       vpc,
@@ -157,7 +170,6 @@ export class AwsCdkStack extends Stack {
       healthyThresholdCount: 3,
       interval: Duration.seconds(30)
     });
-//*/
   }
 
 }

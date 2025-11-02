@@ -62,7 +62,7 @@ Deploy stack:
 * `export STACK_ID=xcelerate`
 * `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final`
 * `cdk deploy`
-* `cdk deploy xcelerate --parameters domainName=elixirlegal.com`
+* TODO: `cdk deploy ${STACK_ID} --parameters domainName=elixirlegal.com`
 
 Destroy stack:
 * `cdk destroy`

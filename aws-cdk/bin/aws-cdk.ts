@@ -14,7 +14,8 @@ let domainName = 'company.com';
 let flywayMigrateData = true;
 let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER;
 
-// XCELERATE MIGRATION
+// XCELERATE MIGRATION (MySQL 8.0)
+// XCELERATE MIGRATION (Aurora 3.10)
 if (stackId === 'xcelerate') {
   terminationProtection = true;
   domainName = 'elixirlegal.com';

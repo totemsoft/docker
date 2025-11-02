@@ -68,11 +68,11 @@ export class AuroraMysqlInstance {
 
     const tcpAuroraMysql = ec2.Port.tcp(this.dbPort);
 
-    const dbsg = new ec2.SecurityGroup(stack, `${id}DatabaseSecurityGroup`, {
+    const dbsg = new ec2.SecurityGroup(stack, `${id}AuroraDatabaseSecurityGroup`, {
       vpc,
       allowAllOutbound: false,
-      description: `${id} Database`,
-      securityGroupName: `${id}Database`
+      description: `${id} Aurora Mysql Database`,
+      securityGroupName: `${id}AuroraDatabase`
     });
 
     // TODO: developer test only
@@ -91,7 +91,7 @@ export class AuroraMysqlInstance {
     dbsg.addEgressRule(ec2.Peer.anyIpv4(), ec2.Port.allTcp(), 'Outbound');
 
     const mysqlConnectionPorts = [
-      { port: tcpAuroraMysql, description: `${id} tcp AuroraMysql` }
+      { port: tcpAuroraMysql, description: `${id} Aurora tcp Mysql` }
     ];
 
     for (let ingressSource of ingressSources!) {
@@ -100,9 +100,9 @@ export class AuroraMysqlInstance {
       }
     }
 
-    const dbSecret = new secretsmanager.Secret(stack, `${id}Credentials`, {
-      secretName: `prod/${id}/mysql/credentials`,
-      description: `AuroraMysql ${this.dbName} Database Crendetials`,
+    const dbSecret = new secretsmanager.Secret(stack, `${id}AuroraCredentials`, {
+      secretName: `prod/${id}/aurora/credentials`,
+      description: `Aurora Mysql ${this.dbName} Database Crendetials`,
       generateSecretString: {
         excludeCharacters: "\"@/\\ '",
         generateStringKey: 'password',
@@ -115,7 +115,7 @@ export class AuroraMysqlInstance {
         version: engineVersion
     });
 
-    const dbParameterGroup = new rds.ParameterGroup(stack, `${id}ParameterGroup`, {
+    const dbParameterGroup = new rds.ParameterGroup(stack, `${id}AuroraParameterGroup`, {
       engine: dbEngine,
       
     });
@@ -127,18 +127,18 @@ export class AuroraMysqlInstance {
         dbSecret
       );
 
-      dbInstance = new rds.DatabaseClusterFromSnapshot(stack, `${id}Database`, {
+      dbInstance = new rds.DatabaseClusterFromSnapshot(stack, `${id}AuroraDatabase`, {
         port: this.dbPort,
-        clusterIdentifier: `${id}db`,
+        clusterIdentifier: `${id}Auroradb`,
         defaultDatabaseName: this.dbName, // DBName must be null when Restoring for this Engine.
         engine: dbEngine,
-        writer: rds.ClusterInstance.provisioned(`${id}dbwriter`, {
+        writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
           publiclyAccessible: true,
         }),
         //readers: [
-        //  rds.ClusterInstance.provisioned(`${id}dbreader1`, { promotionTier: 1 }),
-        //  rds.ClusterInstance.serverlessV2(`${id}dbreader2`),
+        //  rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+        //  rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
         //],
         securityGroups: [dbsg],
         autoMinorVersionUpgrade: true,
@@ -155,8 +155,8 @@ export class AuroraMysqlInstance {
         preferredMaintenanceWindow: props.preferredMaintenanceWindow
       });
 
-      new CfnOutput(stack, `${id}SnapshotIdentifier`, {
-        exportName: `${id}SnapshotIdentifier`,
+      new CfnOutput(stack, `${id}AuroraSnapshotIdentifier`, {
+        exportName: `${id}AuroraSnapshotIdentifier`,
         value: props.snapshotIdentifier
       });
     } else {
@@ -165,18 +165,18 @@ export class AuroraMysqlInstance {
         this.dbUsername
       );
 
-      dbInstance = new rds.DatabaseCluster(stack, `${id}Database`, {
+      dbInstance = new rds.DatabaseCluster(stack, `${id}AuroraDatabase`, {
         port: this.dbPort,
-        clusterIdentifier: `${id}db`,
+        clusterIdentifier: `${id}Auroradb`,
         defaultDatabaseName: this.dbName,
         engine: dbEngine,
-        writer: rds.ClusterInstance.provisioned(`${id}dbwriter`, {
+        writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
           publiclyAccessible: true
         }),
         //readers: [
-        //  rds.ClusterInstance.provisioned(`${id}dbreader1`, { promotionTier: 1 }),
-        //  rds.ClusterInstance.serverlessV2(`${id}dbreader2`),
+        //  rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+        //  rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
         //],
         //backupRetention: Duration.days(7),
         securityGroups: [dbsg],
@@ -201,23 +201,23 @@ export class AuroraMysqlInstance {
 //    });
 
     // Tags
-    Tags.of(dbInstance).add('Name', `${id}Database`, {
+    Tags.of(dbInstance).add('Name', `${id}AuroraDatabase`, {
       priority: 300
     });
 
     this.dbEndpoint = dbInstance.clusterEndpoint.socketAddress;
-    new CfnOutput(stack, `${id}Endpoint`, {
-      exportName: `${id}Endpoint`,
+    new CfnOutput(stack, `${id}AuroraEndpoint`, {
+      exportName: `${id}AuroraEndpoint`,
       value: this.dbEndpoint
     });
 
-    new CfnOutput(stack, `${id}Username`, {
-      exportName: `${id}Username`,
+    new CfnOutput(stack, `${id}AuroraUsername`, {
+      exportName: `${id}AuroraUsername`,
       value: this.dbUsername
     });
 
-    new CfnOutput(stack, `${id}DbName`, {
-      exportName: `${id}DbName`,
+    new CfnOutput(stack, `${id}AuroraDbName`, {
+      exportName: `${id}AuroraDbName`,
       value: this.dbName
     });
   }

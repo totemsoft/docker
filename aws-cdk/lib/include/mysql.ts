@@ -49,7 +49,8 @@ export class MysqlInstance {
       ingressSources = props.ingressSources;
     }
 
-    var engineVersion = rds.MysqlEngineVersion.VER_8_0_42;
+    var engineVersion = rds.MysqlEngineVersion.VER_8_0;
+    //var engineVersion = rds.MysqlEngineVersion.VER_8_0_42;
     if (typeof props.engineVersion !== 'undefined') {
       engineVersion = props.engineVersion;
     }
