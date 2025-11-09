@@ -134,10 +134,13 @@ export class AuroraMysqlInstance {
         engine: dbEngine,
         writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
-          publiclyAccessible: true,
+          publiclyAccessible: false,
         }),
         readers: [
-          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
+            promotionTier: 1,
+            publiclyAccessible: true
+          }),
           //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
         ],
         securityGroups: [dbsg],
@@ -172,10 +175,13 @@ export class AuroraMysqlInstance {
         engine: dbEngine,
         writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
-          publiclyAccessible: true
+          publiclyAccessible: false
         }),
         readers: [
-          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
+            promotionTier: 1,
+            publiclyAccessible: true
+          }),
           //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
         ],
         //backupRetention: Duration.days(7),
