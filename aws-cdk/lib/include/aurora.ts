@@ -136,10 +136,10 @@ export class AuroraMysqlInstance {
           instanceType: props.instanceType,
           publiclyAccessible: true,
         }),
-        //readers: [
-        //  rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
-        //  rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
-        //],
+        readers: [
+          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
+        ],
         securityGroups: [dbsg],
         autoMinorVersionUpgrade: true,
         vpc,
@@ -174,10 +174,10 @@ export class AuroraMysqlInstance {
           instanceType: props.instanceType,
           publiclyAccessible: true
         }),
-        //readers: [
-        //  rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
-        //  rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
-        //],
+        readers: [
+          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, { promotionTier: 1 }),
+          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
+        ],
         //backupRetention: Duration.days(7),
         securityGroups: [dbsg],
         autoMinorVersionUpgrade: true,

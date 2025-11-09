@@ -61,6 +61,7 @@ Create stack:
 Deploy stack:
 * `export STACK_ID=xcelerate`
 * `export SNAPSHOT_IDENTIFIER=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final`
+* `export SNAPSHOT_IDENTIFIER2=arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:rds:xceleratedb-2025-11-08-12-39`
 * `cdk deploy`
 * TODO: `cdk deploy ${STACK_ID} --parameters domainName=elixirlegal.com`
 

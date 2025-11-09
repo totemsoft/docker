@@ -33,8 +33,11 @@ export interface AwsCdkStackProps extends StackProps {
    * The name or Amazon Resource Name (ARN) of the DB snapshot that's used to
    * restore the DB instance. If you're restoring from a shared manual DB
    * snapshot, you must specify the ARN of the snapshot.
+   * @memberof AwsCdkStackProps
+   * @default arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final
    */
   readonly snapshotIdentifier?: string;
+  readonly snapshotIdentifier2?: string;
 
 }
 
@@ -83,9 +86,10 @@ export class AwsCdkStack extends Stack {
       //deletionProtection: props.terminationProtection,
       dbUsername: `${id}`,
       dbName: `${id}`,
-      snapshotIdentifier: props.snapshotIdentifier,
+      snapshotIdentifier: props.snapshotIdentifier2,
     });
-*/
+//*/
+
     const cluster = new Cluster(this, `${id}Cluster`, {
       vpc
     });
