@@ -36,8 +36,8 @@ export interface AwsCdkStackProps extends StackProps {
    * @memberof AwsCdkStackProps
    * @default arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final
    */
+  readonly snapshotIdentifier0?: string;
   readonly snapshotIdentifier?: string;
-  readonly snapshotIdentifier2?: string;
 
 }
 
@@ -65,7 +65,7 @@ export class AwsCdkStack extends Stack {
       subnetType: ec2.SubnetType.PUBLIC
     };
 
-    const rdsInstance = new MysqlInstance(this, id, {
+    const rdsInstance0 = new MysqlInstance(this, id, {
       env: { region: this.region },
       description: `${id} Mysql`,
       vpc,
@@ -74,27 +74,25 @@ export class AwsCdkStack extends Stack {
       deletionProtection: props.terminationProtection,
       dbUsername: `${id}`,
       dbName: `${id}`,
-      snapshotIdentifier: props.snapshotIdentifier,
+      snapshotIdentifier: props.snapshotIdentifier0,
     });
-/*
-    const rdsInstance2 = new AuroraMysqlInstance(this, id, {
+    const rdsInstance = new AuroraMysqlInstance(this, id, {
       env: { region: this.region },
       description: `${id} Aurora Mysql`,
       vpc,
       vpcSubnets,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
-      //deletionProtection: props.terminationProtection,
+      deletionProtection: props.terminationProtection,
       dbUsername: `${id}`,
       dbName: `${id}`,
-      snapshotIdentifier: props.snapshotIdentifier2,
+      snapshotIdentifier: props.snapshotIdentifier,
     });
-//*/
 
     const cluster = new Cluster(this, `${id}Cluster`, {
       vpc
     });
 
-    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition2`, {
+    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition3`, {
       cpu: 1024,
       memoryLimitMiB: 2048
     });
@@ -123,7 +121,10 @@ export class AwsCdkStack extends Stack {
         { containerPort: 25, name: 'elixir-smtp' }
       ]
     });
-    EnvironmentUtils.addEnvironments(this, id, props, containerDef, rdsInstance);
+
+    //const rdsSecretName = `prod/${id}/mysql/credentials`;
+    const rdsSecretName = `prod/${id}/aurora/credentials`;
+    EnvironmentUtils.addEnvironments(this, id, props, containerDef, rdsSecretName, rdsInstance);
 
     const sg = new ec2.SecurityGroup(this, `${id}System`, {
       vpc,

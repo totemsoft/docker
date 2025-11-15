@@ -134,17 +134,17 @@ export class AuroraMysqlInstance {
         engine: dbEngine,
         writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
-          publiclyAccessible: false,
+          publiclyAccessible: true,
         }),
-        readers: [
-          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
-            promotionTier: 1,
-            publiclyAccessible: true
-          }),
-          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
-        ],
+//        readers: [
+//          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
+//            promotionTier: 1,
+//            publiclyAccessible: true
+//          }),
+//          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
+//        ],
         securityGroups: [dbsg],
-        autoMinorVersionUpgrade: true,
+        autoMinorVersionUpgrade: false,
         vpc,
         vpcSubnets: props.vpcSubnets,
         removalPolicy: RemovalPolicy.SNAPSHOT,
@@ -175,18 +175,18 @@ export class AuroraMysqlInstance {
         engine: dbEngine,
         writer: rds.ClusterInstance.provisioned(`${id}Auroradbwriter`, {
           instanceType: props.instanceType,
-          publiclyAccessible: false
+          publiclyAccessible: true
         }),
-        readers: [
-          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
-            promotionTier: 1,
-            publiclyAccessible: true
-          }),
-          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
-        ],
+//        readers: [
+//          rds.ClusterInstance.provisioned(`${id}Auroradbreader1`, {
+//            promotionTier: 1,
+//            publiclyAccessible: true
+//          }),
+//          //rds.ClusterInstance.serverlessV2(`${id}Auroradbreader2`),
+//        ],
         //backupRetention: Duration.days(7),
         securityGroups: [dbsg],
-        autoMinorVersionUpgrade: true,
+        autoMinorVersionUpgrade: false,
         vpc,
         vpcSubnets: props.vpcSubnets,
         removalPolicy: RemovalPolicy.SNAPSHOT,

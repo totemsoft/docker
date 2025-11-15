@@ -7,7 +7,7 @@ import { MysqlInstance as RdsInstance } from './mysql';
 //import { AuroraMysqlInstance as RdsInstance } from './aurora';
 
 export class EnvironmentUtils {
-  static addEnvironments(stack: Stack, id: string, props: AwsCdkStackProps, containerDef: ContainerDefinition, rdsInstance: RdsInstance): void {
+  static addEnvironments(stack: Stack, id: string, props: AwsCdkStackProps, containerDef: ContainerDefinition, rdsSecretName: string, rdsInstance: RdsInstance): void {
     const smPartialArn = `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret`;
 
     containerDef.addEnvironment('PROFILE', id);
@@ -15,21 +15,19 @@ export class EnvironmentUtils {
     containerDef.addEnvironment('JAVA_OPTS', '-Xms1024m -Xmx1536m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true');
 
     // RDS/MYSQL
-    const rdsSecretName = `prod/${id}/mysql/credentials`;
     const rdsSecret = sm.Secret.fromSecretAttributes(stack, rdsSecretName, {
       secretPartialArn: `${smPartialArn}:${rdsSecretName}`
     });
-    const host = rdsInstance.dbEndpoint;
-    containerDef.addEnvironment('DB_HOST', host);
-    const port = '' + rdsInstance.dbPort;
-    containerDef.addEnvironment('DB_PORT', port);
+    containerDef.addSecret('DB_HOST', ecs.Secret.fromSecretsManager(rdsSecret, 'host'));
+    containerDef.addSecret('DB_PORT', ecs.Secret.fromSecretsManager(rdsSecret, 'port'));
     const dbName = rdsInstance.dbName;
     containerDef.addEnvironment('DB_NAME', dbName);
     const username = rdsInstance.dbUsername;
     containerDef.addEnvironment('DB_USER', username);
     containerDef.addSecret('DB_PASS', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
     // Flyway migration
-    containerDef.addEnvironment('FLYWAY_URL', `jdbc:mysql://${host}:${port}/${dbName}`);
+    const endpoint = rdsInstance.dbEndpoint;
+    containerDef.addEnvironment('FLYWAY_URL', `jdbc:mysql://${endpoint}/${dbName}`);
     containerDef.addEnvironment('FLYWAY_USER', username);
     containerDef.addSecret('FLYWAY_PASSWORD', ecs.Secret.fromSecretsManager(rdsSecret, 'password'));
     if (props.flywayMigrateData === true) {

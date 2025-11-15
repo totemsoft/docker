@@ -12,8 +12,8 @@ if (stackId === undefined) {
 let terminationProtection = false;
 let domainName = 'company.com';
 let flywayMigrateData = true;
-let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER;
-let snapshotIdentifier2 = process.env.SNAPSHOT_IDENTIFIER2;
+let snapshotIdentifier0 = process.env.SNAPSHOT_IDENTIFIER;
+let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER2;
 
 // XCELERATE MIGRATION (MySQL 8.0)
 // XCELERATE MIGRATION (Aurora 3.10)
@@ -32,8 +32,8 @@ new AwsCdkStack(app, stackId, {
     region: process.env.CDK_DEFAULT_REGION
   },
   stackName: stackId,
+  snapshotIdentifier0: snapshotIdentifier0,
   snapshotIdentifier: snapshotIdentifier,
-  snapshotIdentifier2: snapshotIdentifier2,
   description: `${stackId} Elixir Stack`,
   tags: {'Name': `${stackId} Elixir`},
   terminationProtection,
