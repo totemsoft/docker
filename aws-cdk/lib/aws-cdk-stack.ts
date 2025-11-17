@@ -71,7 +71,7 @@ export class AwsCdkStack extends Stack {
       vpc,
       vpcSubnets,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
-      deletionProtection: props.terminationProtection,
+      deletionProtection: false, // props.terminationProtection,
       dbUsername: `${id}`,
       dbName: `${id}`,
       snapshotIdentifier: props.snapshotIdentifier0,
@@ -92,7 +92,7 @@ export class AwsCdkStack extends Stack {
       vpc
     });
 
-    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition3`, {
+    const taskDef = new FargateTaskDefinition(this, `${id}TaskDefinition1`, {
       cpu: 1024,
       memoryLimitMiB: 2048
     });
