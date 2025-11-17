@@ -9,7 +9,6 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 //import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
-import { MysqlInstance } from './include/mysql';
 import { AuroraMysqlInstance } from './include/aurora';
 
 export interface AwsCdkStackProps extends StackProps {
@@ -34,9 +33,8 @@ export interface AwsCdkStackProps extends StackProps {
    * restore the DB instance. If you're restoring from a shared manual DB
    * snapshot, you must specify the ARN of the snapshot.
    * @memberof AwsCdkStackProps
-   * @default arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:elixir-xir-final
+   * @default arn:aws:rds:${CDK_DEFAULT_REGION}:${CDK_DEFAULT_ACCOUNT}:snapshot:xceleratedb-2025-11-15-final
    */
-  readonly snapshotIdentifier0?: string;
   readonly snapshotIdentifier?: string;
 
 }
@@ -65,17 +63,6 @@ export class AwsCdkStack extends Stack {
       subnetType: ec2.SubnetType.PUBLIC
     };
 
-    const rdsInstance0 = new MysqlInstance(this, id, {
-      env: { region: this.region },
-      description: `${id} Mysql`,
-      vpc,
-      vpcSubnets,
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
-      deletionProtection: false, // props.terminationProtection,
-      dbUsername: `${id}`,
-      dbName: `${id}`,
-      snapshotIdentifier: props.snapshotIdentifier0,
-    });
     const rdsInstance = new AuroraMysqlInstance(this, id, {
       env: { region: this.region },
       description: `${id} Aurora Mysql`,
