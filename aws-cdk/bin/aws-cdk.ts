@@ -10,7 +10,10 @@ if (stackId === undefined) {
 
 // DEFAULTS
 let terminationProtection = false;
-let domainName = 'company.com';
+let domainName = process.env.DOMAIN_NAME;
+if (domainName === undefined) {
+  domainName = 'company.com';
+}
 let flywayMigrateData = true;
 let snapshotIdentifier = process.env.SNAPSHOT_IDENTIFIER;
 
